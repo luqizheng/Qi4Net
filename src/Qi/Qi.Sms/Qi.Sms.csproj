@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{109EBD31-85C7-45C9-A850-EF3457055670}</ProjectGuid>
+    <ProjectGuid>{1E17A7C3-7946-416B-9208-D03C92A5DF6E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Qi</RootNamespace>
-    <AssemblyName>Qi</AssemblyName>
+    <RootNamespace>Qi.Sms</RootNamespace>
+    <AssemblyName>Qi.Sms</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,14 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Net">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -49,13 +49,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Net\IpAddressExtender.cs" />
-    <Compile Include="Net\NetworkException.cs" />
+    <Compile Include="CommandEventHandler.cs" />
+    <Compile Include="DeviceConnections\COMConnection.cs" />
+    <Compile Include="DeviceConnections\DeviceConnectionException.cs" />
+    <Compile Include="IDeviceConnection.cs" />
+    <Compile Include="Protocol\BaseCommand.cs" />
+    <Compile Include="Protocol\DirectCommand.cs" />
+    <Compile Include="Protocol\Encodes\CodingHelper.cs" />
+    <Compile Include="Protocol\Encodes\ContentEncode.cs" />
+    <Compile Include="Protocol\Encodes\PduEncode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web\WebExtender.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Hardware\" />
+    <Compile Include="Protocol\SendCommands\CMGRCommand.cs" />
+    <Compile Include="Protocol\SendCommands\CmgsCommand.cs" />
+    <Compile Include="Protocol\SendCommands\CMTICommand.cs" />
+    <Compile Include="Protocol\SendCommands\CNMICommand.cs" />
+    <Compile Include="Protocol\SendCommands\CSCACommand.cs" />
+    <Compile Include="Protocol\SendCommands\DeleteSms.cs" />
+    <Compile Include="Protocol\SendCommands\SetSmsFromatCommand.cs" />
+    <Compile Include="Sms.cs" />
+    <Compile Include="SmsService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

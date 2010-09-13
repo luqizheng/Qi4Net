@@ -36,7 +36,7 @@ namespace Qi.Net
                 }
                 for (int i = 0; i < 11; i++)
                 {
-                    if (0 == (i%2))
+                    if (0 == (i % 2))
                     {
                         macDest = i == 10
                                       ? macDest.Insert(0, macSrc.Substring(i, 2))
@@ -47,7 +47,7 @@ namespace Qi.Net
             }
             catch (Exception ex)
             {
-                throw new NetworkException(String.Format("Can't find mac of {0}", client), ex);
+                throw new NetworkException(String.Format("Can't find mac from {0}", client), ex);
             }
         }
     }

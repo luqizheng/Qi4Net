@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using log4net;
 using Qi.Sms.Protocol.SendCommands;
 
 namespace Qi.Sms.Protocol
 {
-    public abstract class BaseCommand : ICloneable
+    public abstract class AbstractCommand: ICloneable
     {
-        private static readonly IList<BaseCommand> CommandSet = new List<BaseCommand>();
+        private static readonly IList<AbstractCommand> CommandSet = new List<AbstractCommand>();
 
         private List<string> _arguments;
         protected ILog log;
 
-        static BaseCommand()
+        static AbstractCommand()
         {
             CommandSet.Add(new CmgsCommand());
             CommandSet.Add(new SetSmsFromatCommand());
             CommandSet.Add(new CscaCommand());
         }
 
-        protected BaseCommand()
+        protected AbstractCommand()
         {
-            log = LogManager.GetLogger(this.GetType());
+            log = LogManager.GetLogger(GetType());
         }
 
         public abstract string Command { get; }
@@ -42,7 +44,7 @@ namespace Qi.Sms.Protocol
 
         public object Clone()
         {
-            var result = (BaseCommand)Activator.CreateInstance(GetType());
+            var result = (AbstractCommand)Activator.CreateInstance(GetType());
             result.Success = Success;
             foreach (string item in Arguments)
             {
@@ -60,38 +62,23 @@ namespace Qi.Sms.Protocol
         }
 
         protected abstract bool InitContent(string content);
-        
-        public string CompleteCommand()
-        {
-            string arguments;
-            if (Arguments.Count == 0)
-            {
-                arguments = "";
-            }
-            else
-            {
-                if (Arguments[0] != "?")
-                    arguments = "=" + String.Join(",", Arguments.ToArray());
-                else
-                    arguments = "?";
-            }
 
-            return string.Format("AT+{0}{1}", Command, arguments);
-        }
+        public abstract string CompleteCommand();
+        
         public override string ToString()
         {
             return CompleteCommand();
         }
 
-        public static IList<BaseCommand> CreateCommand(string command)
+        public static IList<AbstractCommand> CreateCommand(string command)
         {
-            var result = new List<BaseCommand>();
-            foreach (BaseCommand baseCommand in CommandSet)
+            var result = new List<AbstractCommand>();
+            foreach (var baseCommand in CommandSet)
             {
                 if (command.Contains(baseCommand.Command))
                 {
                     //有可能返回2条记录。
-                    var receiveCommand = (BaseCommand)baseCommand.Clone();
+                    var receiveCommand = (AbstractCommand)baseCommand.Clone();
                     receiveCommand.Init(command);
                     result.Add(receiveCommand);
                 }

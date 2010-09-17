@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{109EBD31-85C7-45C9-A850-EF3457055670}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{61CFFFED-7159-4B3C-9160-BBAE1DDF262D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Qi</RootNamespace>
-    <AssemblyName>Qi</AssemblyName>
+    <RootNamespace>Qi.Sms.ConsoleTest</RootNamespace>
+    <AssemblyName>Qi.Sms.ConsoleTest</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,10 +35,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Net">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -49,11 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IniReader.cs" />
-    <Compile Include="Net\IpAddressExtender.cs" />
-    <Compile Include="Net\NetworkException.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web\WebExtender.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Qi.Sms\Qi.Sms.csproj">
+      <Project>{1E17A7C3-7946-416B-9208-D03C92A5DF6E}</Project>
+      <Name>Qi.Sms</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

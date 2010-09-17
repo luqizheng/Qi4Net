@@ -2,7 +2,7 @@
 
 namespace Qi.Sms.Protocol.SendCommands
 {
-    public class DeleteSms : BaseCommand
+    public class DeleteSms : ATCommand
     {
         public override string Command
         {

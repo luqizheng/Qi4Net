@@ -1,7 +1,8 @@
 ﻿using System;
+using Qi.Sms.Protocol;
 using Qi.Sms.Protocol.SendCommands;
 
-namespace Qi.Sms.Protocol
+namespace Qi.Sms
 {
     public class DeviceCommandEventHandlerArgs : EventArgs
     {
@@ -15,12 +16,12 @@ namespace Qi.Sms.Protocol
 
     public class CommandEventHandlerArgs : EventArgs
     {
-        public CommandEventHandlerArgs(BaseCommand command)
+        public CommandEventHandlerArgs(AbstractCommand command)
         {
             Command = command;
         }
 
-        public BaseCommand Command { get; private set; }
+        public AbstractCommand Command { get; private set; }
     }
 
     public class NewMessageEventHandlerArgs : EventArgs

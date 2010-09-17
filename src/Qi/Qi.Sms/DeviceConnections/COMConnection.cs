@@ -3,12 +3,14 @@ using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using log4net;
+using Qi.Sms.Protocol;
+using Qi.Sms.Protocol.DeviceConnections;
 
-namespace Qi.Sms.Protocol.DeviceConnections
+namespace Qi.Sms.DeviceConnections
 {
     public sealed class ComConnection : IDeviceConnection
     {
-        private readonly ILog _log = LogManager.GetLogger(typeof(ComConnection));
+        private readonly ILog _log = LogManager.GetLogger(typeof (ComConnection));
         private readonly SerialPort _serialPort;
         private readonly object lockItem = "";
         private bool _hasReturnValue;
@@ -71,38 +73,51 @@ namespace Qi.Sms.Protocol.DeviceConnections
             }
         }
 
-        public string Send(BaseCommand command)
-        {
-            return Send(command.ToString(), command.NoReturnValue);
-        }
 
         public bool IsConnected { get; private set; }
 
-        public string Send(string command, bool noReturnValue)
+        public string Send(AbstractCommand command)
         {
             if (SendingEvent != null)
-                SendingEvent(this, new DeviceCommandEventHandlerArgs(command));
-            _log.InfoFormat("send command {0} with NoReturnValue={1}", command, noReturnValue);
+                SendingEvent(this, new DeviceCommandEventHandlerArgs(command.CompleteCommand()));
+            _log.InfoFormat("send command {0} with NoReturnValue={1}", command, command.NoReturnValue);
             lock (lockItem)
             {
                 ThreadPool.QueueUserWorkItem(delegate { _serialPort.WriteLine(command + "\r\n"); });
-                Thread.Sleep(500);
-                if (noReturnValue)
+
+                if (command.NoReturnValue)
+                {
+                    Thread.Sleep(500);
                     return "";
+                }
 
                 _returnValue = new StringBuilder();
                 DateTime now = DateTime.Now;
 
-                while (!_hasReturnValue)
+
+                while (true)
                 {
+                    if (_hasReturnValue)
+                    {
+                        _log.Debug("Receive data:" + _returnValue);
+                        if (command.Init(_returnValue.ToString()))
+                        {
+                            _log.Debug("Data is correct for command =" + command.GetType().Name);
+                            break;
+                        }
+                        _log.Debug("Receive data isn't expected, so continue to wait");
+                        _returnValue = new StringBuilder();
+                        _hasReturnValue = false;
+                    }
                     Thread.Sleep(100);
                     TimeSpan span = DateTime.Now - now;
-                    if (span.Seconds > 5)
+                    if (span.Seconds > 50)
                     {
                         _log.InfoFormat("Send command {0} timeout,and exit", command);
                         return ""; //throw new TimeoutException("Timeout {0} send fail.");
                     }
                 }
+
                 string result = _returnValue.ToString();
                 _hasReturnValue = false;
                 _returnValue = null;
@@ -115,7 +130,7 @@ namespace Qi.Sms.Protocol.DeviceConnections
 
         private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            var serialPort = (SerialPort)sender;
+            var serialPort = (SerialPort) sender;
             var result = new StringBuilder();
             while (serialPort.BytesToRead > 0)
             {
@@ -125,7 +140,7 @@ namespace Qi.Sms.Protocol.DeviceConnections
                 {
                     _returnValue.Append(re);
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
             if (_returnValue != null)
             {

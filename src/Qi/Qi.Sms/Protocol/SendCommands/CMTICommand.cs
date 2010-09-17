@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Qi.Sms.Protocol.SendCommands
 {
-    public class CMTICommand : BaseCommand
+    public class CMTICommand : ATCommand
     {
         public override string Command
         {

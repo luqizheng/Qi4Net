@@ -2,7 +2,7 @@
 
 namespace Qi.Sms.Protocol.SendCommands
 {
-    public class CscaCommand : BaseCommand
+    public class CscaCommand : ATCommand
     {
         public CscaCommand()
         {

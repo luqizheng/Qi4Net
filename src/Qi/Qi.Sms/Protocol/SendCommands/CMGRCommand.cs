@@ -3,7 +3,7 @@ using Qi.Sms.Protocol.Encodes;
 
 namespace Qi.Sms.Protocol.SendCommands
 {
-    public class CMGRCommand : BaseCommand
+    public class CMGRCommand : ATCommand
     {
         public override string Command
         {

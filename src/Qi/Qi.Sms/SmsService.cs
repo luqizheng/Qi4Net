@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Qi.Sms.Protocol;
 using Qi.Sms.Protocol.Encodes;
 using Qi.Sms.Protocol.SendCommands;
 
-namespace Qi.Sms.Protocol
+namespace Qi.Sms
 {
     public class SmsService : IDisposable
     {
@@ -36,7 +37,12 @@ namespace Qi.Sms.Protocol
         /// </summary>
         public void SetSmsAutoRecieve()
         {
-            _deviceConnectin.Send("AT+CNMI=2,1\r\n", true);
+            _deviceConnectin.Send(new CNMICommand()
+                                      {
+                                          NoReturnValue = false,
+                                          NotifyMode = NotifyMode.Cache,
+                                          SaveSaveMode = CNMISaveMode.MemoryOnly
+                                      });
         }
 
 
@@ -94,9 +100,12 @@ namespace Qi.Sms.Protocol
                 }
 
                 Send(cmgsCommand);
-                var directCommand = new DirectCommand(string.Format("{0}{1}", content, (char) 26));
+                var directCommand = new SendContent()
+                                        {
+                                            Content = string.Format("{0}{1}", content, (char) 26)
+                                        };
                 Send(directCommand);
-                Thread.Sleep(500);
+                
             }
         }
 
@@ -108,13 +117,13 @@ namespace Qi.Sms.Protocol
             }
         }
 
-        private BaseCommand Send(BaseCommand command)
+        private AbstractCommand Send(AbstractCommand command)
         {
             if (SendingEvent != null)
                 SendingEvent(this, new CommandEventHandlerArgs(command));
 
             string value = _deviceConnectin.Send(command);
-            var result = (BaseCommand) command.Clone();
+            var result = (AbstractCommand)command.Clone();
             result.Init(value);
             OnReceivedEvent(result);
             return result;
@@ -122,7 +131,7 @@ namespace Qi.Sms.Protocol
 
         public Sms GetSms(int position)
         {
-            var cmglCommand = (CMGRCommand) Send(new CMGRCommand {MessageIndex = position});
+            var cmglCommand = (CMGRCommand)Send(new CMGRCommand { MessageIndex = position });
             return new Sms
                        {
                            Content = cmglCommand.Content,
@@ -131,7 +140,7 @@ namespace Qi.Sms.Protocol
                        };
         }
 
-        private void OnReceivedEvent(BaseCommand comm)
+        private void OnReceivedEvent(AbstractCommand comm)
         {
             if (ReceivedEvent != null)
             {
@@ -150,13 +159,13 @@ namespace Qi.Sms.Protocol
         public string GetServicePhone()
         {
             MakeSureConnection();
-            var result = (CscaCommand) Send(new CscaCommand());
+            var result = (CscaCommand)Send(new CscaCommand());
             return result.ServiceCenterNumber;
         }
 
         public bool Delete(int i)
         {
-            return Send(new DeleteSms {SmsIndex = i}).Success;
+            return Send(new DeleteSms { SmsIndex = i }).Success;
         }
     }
 }

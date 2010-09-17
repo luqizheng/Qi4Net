@@ -8,7 +8,7 @@ namespace Qi.Sms.Protocol.SendCommands
         Text = 1,
     }
 
-    public class SetSmsFromatCommand : BaseCommand
+    public class SetSmsFromatCommand : ATCommand
     {
         public SetSmsFromatCommand()
         {

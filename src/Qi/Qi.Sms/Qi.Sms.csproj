@@ -53,8 +53,8 @@
     <Compile Include="DeviceConnections\COMConnection.cs" />
     <Compile Include="DeviceConnections\DeviceConnectionException.cs" />
     <Compile Include="IDeviceConnection.cs" />
-    <Compile Include="Protocol\BaseCommand.cs" />
-    <Compile Include="Protocol\DirectCommand.cs" />
+    <Compile Include="Protocol\AbstractCommand.cs" />
+    <Compile Include="Protocol\ATCommand.cs" />
     <Compile Include="Protocol\Encodes\CodingHelper.cs" />
     <Compile Include="Protocol\Encodes\ContentEncode.cs" />
     <Compile Include="Protocol\Encodes\PduEncode.cs" />
@@ -65,6 +65,7 @@
     <Compile Include="Protocol\SendCommands\CNMICommand.cs" />
     <Compile Include="Protocol\SendCommands\CSCACommand.cs" />
     <Compile Include="Protocol\SendCommands\DeleteSms.cs" />
+    <Compile Include="Protocol\SendCommands\SendContent.cs" />
     <Compile Include="Protocol\SendCommands\SetSmsFromatCommand.cs" />
     <Compile Include="Sms.cs" />
     <Compile Include="SmsService.cs" />

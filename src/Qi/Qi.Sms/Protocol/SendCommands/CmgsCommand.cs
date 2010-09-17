@@ -1,8 +1,6 @@
-﻿using Qi.Sms.Protocol;
-
-namespace Qi.Sms.Protocol.SendCommands
+﻿namespace Qi.Sms.Protocol.SendCommands
 {
-    public class CmgsCommand : BaseCommand
+    public class CmgsCommand : ATCommand
     {
         public CmgsCommand()
         {

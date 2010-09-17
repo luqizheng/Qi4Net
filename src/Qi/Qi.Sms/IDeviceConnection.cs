@@ -1,7 +1,7 @@
 ﻿using System;
+using Qi.Sms.Protocol;
 
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]  
-namespace Qi.Sms.Protocol
+namespace Qi.Sms
 {
     public interface IDeviceConnection : IDisposable
     {
@@ -10,7 +10,6 @@ namespace Qi.Sms.Protocol
         event EventHandler<DeviceCommandEventHandlerArgs> ReceivedEvent;
         void Open();
         void Close();
-        string Send(BaseCommand command);
-        string Send(string command, bool noReturnValue);
+        string Send(AbstractCommand command);
     }
 }

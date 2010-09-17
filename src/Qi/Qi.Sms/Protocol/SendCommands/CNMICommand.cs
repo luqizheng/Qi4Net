@@ -2,7 +2,7 @@
 
 namespace Qi.Sms.Protocol.SendCommands
 {
-    public class CNMICommand : BaseCommand
+    public class CNMICommand : ATCommand
     {
         /// <summary>
         /// defautl set to 2,1

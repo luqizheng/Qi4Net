@@ -2,14 +2,14 @@
 
 namespace Qi.Sms.Protocol.SendCommands
 {
-    public class CNMICommand : ATCommand
+    public class CNMICommand : AtCommand
     {
         /// <summary>
         /// defautl set to 2,1
         /// </summary>
         public CNMICommand()
         {
-            SaveSaveMode = CNMISaveMode.MemoryOnly;
+            SaveSaveMode = CnmiSaveMode.MemoryOnly;
             NotifyMode = NotifyMode.Cache;
         }
 
@@ -18,12 +18,12 @@ namespace Qi.Sms.Protocol.SendCommands
             get { return "CNMI"; }
         }
 
-        public CNMISaveMode SaveSaveMode
+        public CnmiSaveMode SaveSaveMode
         {
             get
             {
                 int v = Convert.ToInt32(Arguments[1]);
-                return (CNMISaveMode) Enum.ToObject(typeof (CNMISaveMode), v);
+                return (CnmiSaveMode) Enum.ToObject(typeof (CnmiSaveMode), v);
             }
             set { Arguments[1] = Convert.ToInt32(value).ToString(); }
         }
@@ -47,10 +47,10 @@ namespace Qi.Sms.Protocol.SendCommands
     /// <summary>
     /// 
     /// </summary>
-    public enum CNMISaveMode
+    public enum CnmiSaveMode
     {
         /// <summary>
-        /// 0 – 储存到默认的内存位置(包括class 3)
+        /// 0 – 储存到默认的内存位置(包括class 3) value is 0
         /// </summary>
         SaveToDefaultMemory = 0,
         /// <summary>

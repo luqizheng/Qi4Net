@@ -2,7 +2,7 @@
 
 namespace Qi.Sms.Protocol
 {
-    public abstract class ATCommand : AbstractCommand
+    public abstract class AtCommand : AbstractCommand
     {
         public override string CompleteCommand()
         {

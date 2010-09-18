@@ -26,14 +26,11 @@ namespace Qi.Sms
 
     public class NewMessageEventHandlerArgs : EventArgs
     {
-        public NewMessageEventHandlerArgs(CMTICommand commad)
+        public NewMessageEventHandlerArgs(CmtiCommand commad)
         {
-            this.SmsIndex = commad.SmsIndex;
+            SmsIndex = commad.SmsIndex;
         }
 
-        public int SmsIndex
-        {
-            get; private set;
-        }
+        public int SmsIndex { get; private set; }
     }
 }

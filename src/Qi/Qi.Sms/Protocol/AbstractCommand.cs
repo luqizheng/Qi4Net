@@ -12,7 +12,7 @@ namespace Qi.Sms.Protocol
         private static readonly IList<AbstractCommand> CommandSet = new List<AbstractCommand>();
 
         private List<string> _arguments;
-        protected ILog log;
+        protected ILog Log;
 
         static AbstractCommand()
         {
@@ -23,7 +23,7 @@ namespace Qi.Sms.Protocol
 
         protected AbstractCommand()
         {
-            log = LogManager.GetLogger(GetType());
+            Log = LogManager.GetLogger(GetType());
         }
 
         public abstract string Command { get; }
@@ -46,7 +46,7 @@ namespace Qi.Sms.Protocol
         {
             var result = (AbstractCommand)Activator.CreateInstance(GetType());
             result.Success = Success;
-            foreach (string item in Arguments)
+            foreach (var item in Arguments)
             {
                 result.Arguments.Add(item);
             }

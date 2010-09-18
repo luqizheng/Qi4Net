@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using Qi.Sms.Protocol;
 using Qi.Sms.Protocol.Encodes;
 using Qi.Sms.Protocol.SendCommands;
@@ -37,18 +36,18 @@ namespace Qi.Sms
         /// </summary>
         public void SetSmsAutoRecieve()
         {
-            _deviceConnectin.Send(new CNMICommand()
+            _deviceConnectin.Send(new CNMICommand
                                       {
                                           NoReturnValue = false,
                                           NotifyMode = NotifyMode.Cache,
-                                          SaveSaveMode = CNMISaveMode.MemoryOnly
+                                          SaveSaveMode = CnmiSaveMode.MemoryOnly
                                       });
         }
 
 
         private void _deviceConnectin_ReceivedEvent(object sender, DeviceCommandEventHandlerArgs e)
         {
-            var cmd = new CMTICommand();
+            var cmd = new CmtiCommand();
             if (cmd.Init(e.Command))
             {
                 OnNewMessageEventHandlerArgs(cmd);
@@ -78,6 +77,7 @@ namespace Qi.Sms
         {
             MakeSureConnection();
             sms = sms.Replace("\r\n", "");
+
             string[] contentSet = CutMessageFromContent(sms);
             for (int i = 0; i < contentSet.Length; i++)
             {
@@ -100,12 +100,11 @@ namespace Qi.Sms
                 }
 
                 Send(cmgsCommand);
-                var directCommand = new SendContent()
+                var directCommand = new SendContent
                                         {
-                                            Content = string.Format("{0}{1}", content, (char) 26)
+                                            Content = string.Format("{0}{1}", content, (char)26)
                                         };
                 Send(directCommand);
-                
             }
         }
 
@@ -131,7 +130,7 @@ namespace Qi.Sms
 
         public Sms GetSms(int position)
         {
-            var cmglCommand = (CMGRCommand)Send(new CMGRCommand { MessageIndex = position });
+            var cmglCommand = (CmgrCommand)Send(new CmgrCommand { MessageIndex = position });
             return new Sms
                        {
                            Content = cmglCommand.Content,
@@ -148,7 +147,7 @@ namespace Qi.Sms
             }
         }
 
-        private void OnNewMessageEventHandlerArgs(CMTICommand comm)
+        private void OnNewMessageEventHandlerArgs(CmtiCommand comm)
         {
             if (NewSmsEvent != null)
             {

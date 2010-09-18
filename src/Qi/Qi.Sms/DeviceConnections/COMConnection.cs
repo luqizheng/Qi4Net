@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading;
 using log4net;
 using Qi.Sms.Protocol;
-using Qi.Sms.Protocol.DeviceConnections;
 
 namespace Qi.Sms.DeviceConnections
 {
@@ -12,7 +11,7 @@ namespace Qi.Sms.DeviceConnections
     {
         private readonly ILog _log = LogManager.GetLogger(typeof (ComConnection));
         private readonly SerialPort _serialPort;
-        private readonly object lockItem = "";
+        private readonly object _lockItem = "";
         private bool _hasReturnValue;
         private StringBuilder _returnValue;
 
@@ -81,7 +80,7 @@ namespace Qi.Sms.DeviceConnections
             if (SendingEvent != null)
                 SendingEvent(this, new DeviceCommandEventHandlerArgs(command.CompleteCommand()));
             _log.InfoFormat("send command {0} with NoReturnValue={1}", command, command.NoReturnValue);
-            lock (lockItem)
+            lock (_lockItem)
             {
                 ThreadPool.QueueUserWorkItem(delegate { _serialPort.WriteLine(command + "\r\n"); });
 

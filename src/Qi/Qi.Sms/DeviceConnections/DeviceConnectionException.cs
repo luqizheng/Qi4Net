@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Qi.Sms.Protocol.DeviceConnections
+namespace Qi.Sms.DeviceConnections
 {
     public class DeviceConnectionException : ApplicationException
     {

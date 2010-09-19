@@ -1,5 +1,4 @@
 ﻿using System;
-using Qi.Sms.Protocol.Protocol.Protocol.Encodes;
 
 namespace Qi.Sms.Protocol.Encodes
 {

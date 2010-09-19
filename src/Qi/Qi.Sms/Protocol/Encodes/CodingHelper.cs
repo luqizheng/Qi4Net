@@ -164,8 +164,11 @@ namespace Qi.Sms.Protocol.Encodes
             {
                 s = s.Substring(2);
             }
-
-            char[] charArray = (s + "F").ToCharArray();
+            if (s.Length % 2 != 0)
+            {
+                s = s + "F";
+            }
+            char[] charArray = s.ToCharArray();
             string addr = "";
             for (int i = 0; i < charArray.Length; i += 2)
             {

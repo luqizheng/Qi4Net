@@ -1,4 +1,4 @@
-﻿namespace Qi.Sms.Protocol.Protocol.Protocol.Encodes
+﻿namespace Qi.Sms.Protocol.Encodes
 {
     class PduEncode
     {

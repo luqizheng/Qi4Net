@@ -206,7 +206,15 @@ namespace Qi.Sms.Protocol.Encodes
             string mobileNum = "";
             for (int i = 0; i < mobileNumArray.Length; i += 2)
             {
-                mobileNum += mobileNumArray[i + 1] + mobileNumArray[i].ToString();
+                var start = i + 1;
+                if (start <= mobileNumArray.Length)
+                {
+                    mobileNum += mobileNumArray[i + 1] + mobileNumArray[i].ToString();
+                }
+                else
+                {
+                    mobileNum += mobileNumArray[i].ToString();
+                }
             }
             switch (addrType)
             {

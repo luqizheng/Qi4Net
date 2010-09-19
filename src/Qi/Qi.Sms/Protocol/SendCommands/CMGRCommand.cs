@@ -42,6 +42,10 @@ namespace Qi.Sms.Protocol.SendCommands
             int pos = content.IndexOf("CMGR:");
             pos = content.IndexOf("\r\n", pos) + 2;
             int pos2 = content.IndexOf("\r\n", pos);
+            if (pos2 == -1)
+            {
+                pos2 = content.Length;
+            }
             string smsContent = content.Substring(pos, pos2 - pos);
             SmsInfo ra = a.DecodingSMS(smsContent);
             Content = ra.UD.Replace("\\0", "");

@@ -12,22 +12,31 @@ namespace Qi.Sms.Protocol
         private static readonly IList<AbstractCommand> CommandSet = new List<AbstractCommand>();
 
         private List<string> _arguments;
-        protected ILog Log;
 
+        protected ILog Log;
+        /// <summary>
+        /// 
+        /// </summary>
         static AbstractCommand()
         {
             CommandSet.Add(new CmgsCommand());
             CommandSet.Add(new SetSmsFromatCommand());
             CommandSet.Add(new CscaCommand());
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected AbstractCommand()
         {
             Log = LogManager.GetLogger(GetType());
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public abstract string Command { get; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected List<string> Arguments
         {
             get { return _arguments ?? (_arguments = new List<string>()); }
@@ -37,11 +46,13 @@ namespace Qi.Sms.Protocol
         /// Command is ok?
         /// </summary>
         public bool Success { get; set; }
+     
 
-        public bool NoReturnValue { get; set; }
-
-        #region ICloneable Members
-
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public object Clone()
         {
             var result = (AbstractCommand)Activator.CreateInstance(GetType());
@@ -53,23 +64,41 @@ namespace Qi.Sms.Protocol
             return result;
         }
 
-        #endregion
-
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         public virtual bool Init(string command)
         {
             Success = command.Contains("OK");
             return InitContent(command);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
         protected abstract bool InitContent(string content);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public abstract string CompleteCommand();
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return CompleteCommand();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         public static IList<AbstractCommand> CreateCommand(string command)
         {
             var result = new List<AbstractCommand>();

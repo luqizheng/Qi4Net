@@ -9,8 +9,11 @@ namespace Qi.Sms.Protocol.SendCommands
         /// </summary>
         public CNMICommand()
         {
+            this.Arguments.Add("");
+            this.Arguments.Add("");
             SaveSaveMode = CnmiSaveMode.MemoryOnly;
             NotifyMode = NotifyMode.Cache;
+            
         }
 
         public override string Command
@@ -25,7 +28,10 @@ namespace Qi.Sms.Protocol.SendCommands
                 int v = Convert.ToInt32(Arguments[1]);
                 return (CnmiSaveMode) Enum.ToObject(typeof (CnmiSaveMode), v);
             }
-            set { Arguments[1] = Convert.ToInt32(value).ToString(); }
+            set 
+            {                 
+                Arguments[1] = Convert.ToInt32(value).ToString(); 
+            }
         }
 
         public NotifyMode NotifyMode

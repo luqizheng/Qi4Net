@@ -11,20 +11,8 @@ namespace Qi.Sms.ConsoleTest
         {
             try
             {
-                var conn = new ComConnection("COM3", 38400);
-                var service = new SmsService(conn);
-                var sb = new StringBuilder();
-                sb.Append("一".PadRight(70, '测'));
-                sb.Append("二".PadRight(70, '测'));
-                sb.Append("三".PadRight(70, '测'));
-
-                string mscPhone = service.GetServicePhone();
-                service.ServiceCenterNumber = mscPhone;
-                Console.Read();
-                service.Send("135xxxxxx", sb.ToString(), SmsFormat.Pdu);
-                Console.Read();
-                Console.Read();
-                Console.Read();
+                var conn = new ComConnection("COM1", 38400);
+                var service = new SmsService(conn);                
             }
             catch (Exception ex)
             {

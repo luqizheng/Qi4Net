@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1E17A7C3-7946-416B-9208-D03C92A5DF6E}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{4D948117-E649-4C4C-BBA6-56E0639E4B99}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Qi.Sms</RootNamespace>
-    <AssemblyName>Qi.Sms</AssemblyName>
+    <RootNamespace>Qi.SmsController</RootNamespace>
+    <AssemblyName>Qi.SmsController</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -46,30 +42,58 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandEventHandler.cs" />
-    <Compile Include="DeviceConnections\COMConnection.cs" />
-    <Compile Include="DeviceConnections\DeviceConnectionException.cs" />
-    <Compile Include="IDeviceConnection.cs" />
-    <Compile Include="Protocol\AbstractCommand.cs" />
-    <Compile Include="Protocol\ATCommand.cs" />
-    <Compile Include="Protocol\DirectCommand.cs" />
-    <Compile Include="Protocol\Encodes\CodingHelper.cs" />
-    <Compile Include="Protocol\Encodes\ContentEncode.cs" />
-    <Compile Include="Protocol\Encodes\PduEncode.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgressControl.cs" />
+    <Compile Include="ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\SendCommands\CMGRCommand.cs" />
-    <Compile Include="Protocol\SendCommands\CmgsCommand.cs" />
-    <Compile Include="Protocol\SendCommands\CMTICommand.cs" />
-    <Compile Include="Protocol\SendCommands\CNMICommand.cs" />
-    <Compile Include="Protocol\SendCommands\CSCACommand.cs" />
-    <Compile Include="Protocol\SendCommands\DeleteSms.cs" />
-    <Compile Include="Protocol\SendCommands\SendContent.cs" />
-    <Compile Include="Protocol\SendCommands\SetSmsFromatCommand.cs" />
-    <Compile Include="Sms.cs" />
-    <Compile Include="SmsService.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Qi.Sms\Qi.Sms.csproj">
+      <Project>{1E17A7C3-7946-416B-9208-D03C92A5DF6E}</Project>
+      <Name>Qi.Sms</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -9,7 +9,7 @@ namespace Qi.Sms.DeviceConnections
 {
     public sealed class ComConnection : IDeviceConnection
     {
-        private readonly ILog _log = LogManager.GetLogger(typeof (ComConnection));
+        private readonly ILog _log = LogManager.GetLogger(typeof(ComConnection));
         private readonly SerialPort _serialPort;
         private readonly object _lockItem = "";
         private bool _hasReturnValue;
@@ -79,16 +79,10 @@ namespace Qi.Sms.DeviceConnections
         {
             if (SendingEvent != null)
                 SendingEvent(this, new DeviceCommandEventHandlerArgs(command.CompleteCommand()));
-            _log.InfoFormat("send command {0} with NoReturnValue={1}", command, command.NoReturnValue);
+            _log.InfoFormat("send command {0}\r\n", command);
             lock (_lockItem)
             {
                 ThreadPool.QueueUserWorkItem(delegate { _serialPort.WriteLine(command + "\r\n"); });
-
-                if (command.NoReturnValue)
-                {
-                    Thread.Sleep(500);
-                    return "";
-                }
 
                 _returnValue = new StringBuilder();
                 DateTime now = DateTime.Now;
@@ -112,7 +106,7 @@ namespace Qi.Sms.DeviceConnections
                     TimeSpan span = DateTime.Now - now;
                     if (span.Seconds > 50)
                     {
-                        _log.InfoFormat("Send command {0} timeout,and exit", command);
+                        _log.InfoFormat("Send command timeout,and exit");
                         return ""; //throw new TimeoutException("Timeout {0} send fail.");
                     }
                 }
@@ -120,7 +114,7 @@ namespace Qi.Sms.DeviceConnections
                 string result = _returnValue.ToString();
                 _hasReturnValue = false;
                 _returnValue = null;
-                _log.InfoFormat("receive command {0}", result);
+                _log.InfoFormat("receive command \r\n {0}", result);
                 return result;
             }
         }
@@ -129,7 +123,7 @@ namespace Qi.Sms.DeviceConnections
 
         private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            var serialPort = (SerialPort) sender;
+            var serialPort = (SerialPort)sender;
             var result = new StringBuilder();
             while (serialPort.BytesToRead > 0)
             {

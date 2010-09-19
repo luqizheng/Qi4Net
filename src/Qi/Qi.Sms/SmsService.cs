@@ -37,8 +37,7 @@ namespace Qi.Sms
         public void SetSmsAutoRecieve()
         {
             _deviceConnectin.Send(new CNMICommand
-                                      {
-                                          NoReturnValue = false,
+                                      {                                          
                                           NotifyMode = NotifyMode.Cache,
                                           SaveSaveMode = CnmiSaveMode.MemoryOnly
                                       });

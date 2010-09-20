@@ -164,11 +164,8 @@ namespace Qi.Sms.Protocol.Encodes
             {
                 s = s.Substring(2);
             }
-            if (s.Length % 2 != 0)
-            {
-                s = s + "F";
-            }
-            char[] charArray = s.ToCharArray();
+
+            char[] charArray = (s + "F").ToCharArray();
             string addr = "";
             for (int i = 0; i < charArray.Length; i += 2)
             {
@@ -202,19 +199,16 @@ namespace Qi.Sms.Protocol.Encodes
         /// <returns>解码后的电话号码如:13010112500</returns>
         public static string DecodingMobileNum(string s, string addrType)
         {
+
+            if (s.Length % 2 != 0)
+            {
+                s += "F";
+            }
             char[] mobileNumArray = s.ToCharArray();
             string mobileNum = "";
             for (int i = 0; i < mobileNumArray.Length; i += 2)
             {
-                var start = i + 1;
-                if (start <= mobileNumArray.Length)
-                {
-                    mobileNum += mobileNumArray[i + 1] + mobileNumArray[i].ToString();
-                }
-                else
-                {
-                    mobileNum += mobileNumArray[i].ToString();
-                }
+                mobileNum += mobileNumArray[i + 1] + mobileNumArray[i].ToString();
             }
             switch (addrType)
             {

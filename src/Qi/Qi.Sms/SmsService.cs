@@ -88,6 +88,7 @@ namespace Qi.Sms
 
                 if (format == SmsFormat.Pdu)
                 {
+                    
                     var info = new SmsInfo(ServiceCenterNumber, phone, content);
                     int smsLen = 0;
                     content = info.EncodingSMS(out smsLen);

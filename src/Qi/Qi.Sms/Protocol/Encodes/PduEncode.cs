@@ -30,7 +30,7 @@ namespace Qi.Sms.Protocol.Encodes
             {
                 s += BitConverter.ToString(encodedBytes, i, 1);
             }
-            s = String.Format("{0:X2}{1}", s.Length/2, s);
+            s = String.Format("{0:X2}{1}", s.Length / 2, s);
 
             return s;
         }
@@ -48,7 +48,7 @@ namespace Qi.Sms.Protocol.Encodes
         ///          3，加上短信中心号类型，91为国际化  
         ///          4，计算编码后的短信中心号长度，并格化成二位的十六进制  
         /// </summary>  
-        public static string SmsDecodedCenterNumber(string srvCenterNumber)
+        private static string SmsDecodedCenterNumber(string srvCenterNumber)
         {
             string s = null;
             if (srvCenterNumber.Substring(0, 2) != "86")
@@ -61,13 +61,13 @@ namespace Qi.Sms.Protocol.Encodes
                 s += srvCenterNumber[i];
                 s += srvCenterNumber[i - 1];
             }
-            if (length%2 != 0) //是否为偶数，不是就加上F，并对最后一位与加上的F位互换  
+            if (length % 2 != 0) //是否为偶数，不是就加上F，并对最后一位与加上的F位互换  
             {
                 s += 'F';
                 s += srvCenterNumber[length - 1];
             }
             s = String.Format("91{0}", s); //加上91,代表短信中心类型为国际化  
-            s = String.Format("{0:X2}{1}", s.Length/2, s); //编码后短信中心号长度，并格式化成二位十六制  
+            s = String.Format("{0:X2}{1}", s.Length / 2, s); //编码后短信中心号长度，并格式化成二位十六制  
             return s;
         }
 
@@ -83,7 +83,7 @@ namespace Qi.Sms.Protocol.Encodes
         ///          1，将奇数位和偶数位交换。  
         ///          2，短信中心号奇偶数交换后，看看长度是否为偶数，如果不是，最后添加F  
         /// </summary>  
-        public static string SmsDecodedNumber(string srvNumber)
+        private static string SmsDecodedNumber(string srvNumber)
         {
             string s = null;
             if (srvNumber.Substring(0, 2) != "86")
@@ -96,7 +96,7 @@ namespace Qi.Sms.Protocol.Encodes
                 s += srvNumber[i];
                 s += srvNumber[i - 1];
             }
-            if (length%2 != 0) //是否为偶数，不是就加上F，并对最后一位与加上的F位互换  
+            if (length % 2 != 0) //是否为偶数，不是就加上F，并对最后一位与加上的F位互换  
             {
                 s += 'F';
                 s += srvNumber[length - 1];
@@ -122,127 +122,30 @@ namespace Qi.Sms.Protocol.Encodes
         {
             string s = String.Format("{0}11000D91{1}000800{2}", SmsDecodedCenterNumber(strCenterNumber),
                                      SmsDecodedNumber(strNumber), SmsPduEncoded(strSmScontent));
-            length = String.Format("{0:D2}", (s.Length - SmsDecodedCenterNumber(strCenterNumber).Length)/2);
+            length = String.Format("{0:D2}", (s.Length - SmsDecodedCenterNumber(strCenterNumber).Length) / 2);
             //获取短信内容加上手机号码长度  
             return s;
         }
-    }
 
-    public static class FpdUdecoding
-    {
-        ///   <summary>     
-        ///   判断接受的短信是PDU格式还是TEXT格式     
-        ///   </summary>     
-        public static bool IsPdu(string SMS)
+        public static ReceiveSms ReceiveSms(string sms)
         {
-            if (SMS.Substring(40, 2) != "08")
-                return false;
-            return true;
-        }
+            var result = new ReceiveSms
+                             {
 
-        ///   <summary>     
-        ///   函数功能：短信内容提取     
-        ///   函数名称：GetEverySMS(string   SMS)     
-        ///   参         数：SMS   要进行提取的整个短信内容     
-        ///   返   回   值：将多个短信内容拆分     
-        ///   </summary>     
-        public static string[] GetEverySms(string sms)
-        {
-            char[] str = "\n".ToCharArray();
-            string[] temp = sms.Split(str);
-            return temp;
-        }
+                                 ReceiveTime = FpdUdecoding.GetDataTime(sms),
+                                 SendMobile = FpdUdecoding.GetTelphone(sms)
+                             };
 
-        ///   <summary>     
-        ///   函数功能：提取短信的发送人电话号码     
-        ///   函数名称：GetTelphone(string   SMS)     
-        ///   参         数：SMS   要进行转换的整个短信内容     
-        ///   返   回   值：电话号码     
-        ///   </summary>     
-        public static string GetTelphone(string SMS)
-        {
-            string tel = SMS.Substring(26, 12);
-            string s = "";
-            for (int i = 0; i < 9; i += 2)
+            if (FpdUdecoding.IsPdu(sms))
             {
-                s += tel[i + 1];
-                s += tel[i];
-            }
-            s += tel[tel.Length - 1];
-            return s;
-        }
+                result.Content = FpdUdecoding.GetContent(sms);
 
-        ///   <summary>     
-        ///   函数功能：提取短信的发送时间     
-        ///   函数名称：GetDataTime(string   SMS)     
-        ///   参         数：SMS:要进行转换的整个短信内容     
-        ///   返   回   值：发送时间     
-        ///   </summary>     
-        public static string GetDataTime(string SMS)
-        {
-            string time = SMS.Substring(42, 12);
-            string s = "";
-            for (int i = 0; i < 11; i += 2)
-            {
-                s += time[i + 1];
-                s += time[i];
             }
-            string t = s.Substring(0, 2) + "年" + s.Substring(2, 2) + "月" + s.Substring(4, 2) + "日" + s.Substring(6, 2) +
-                       ":" + s.Substring(8, 2) + ":" + s.Substring(10, 2);
-            return t;
-        }
-
-        ///   <summary>     
-        ///   函数功能：提取短信的内容(PDU)     
-        ///   函数名称：GetContent(string   SMS)     
-        ///   参         数：SMS:要进行转换的整个短信内容     
-        ///   返   回   值：短信内容     
-        ///   </summary>     
-        public static string GetContent(string SMS)
-        {
-            string c = "";
-            string len = SMS.Substring(56, 2);
-            int length = Convert.ToInt16(len, 16);
-            length *= 2;
-            string content = SMS.Substring(58, length);
-            for (int i = 0; i < length; i += 4)
+            else
             {
-                string temp = content.Substring(i, 4);
-                int by = Convert.ToInt16(temp, 16);
-                var ascii = (char) by;
-                c += ascii.ToString();
+                result.Content = FpdUdecoding.GetTextContent(sms);
             }
-            return c;
-        }
-
-        ///   <summary>     
-        ///   函数功能：提取短信的TEXT内容(TEXT)     
-        ///   函数名称：GetTextContent(string   SMS)     
-        ///   参         数：SMS:要进行转换的整个短信内容     
-        ///   返   回   值：短信内容     
-        ///   </summary>     
-        public static string GetTextContent(string SMS)
-        {
-            string str = "";
-            string c = "";
-            byte by;
-            char ascii;
-            int i;
-            SMS = SMS.Replace("\r", "");
-            SMS = SMS.Replace("\n", "");
-            string content = SMS.Substring(58);
-            for (i = content.Length - 2; i >= 0; i -= 2)
-            {
-                by = Convert.ToByte(content.Substring(i, 2), 16);
-                str += Convert.ToString(by, 2).PadLeft(8, '0');
-            }
-            for (i = str.Length - 7; i >= 0; i -= 7)
-            {
-                by = Convert.ToByte(str.Substring(i, 7), 2);
-                ascii = (char) by;
-                c += ascii.ToString();
-            }
-            return c;
+            return result;
         }
     }
 }

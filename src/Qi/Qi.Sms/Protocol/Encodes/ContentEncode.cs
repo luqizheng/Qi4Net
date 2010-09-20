@@ -2,7 +2,6 @@
 
 namespace Qi.Sms.Protocol.Encodes
 {
-   
     /********************  SMS-SUBMIT-PDU  ***********************/
 
     /*   SCA              PDUType   MR   DA               PID   DCS    VP     UDL    UD
@@ -245,10 +244,10 @@ namespace Qi.Sms.Protocol.Encodes
                     encodeContent = CodingHelper.DecodingBit8(content);
                     break;
                 case "08":
-                    encodeContent = CodingHelper.DecodingUCS2(content);
+                    encodeContent = CodingHelper.DecodingUcs2(content);
                     break;
                 default:
-                    encodeContent = CodingHelper.DecodingUCS2(content);
+                    encodeContent = CodingHelper.DecodingUcs2(content);
                     break;
             }
 

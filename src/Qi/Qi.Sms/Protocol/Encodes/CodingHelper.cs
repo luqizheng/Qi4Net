@@ -20,7 +20,7 @@ namespace Qi.Sms.Protocol.Encodes
             {
                 // 取源字符串的计数值的最低3位
                 int iChar = i & 7;
-                var bSrc = (byte)char.Parse(s.Substring(i, 1));
+                var bSrc = (byte) char.Parse(s.Substring(i, 1));
                 // 处理源串的每个字节
                 if (iChar == 0)
                 {
@@ -38,7 +38,7 @@ namespace Qi.Sms.Protocol.Encodes
                 }
             }
             sb.Append(sReturn.Substring(0, 2));
-            int udl = sb.Length / 2;
+            int udl = sb.Length/2;
             return udl.ToString("X2") + sb;
         }
 
@@ -75,10 +75,10 @@ namespace Qi.Sms.Protocol.Encodes
                 }
             }
             string sReturn = sb.ToString();
-            var buf = new byte[sReturn.Length / 2];
+            var buf = new byte[sReturn.Length/2];
             for (int i = 0; i < sReturn.Length; i += 2)
             {
-                buf[i / 2] = byte.Parse(sReturn.Substring(i, 2), NumberStyles.AllowHexSpecifier);
+                buf[i/2] = byte.Parse(sReturn.Substring(i, 2), NumberStyles.AllowHexSpecifier);
             }
             return Encoding.ASCII.GetString(buf);
         }
@@ -98,7 +98,7 @@ namespace Qi.Sms.Protocol.Encodes
                 sb.Append(buf[i].ToString("X2"));
             }
 
-            int udl = sb.Length / 2;
+            int udl = sb.Length/2;
             return udl.ToString("X2") + sb;
         }
 
@@ -109,11 +109,11 @@ namespace Qi.Sms.Protocol.Encodes
         /// <returns>解码后的字符串</returns>
         public static string DecodingBit8(string s)
         {
-            var buf = new byte[s.Length / 2];
+            var buf = new byte[s.Length/2];
             var sb = new StringBuilder();
             for (int i = 0; i < s.Length; i += 2)
             {
-                buf[i / 2] = byte.Parse(s.Substring(i, 2), NumberStyles.AllowHexSpecifier);
+                buf[i/2] = byte.Parse(s.Substring(i, 2), NumberStyles.AllowHexSpecifier);
             }
             return Encoding.ASCII.GetString(buf);
         }
@@ -132,7 +132,7 @@ namespace Qi.Sms.Protocol.Encodes
                 sb.Append(buf[i + 1].ToString("X2"));
                 sb.Append(buf[i].ToString("X2"));
             }
-            int udl = sb.Length / 2;
+            int udl = sb.Length/2;
             return udl.ToString("X2") + sb;
         }
 
@@ -141,13 +141,13 @@ namespace Qi.Sms.Protocol.Encodes
         /// </summary>
         /// <param name="s">要解码的信息</param>
         /// <returns>解码后的中文字符串</returns>
-        public static string DecodingUCS2(string s)
+        public static string DecodingUcs2(string s)
         {
             var buf = new byte[s.Length];
             for (int i = 0; i < s.Length; i += 4)
             {
-                buf[i / 2] = byte.Parse(s.Substring(2 + i, 2), NumberStyles.AllowHexSpecifier);
-                buf[i / 2 + 1] = byte.Parse(s.Substring(i, 2), NumberStyles.AllowHexSpecifier);
+                buf[i/2] = byte.Parse(s.Substring(2 + i, 2), NumberStyles.AllowHexSpecifier);
+                buf[i/2 + 1] = byte.Parse(s.Substring(i, 2), NumberStyles.AllowHexSpecifier);
             }
             return Encoding.Unicode.GetString(buf);
         }
@@ -181,7 +181,7 @@ namespace Qi.Sms.Protocol.Encodes
 
             if (isSCSA)
             {
-                int addrLen = addr.Length / 2;
+                int addrLen = addr.Length/2;
                 addr = addrLen.ToString("X2") + addr;
             }
             else
@@ -199,8 +199,7 @@ namespace Qi.Sms.Protocol.Encodes
         /// <returns>解码后的电话号码如:13010112500</returns>
         public static string DecodingMobileNum(string s, string addrType)
         {
-
-            if (s.Length % 2 != 0)
+            if (s.Length%2 != 0)
             {
                 s += "F";
             }

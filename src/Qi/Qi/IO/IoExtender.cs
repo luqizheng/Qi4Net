@@ -25,5 +25,21 @@ namespace Qi.IO
                     a.Create();
             }
         }
+
+        public static FileInfo[] GetFilesEx(this DirectoryInfo parentDirectory, string searchPattern, SearchOption searchOption)
+        {
+            string[] searchPatterns = searchPattern.Split('|');
+            var files = new List<FileInfo>();
+            foreach (string sp in searchPatterns)
+            {
+                files.AddRange(parentDirectory.GetFiles(sp, searchOption));
+            }
+            return files.ToArray();
+        }
+
+        public static FileInfo[] GetFilesEx(this DirectoryInfo parentDirectory, string searchPattern)
+        {
+            return GetFilesEx(parentDirectory, searchPattern, SearchOption.TopDirectoryOnly);
+        }
     }
 }

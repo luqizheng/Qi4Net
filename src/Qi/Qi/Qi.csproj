@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IO\IniReader.cs" />
+    <Compile Include="IO\IoExtender.cs" />
     <Compile Include="Net\IpAddressExtender.cs" />
     <Compile Include="Net\NetworkException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -30,7 +30,7 @@ namespace Qi.Sms.Protocol.Encodes
             {
                 s += BitConverter.ToString(encodedBytes, i, 1);
             }
-            s = String.Format("{0:X2}{1}", s.Length / 2, s);
+            s = String.Format("{0:X2}{1}", s.Length/2, s);
 
             return s;
         }
@@ -61,13 +61,13 @@ namespace Qi.Sms.Protocol.Encodes
                 s += srvCenterNumber[i];
                 s += srvCenterNumber[i - 1];
             }
-            if (length % 2 != 0) //是否为偶数，不是就加上F，并对最后一位与加上的F位互换  
+            if (length%2 != 0) //是否为偶数，不是就加上F，并对最后一位与加上的F位互换  
             {
                 s += 'F';
                 s += srvCenterNumber[length - 1];
             }
             s = String.Format("91{0}", s); //加上91,代表短信中心类型为国际化  
-            s = String.Format("{0:X2}{1}", s.Length / 2, s); //编码后短信中心号长度，并格式化成二位十六制  
+            s = String.Format("{0:X2}{1}", s.Length/2, s); //编码后短信中心号长度，并格式化成二位十六制  
             return s;
         }
 
@@ -96,7 +96,7 @@ namespace Qi.Sms.Protocol.Encodes
                 s += srvNumber[i];
                 s += srvNumber[i - 1];
             }
-            if (length % 2 != 0) //是否为偶数，不是就加上F，并对最后一位与加上的F位互换  
+            if (length%2 != 0) //是否为偶数，不是就加上F，并对最后一位与加上的F位互换  
             {
                 s += 'F';
                 s += srvNumber[length - 1];
@@ -122,7 +122,7 @@ namespace Qi.Sms.Protocol.Encodes
         {
             string s = String.Format("{0}11000D91{1}000800{2}", SmsDecodedCenterNumber(strCenterNumber),
                                      SmsDecodedNumber(strNumber), SmsPduEncoded(strSmScontent));
-            length = String.Format("{0:D2}", (s.Length - SmsDecodedCenterNumber(strCenterNumber).Length) / 2);
+            length = String.Format("{0:D2}", (s.Length - SmsDecodedCenterNumber(strCenterNumber).Length)/2);
             //获取短信内容加上手机号码长度  
             return s;
         }
@@ -131,7 +131,6 @@ namespace Qi.Sms.Protocol.Encodes
         {
             var result = new ReceiveSms
                              {
-
                                  ReceiveTime = FpdUdecoding.GetDataTime(sms),
                                  SendMobile = FpdUdecoding.GetTelphone(sms)
                              };
@@ -139,7 +138,6 @@ namespace Qi.Sms.Protocol.Encodes
             if (FpdUdecoding.IsPdu(sms))
             {
                 result.Content = FpdUdecoding.GetContent(sms);
-
             }
             else
             {

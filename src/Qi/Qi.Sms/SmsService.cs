@@ -83,7 +83,7 @@ namespace Qi.Sms
                 string[] contentSet = CutMessageFromContent(sms);
                 for (int i = 0; i < contentSet.Length; i++)
                 {
-                    string content = contentSet[i];
+                    var content = contentSet[i];
                     var messageFromat = new SetSmsFromatCommand(format);
                     Send(messageFromat);
 
@@ -108,8 +108,8 @@ namespace Qi.Sms
                                                 Content = string.Format("{0}{1}", content, (char)26)
                                             };
                     Send(directCommand);
-                    Thread.Sleep(400);
                 }
+                Thread.Sleep(1000);
             }
         }
 

@@ -62,10 +62,10 @@ namespace Qi.Sms
         {
             var result = new List<string>();
             int current = 0;
-            const int MaxSMSLength = 70;
+            const int maxSmsLength = 70;
             while (current < message.Length)
             {
-                int end = current + MaxSMSLength > message.Length ? message.Length - current : MaxSMSLength;
+                int end = current + maxSmsLength > message.Length ? message.Length - current : maxSmsLength;
                 string newMessage = message.Substring(current, end);
                 result.Add(newMessage);
                 current += end;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Qi.Sms.Protocol;
 using Qi.Sms.Protocol.Encodes;
 using Qi.Sms.Protocol.SendCommands;
@@ -37,7 +38,7 @@ namespace Qi.Sms
         public void SetSmsAutoRecieve()
         {
             _deviceConnectin.Send(new CNMICommand
-                                      {                                          
+                                      {
                                           NotifyMode = NotifyMode.Cache,
                                           SaveSaveMode = CnmiSaveMode.MemoryOnly
                                       });
@@ -74,37 +75,41 @@ namespace Qi.Sms
 
         public void Send(string phone, string sms, SmsFormat format)
         {
-            MakeSureConnection();
-            sms = sms.Replace("\r\n", "");
-
-            string[] contentSet = CutMessageFromContent(sms);
-            for (int i = 0; i < contentSet.Length; i++)
+            lock (typeof(SmsService))
             {
-                string content = contentSet[i];
-                var messageFromat = new SetSmsFromatCommand(format);
-                Send(messageFromat);
+                MakeSureConnection();
+                sms = sms.Replace("\r\n", "");
 
-                var cmgsCommand = new CmgsCommand();
-
-                if (format == SmsFormat.Pdu)
+                string[] contentSet = CutMessageFromContent(sms);
+                for (int i = 0; i < contentSet.Length; i++)
                 {
-                    
-                    var info = new SmsInfo(ServiceCenterNumber, phone, content);
-                    int smsLen = 0;
-                    content = info.EncodingSMS(out smsLen);
-                    cmgsCommand.Argument = string.Format(smsLen.ToString("D2"));
-                }
-                else
-                {
-                    cmgsCommand.Argument = phone;
-                }
+                    string content = contentSet[i];
+                    var messageFromat = new SetSmsFromatCommand(format);
+                    Send(messageFromat);
 
-                Send(cmgsCommand);
-                var directCommand = new SendContent
-                                        {
-                                            Content = string.Format("{0}{1}", content, (char)26)
-                                        };
-                Send(directCommand);
+                    var cmgsCommand = new CmgsCommand();
+
+                    if (format == SmsFormat.Pdu)
+                    {
+
+                        var info = new SmsInfo(ServiceCenterNumber, phone, content);
+                        int smsLen = 0;
+                        content = info.EncodingSMS(out smsLen);
+                        cmgsCommand.Argument = string.Format(smsLen.ToString("D2"));
+                    }
+                    else
+                    {
+                        cmgsCommand.Argument = phone;
+                    }
+
+                    Send(cmgsCommand);
+                    var directCommand = new SendContent
+                                            {
+                                                Content = string.Format("{0}{1}", content, (char)26)
+                                            };
+                    Send(directCommand);
+                    Thread.Sleep(400);
+                }
             }
         }
 
@@ -121,7 +126,7 @@ namespace Qi.Sms
             if (SendingEvent != null)
                 SendingEvent(this, new CommandEventHandlerArgs(command));
 
-            string value = _deviceConnectin.Send(command);
+            var value = _deviceConnectin.Send(command);
             var result = (AbstractCommand)command.Clone();
             result.Init(value);
             OnReceivedEvent(result);

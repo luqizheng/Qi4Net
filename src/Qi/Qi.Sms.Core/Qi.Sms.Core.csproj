@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1E17A7C3-7946-416B-9208-D03C92A5DF6E}</ProjectGuid>
+    <ProjectGuid>{A5944E1B-E7ED-4866-9434-CC0A06B22CC8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Qi.Sms</RootNamespace>
-    <AssemblyName>Qi.Sms</AssemblyName>
+    <AssemblyName>Qi.Sms.Core</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,11 +36,9 @@
       <HintPath>..\..\..\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -51,19 +49,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeviceConnections\COMConnection.cs" />
-    <Compile Include="DeviceConnections\DeviceConnectionException.cs" />
+    <Compile Include="CommandEventHandler.cs" />
+    <Compile Include="IDeviceConnection.cs" />
+    <Compile Include="Remotes\ISmsProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Remotes\Configuration.cs" />
-    <Compile Include="Remotes\ISmsHandler.cs" />
-    <Compile Include="Remotes\SmsPrivoder.cs" />
-    <Compile Include="SmsService.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Qi.Sms.Core\Qi.Sms.Core.csproj">
-      <Project>{A5944E1B-E7ED-4866-9434-CC0A06B22CC8}</Project>
-      <Name>Qi.Sms.Core</Name>
-    </ProjectReference>
+    <Compile Include="Protocol\AbstractCommand.cs" />
+    <Compile Include="Protocol\ATCommand.cs" />
+    <Compile Include="Protocol\DirectCommand.cs" />
+    <Compile Include="Protocol\Encodes\CodingHelper.cs" />
+    <Compile Include="Protocol\Encodes\ContentEncode.cs" />
+    <Compile Include="Protocol\Encodes\FpdUdecoding.cs" />
+    <Compile Include="Protocol\Encodes\PduEncode.cs" />
+    <Compile Include="Protocol\Encodes\ReceiveSms.cs" />
+    <Compile Include="Protocol\SendCommands\CMGRCommand.cs" />
+    <Compile Include="Protocol\SendCommands\CmgsCommand.cs" />
+    <Compile Include="Protocol\SendCommands\CMTICommand.cs" />
+    <Compile Include="Protocol\SendCommands\CNMICommand.cs" />
+    <Compile Include="Protocol\SendCommands\CSCACommand.cs" />
+    <Compile Include="Protocol\SendCommands\DeleteSms.cs" />
+    <Compile Include="Protocol\SendCommands\SendContent.cs" />
+    <Compile Include="Protocol\SendCommands\SetSmsFromatCommand.cs" />
+    <Compile Include="ReceiveSms.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -56,7 +56,7 @@ namespace Qi.Sms
 
         public event EventHandler<CommandEventHandlerArgs> SendingEvent;
         public event EventHandler<CommandEventHandlerArgs> ReceivedEvent;
-        public event EventHandler<NewMessageEventHandlerArgs> NewSmsEvent;
+        public event EventHandler<NewMessageEventHandlerArgs> ReceiveSmsEvent;
 
         public static string[] CutMessageFromContent(string message)
         {
@@ -108,6 +108,7 @@ namespace Qi.Sms
                                                 Content = string.Format("{0}{1}", content, (char)26)
                                             };
                     Send(directCommand);
+                    Thread.Sleep(1000);
                 }
                 Thread.Sleep(1000);
             }
@@ -133,10 +134,10 @@ namespace Qi.Sms
             return result;
         }
 
-        public Sms GetSms(int position)
+        public ReceiveSms GetSms(int position)
         {
             var cmglCommand = (CmgrCommand)Send(new CmgrCommand { MessageIndex = position });
-            return new Sms
+            return new ReceiveSms
                        {
                            Content = cmglCommand.Content,
                            SendMobile = cmglCommand.SendMobile,
@@ -154,9 +155,9 @@ namespace Qi.Sms
 
         private void OnNewMessageEventHandlerArgs(CmtiCommand comm)
         {
-            if (NewSmsEvent != null)
+            if (ReceiveSmsEvent != null)
             {
-                NewSmsEvent(this, new NewMessageEventHandlerArgs(comm));
+                ReceiveSmsEvent(this, new NewMessageEventHandlerArgs(comm));
             }
         }
 

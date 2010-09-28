@@ -4,7 +4,6 @@
     {
         public CmgsCommand()
         {
-            //this.NoReturnValue = true;
             Arguments.Add("");
         }
 

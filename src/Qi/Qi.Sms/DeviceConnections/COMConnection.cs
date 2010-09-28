@@ -9,17 +9,19 @@ namespace Qi.Sms.DeviceConnections
 {
     public sealed class ComConnection : IDeviceConnection
     {
-        private readonly ILog _log = LogManager.GetLogger(typeof(ComConnection));
-        private readonly SerialPort _serialPort;
         private readonly object _lockItem = "";
+        private readonly ILog _log = LogManager.GetLogger(typeof (ComConnection));
+        private readonly SerialPort _serialPort;
         private bool _hasReturnValue;
         private StringBuilder _returnValue;
 
-        public ComConnection(string comName, int baudRate)
+        public ComConnection(string portName, int baudRate)
         {
-            ComName = comName;
+            if (portName == null) 
+                throw new ArgumentNullException("portName");
+            portName = portName;
             BaudRate = baudRate;
-            _serialPort = new SerialPort(ComName, BaudRate, Parity.None, 8, StopBits.One)
+            _serialPort = new SerialPort(portName, BaudRate, Parity.None, 8, StopBits.One)
                               {
                                   DtrEnable = true,
                                   RtsEnable = true,
@@ -28,7 +30,7 @@ namespace Qi.Sms.DeviceConnections
             _serialPort.DataReceived += SerialPortDataReceived;
         }
 
-        public string ComName { get; private set; }
+        public string PortName { get; private set; }
 
         public int BaudRate { get; private set; }
 
@@ -123,7 +125,7 @@ namespace Qi.Sms.DeviceConnections
 
         private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            var serialPort = (SerialPort)sender;
+            var serialPort = (SerialPort) sender;
             var result = new StringBuilder();
             while (serialPort.BytesToRead > 0)
             {

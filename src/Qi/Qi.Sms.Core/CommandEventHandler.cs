@@ -22,6 +22,11 @@ namespace Qi.Sms
         }
 
         public AbstractCommand Command { get; private set; }
+        public bool Cancel
+        {
+            get;
+            set;
+        }
     }
 
     public class NewMessageEventHandlerArgs : EventArgs

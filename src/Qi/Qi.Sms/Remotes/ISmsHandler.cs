@@ -10,6 +10,7 @@ namespace Qi.Sms.Remotes
         /// <param name="receiveSms"></param>
         /// <returns></returns>
         bool OnReceived(ReceiveSms receiveSms);
+
         /// <summary>
         /// 当发送Sms的之前,返回true，表示可以发送，返回false，表示不发送
         /// </summary>

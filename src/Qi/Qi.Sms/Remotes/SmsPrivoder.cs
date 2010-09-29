@@ -9,31 +9,32 @@ namespace Qi.Sms.Remotes
     public class SmsProvider : ISmsProvider
     {
         public static readonly SmsProvider Instance = new SmsProvider();
+        private readonly ISmsHandler _handler;
         private readonly SmsService _service;
-        private readonly ISmsHandler handler;
-        private ILog log;
+        private readonly ILog log;
+
         private SmsProvider()
         {
             var com = new ComConnection(Configuration.PortName, Configuration.BaudRate);
-            handler = Configuration.SmsHandler;
+            _handler = Configuration.SmsHandler;
             _service = new SmsService(com);
-            _service.ReceiveSmsEvent += _service_NewSmsEvent;
-            log = LogManager.GetLogger(this.GetType());
+            _service.ReceiveSmsEvent += ServiceNewSmsEvent;
+            log = LogManager.GetLogger(GetType());
         }
 
         #region ISmsProvider Members
 
         public void Send(string mobile, string content, SmsFormat type)
         {
-            bool result = true;
-            if (handler != null)
+            bool sendSms = true;
+            if (_handler != null)
             {
-                log.InfoFormat("send a new message, content:{0}, target mobile:{1},SmsFromat:{2}", content, mobile,type.ToString());
-                result = handler.OnSending(mobile, content, type);
+                log.InfoFormat("send a new message, content:{0}, target mobile:{1},SmsFromat:{2}", content, mobile, type);
+                sendSms = _handler.OnSending(mobile, content, type);
             }
-            if (result)
+            if (sendSms)
             {
-                ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Send(mobile, content, type), _service);
+                ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Send(mobile, content, type), _service);
             }
         }
 
@@ -47,19 +48,19 @@ namespace Qi.Sms.Remotes
         public void Delete(int smsIndex)
         {
             log.InfoFormat("Delete sms, index is smsIndex.");
-            ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Delete(smsIndex), _service);
+            ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Delete(smsIndex), _service);
         }
 
-        private void _service_NewSmsEvent(object sender, NewMessageEventHandlerArgs e)
+        private void ServiceNewSmsEvent(object sender, NewMessageEventHandlerArgs e)
         {
             try
             {
                 int index = e.SmsIndex;
                 ReceiveSms sms = _service.GetSms(index);
                 log.InfoFormat("Receive new sms,content:{0},Mobile{1}", sms.Content, sms.SendMobile);
-                if (handler != null)
+                if (_handler != null)
                 {
-                    if (!handler.OnReceived(sms))
+                    if (!_handler.OnReceived(sms))
                         Delete(e.SmsIndex);
                 }
             }

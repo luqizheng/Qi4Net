@@ -18,7 +18,7 @@ namespace Qi.Sms
                 throw new ArgumentNullException("connection");
 
             _deviceConnectin = connection;
-            _deviceConnectin.ReceivedEvent += _deviceConnectin_ReceivedEvent;
+            _deviceConnectin.ReceivedEvent += DeviceConnectinReceivedEvent;
         }
 
         public string ServiceCenterNumber { get; set; }
@@ -45,7 +45,7 @@ namespace Qi.Sms
         }
 
 
-        private void _deviceConnectin_ReceivedEvent(object sender, DeviceCommandEventHandlerArgs e)
+        private void DeviceConnectinReceivedEvent(object sender, DeviceCommandEventHandlerArgs e)
         {
             var cmd = new CmtiCommand();
             if (cmd.Init(e.Command))

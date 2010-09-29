@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
 
 namespace Qi.Sms.Remotes
 {
@@ -10,18 +7,12 @@ namespace Qi.Sms.Remotes
     {
         public static string PortName
         {
-            get
-            {
-                return ConfigurationManager.AppSettings["SMS_PORT_Name"] ?? "COM1";
-            }
+            get { return ConfigurationManager.AppSettings["SMS_PORT_Name"] ?? "COM1"; }
         }
 
         public static int BaudRate
         {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["SMS_BaudRate"] ?? "38400");
-            }
+            get { return Convert.ToInt32(ConfigurationManager.AppSettings["SMS_BaudRate"] ?? "38400"); }
         }
 
         public static ISmsHandler SmsHandler
@@ -30,12 +21,12 @@ namespace Qi.Sms.Remotes
             {
                 if (ConfigurationManager.AppSettings["SMS_Handler"] != null)
                 {
-                    var s = Activator.CreateInstance(Type.GetType(ConfigurationManager.AppSettings["SMS_Handler"]));
-                    return (ISmsHandler)s;
+                    object s = Activator.CreateInstance(Type.GetType(ConfigurationManager.AppSettings["SMS_Handler"]));
+                    var result = s as ISmsHandler;
+                    return result;
                 }
                 return null;
             }
-
         }
     }
 }

@@ -30,6 +30,7 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.ButtonSend = new System.Windows.Forms.Button();
             this.textBoxCommandLine = new System.Windows.Forms.TextBox();
@@ -41,7 +42,6 @@
             this.comboBoxBIT = new System.Windows.Forms.ComboBox();
             this.comboBoxCOMList = new System.Windows.Forms.ComboBox();
             this.ButtonConnect = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -65,22 +65,32 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 21);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(598, 138);
+            this.tabPage1.Size = new System.Drawing.Size(598, 137);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "BaseCommand";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(8, 6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Delete All Message";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.ButtonSend);
             this.tabPage2.Controls.Add(this.textBoxCommandLine);
-            this.tabPage2.Location = new System.Drawing.Point(4, 21);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(598, 138);
+            this.tabPage2.Size = new System.Drawing.Size(598, 137);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "AT Commander";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -160,6 +170,7 @@
             this.comboBoxBIT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxBIT.FormattingEnabled = true;
             this.comboBoxBIT.Items.AddRange(new object[] {
+            "9600",
             "38400",
             "57600"});
             this.comboBoxBIT.Location = new System.Drawing.Point(131, 15);
@@ -172,7 +183,15 @@
             this.comboBoxCOMList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCOMList.FormattingEnabled = true;
             this.comboBoxCOMList.Items.AddRange(new object[] {
-            "COM1"});
+            "COM1",
+            "COM2",
+            "COM3",
+            "COM4",
+            "COM5",
+            "COM6",
+            "COM7",
+            "COM8",
+            "COM9"});
             this.comboBoxCOMList.Location = new System.Drawing.Point(3, 15);
             this.comboBoxCOMList.Name = "comboBoxCOMList";
             this.comboBoxCOMList.Size = new System.Drawing.Size(121, 20);
@@ -188,17 +207,7 @@
             this.ButtonConnect.UseVisualStyleBackColor = true;
             this.ButtonConnect.Click += new System.EventHandler(this.ButtonConnect_Click_1);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(8, 6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Delete All Message";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -206,7 +215,7 @@
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Sms控制台";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);

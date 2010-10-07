@@ -19,12 +19,16 @@ namespace Qi.Sms.Remotes
         {
             get
             {
+
                 if (ConfigurationManager.AppSettings["SMS_Handler"] != null)
                 {
-                    object s = Activator.CreateInstance(Type.GetType(ConfigurationManager.AppSettings["SMS_Handler"]));
+                    object s =
+                        Activator.CreateInstance(Type.GetType(ConfigurationManager.AppSettings["SMS_Handler"]));
                     var result = s as ISmsHandler;
                     return result;
                 }
+
+
                 return null;
             }
         }

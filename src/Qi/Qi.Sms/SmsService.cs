@@ -75,7 +75,7 @@ namespace Qi.Sms
 
         public void Send(string phone, string sms, SmsFormat format)
         {
-            lock (typeof(SmsService))
+            lock (typeof (SmsService))
             {
                 MakeSureConnection();
                 sms = sms.Replace("\r\n", "");
@@ -83,7 +83,7 @@ namespace Qi.Sms
                 string[] contentSet = CutMessageFromContent(sms);
                 for (int i = 0; i < contentSet.Length; i++)
                 {
-                    var content = contentSet[i];
+                    string content = contentSet[i];
                     var messageFromat = new SetSmsFromatCommand(format);
                     Send(messageFromat);
 
@@ -91,7 +91,6 @@ namespace Qi.Sms
 
                     if (format == SmsFormat.Pdu)
                     {
-
                         var info = new SmsInfo(ServiceCenterNumber, phone, content);
                         int smsLen = 0;
                         content = info.EncodingSMS(out smsLen);
@@ -105,7 +104,7 @@ namespace Qi.Sms
                     Send(cmgsCommand);
                     var directCommand = new SendContent
                                             {
-                                                Content = string.Format("{0}{1}", content, (char)26)
+                                                Content = string.Format("{0}{1}", content, (char) 26)
                                             };
                     Send(directCommand);
                     Thread.Sleep(1000);
@@ -127,8 +126,8 @@ namespace Qi.Sms
             if (SendingEvent != null)
                 SendingEvent(this, new CommandEventHandlerArgs(command));
 
-            var value = _deviceConnectin.Send(command);
-            var result = (AbstractCommand)command.Clone();
+            string value = _deviceConnectin.Send(command);
+            var result = (AbstractCommand) command.Clone();
             result.Init(value);
             OnReceivedEvent(result);
             return result;
@@ -136,7 +135,7 @@ namespace Qi.Sms
 
         public ReceiveSms GetSms(int position)
         {
-            var cmglCommand = (CmgrCommand)Send(new CmgrCommand { MessageIndex = position });
+            var cmglCommand = (CmgrCommand) Send(new CmgrCommand {MessageIndex = position});
             return new ReceiveSms
                        {
                            Content = cmglCommand.Content,
@@ -164,13 +163,13 @@ namespace Qi.Sms
         public string GetServicePhone()
         {
             MakeSureConnection();
-            var result = (CscaCommand)Send(new CscaCommand());
+            var result = (CscaCommand) Send(new CscaCommand());
             return result.ServiceCenterNumber;
         }
 
         public bool Delete(int i)
         {
-            return Send(new DeleteSms { SmsIndex = i }).Success;
+            return Send(new DeleteSms {SmsIndex = i}).Success;
         }
     }
 }

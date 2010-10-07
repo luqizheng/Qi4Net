@@ -12,12 +12,12 @@ namespace Qi.Sms.ConsoleTest
         {
             try
             {
-                var conn = new ComConnection("COM3", 38400);
+                var conn = new ComConnection("COM8", 9600);
                 var service = new SmsService(conn);
                 service.ServiceCenterNumber = service.GetServicePhone();
                 ThreadPool.QueueUserWorkItem(MultiSend1, service);
-                ThreadPool.QueueUserWorkItem(MultiSend2, service);
-                ThreadPool.QueueUserWorkItem(MultiSend3, service);
+                //ThreadPool.QueueUserWorkItem(MultiSend2, service);
+                //ThreadPool.QueueUserWorkItem(MultiSend3, service);
             }
             catch (Exception ex)
             {
@@ -33,15 +33,16 @@ namespace Qi.Sms.ConsoleTest
         {
             var sender = (SmsService) state;
             var sb = new StringBuilder();
-            for (int i = 0; i < 210; i++)
+            for (int i = 0; i < 141; i++)
             {
                 sb.Append("一");
             }
-            sender.Send("13532290006", sb.ToString(), SmsFormat.Pdu);
+            sender.Send("8613532290006", sb.ToString(), SmsFormat.Pdu);
         }
+
         public static void MultiSend2(object state)
         {
-            var sender = (SmsService)state;
+            var sender = (SmsService) state;
             var sb = new StringBuilder();
             for (int i = 0; i < 210; i++)
             {
@@ -49,9 +50,10 @@ namespace Qi.Sms.ConsoleTest
             }
             sender.Send("13532290006", sb.ToString(), SmsFormat.Pdu);
         }
+
         public static void MultiSend3(object state)
         {
-            var sender = (SmsService)state;
+            var sender = (SmsService) state;
             var sb = new StringBuilder();
             for (int i = 0; i < 210; i++)
             {

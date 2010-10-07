@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 
 namespace Qi.Sms.Protocol
 {
     public class DirectCommand : AbstractCommand
     {
-        string _command;
-        public DirectCommand(string command)
+        private readonly string _command;
+
+        public DirectCommand()
         {
-            this._command = command;
-            this.TimeSleep = 500;
+            TimeSleep = 500;
         }
 
-        public int TimeSleep
+        public DirectCommand(string command)
         {
-            get;
-            set;
+            _command = command;
+            TimeSleep = 500;
         }
+
+        public int TimeSleep { get; set; }
 
 
         public override string Command
@@ -34,7 +32,7 @@ namespace Qi.Sms.Protocol
 
         public override string CompleteCommand()
         {
-            Thread.Sleep(this.TimeSleep);
+            Thread.Sleep(TimeSleep);
             return Command;
         }
     }

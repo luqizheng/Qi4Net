@@ -64,8 +64,6 @@ namespace Qi.Sms.Protocol.Encodes
             string t = s.Substring(0, 2) + "-" + s.Substring(2, 2) + "-" + s.Substring(4, 2) + "-" + s.Substring(6, 2) +
                        ":" + s.Substring(8, 2) + ":" + s.Substring(10, 2);
             return DateTime.Parse(t);
-
-            
         }
 
         ///   <summary>     

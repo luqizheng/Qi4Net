@@ -19,7 +19,7 @@ namespace Qi.Sms.DeviceConnections
         {
             if (portName == null)
                 throw new ArgumentNullException("portName");
-            portName = portName;
+            this.PortName = portName;
             BaudRate = baudRate;
             _serialPort = new SerialPort(portName, BaudRate, Parity.None, 8, StopBits.One)
                               {
@@ -78,13 +78,13 @@ namespace Qi.Sms.DeviceConnections
         public bool IsConnected { get; private set; }
         public void Send(string command)
         {
-            
+
             _log.Debug("Send:" + command);
             _serialPort.WriteLine(command + "\r\n");
         }
         public string Send(AbstractCommand command)
         {
-            
+
             if (SendingEvent != null)
                 SendingEvent(this, new DeviceCommandEventHandlerArgs(command.CompleteCommand()));
             _log.InfoFormat("send command {0}\r\n", command);

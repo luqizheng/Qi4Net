@@ -49,6 +49,7 @@ namespace Qi.Sms
         /// </summary>
         public void SetSmsAutoRecieve()
         {
+            MakeSureConnection();
             _deviceConnectin.Send(new CNMICommand
                                       {
                                           NotifyMode = NotifyMode.Cache,

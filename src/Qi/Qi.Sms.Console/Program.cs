@@ -18,10 +18,10 @@ namespace Qi.Sms.ConsoleTest
             try
             {
                 // _log.Info("Start Sms Service");
-
+                RemotePrivoder.SmsProvider=new SmsProvider();
                 var _smsChannel = new TcpChannel(Configuration.Remoteing.Port);
                 ChannelServices.RegisterChannel(_smsChannel, false);
-                RemotingConfiguration.RegisterWellKnownServiceType(typeof(SmsProvider),
+                RemotingConfiguration.RegisterWellKnownServiceType(typeof(RemotePrivoder),
                                                                    Configuration.Remoteing.ServiceName,
                                                                    WellKnownObjectMode.Singleton);
             }

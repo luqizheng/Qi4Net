@@ -12,7 +12,7 @@ namespace Qi.Sms.Protocol.SendCommands
 
         public int SmsIndex { get; set; }
 
-        protected override bool InitContent(string content)
+        public override bool Init(string content)
         {
             //+CMTI: "SM",1
             bool result = content.Contains("+CMTI:");
@@ -23,6 +23,11 @@ namespace Qi.Sms.Protocol.SendCommands
 
             }
             return result;
+        }
+
+        protected override bool InitContent(string content)
+        {
+            return true;
         }
     }
 }

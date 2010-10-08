@@ -7,23 +7,29 @@ using Qi.Sms.Protocol.SendCommands;
 
 namespace Qi.Sms.Remotes.Providers
 {
-    public class SmsProvider : MarshalByRefObject, ISmsProvider, IDisposable
+    public class SmsProvider : ISmsProvider, IDisposable
     {
-        public static readonly SmsProvider Instance = new SmsProvider();
         private readonly ISmsHandler _handler;
         private readonly ILog _log;
         private readonly SmsService _service;
 
         public SmsProvider()
         {
-            var com = new ComConnection(Configuration.PortName, Configuration.BaudRate);
-            _handler = Configuration.SmsHandler;
-            if (_handler != null)
-                _handler.Priovider = this;
-            _service = new SmsService(com);
-            _service.ReceiveSmsEvent += ServiceNewSmsEvent;
-            _log = LogManager.GetLogger(GetType());
-            _service.SetSmsAutoRecieve();
+            try
+            {
+                var com = new ComConnection(Configuration.PortName, Configuration.BaudRate);
+                _handler = Configuration.SmsHandler;
+                if (_handler != null)
+                    _handler.Priovider = this;
+                _service = new SmsService(com);
+                _service.ReceiveSmsEvent += ServiceNewSmsEvent;
+                _log = LogManager.GetLogger(GetType());
+                _service.SetSmsAutoRecieve();
+            }
+            catch(Exception ex)
+            {
+                _log.Error("Ini error.", ex);
+            }
         }
 
         #region IDisposable Members
@@ -82,7 +88,10 @@ namespace Qi.Sms.Remotes.Providers
                 if (_handler != null)
                 {
                     if (!_handler.OnReceived(sms))
+                    {
+                        Thread.Sleep(1000);
                         Delete(e.SmsIndex);
+                    }
                 }
             }
             catch (Exception ex)

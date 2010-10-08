@@ -28,8 +28,8 @@ namespace Qi.Sms.WinService
         {
             try
             {
+                RemotePrivoder.SmsProvider=new SmsProvider();
                 _log.Info("Start Sms Service");
-
                 _smsChannel = new TcpChannel(Configuration.Remoteing.Port);
                 ChannelServices.RegisterChannel(_smsChannel, false);
                 RemotingConfiguration.RegisterWellKnownServiceType(typeof(RemotePrivoder),

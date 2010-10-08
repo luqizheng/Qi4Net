@@ -7,12 +7,12 @@ using Qi.Sms.Protocol.SendCommands;
 
 namespace Qi.Sms.Remotes.Providers
 {
-    public class SmsProvider : MarshalByRefObject, ISmsProvider
+    public class SmsProvider : MarshalByRefObject, ISmsProvider, IDisposable
     {
         public static readonly SmsProvider Instance = new SmsProvider();
         private readonly ISmsHandler _handler;
-        private readonly SmsService _service;
         private readonly ILog _log;
+        private readonly SmsService _service;
 
         public SmsProvider()
         {
@@ -22,6 +22,15 @@ namespace Qi.Sms.Remotes.Providers
             _service.ReceiveSmsEvent += ServiceNewSmsEvent;
             _log = LogManager.GetLogger(GetType());
         }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            _service.Dispose();
+        }
+
+        #endregion
 
         #region ISmsProvider Members
 
@@ -38,7 +47,7 @@ namespace Qi.Sms.Remotes.Providers
                 }
                 if (sendSms)
                 {
-                    ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Send(mobile, content, type), _service);
+                    ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Send(mobile, content, type), _service);
                 }
             }
             catch (Exception ex)
@@ -55,7 +64,7 @@ namespace Qi.Sms.Remotes.Providers
         public void Delete(int smsIndex)
         {
             _log.InfoFormat("Delete sms, index is smsIndex.");
-            ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Delete(smsIndex), _service);
+            ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Delete(smsIndex), _service);
         }
 
         #endregion

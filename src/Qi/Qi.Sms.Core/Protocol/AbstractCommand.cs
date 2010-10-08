@@ -75,12 +75,12 @@ namespace Qi.Sms.Protocol
             if (command.ToUpper().Contains("OK"))
             {
                 Success = true;
-                return true;
+                return InitContent(command);
             }
-            else if (Command.ToUpper().Contains("ERROR"))
+            else if (command.ToUpper().Contains("ERROR"))
             {
                 Success = false;
-                return true;
+                return InitContent(command);
             }
             else
             {

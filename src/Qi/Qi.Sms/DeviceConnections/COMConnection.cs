@@ -10,14 +10,14 @@ namespace Qi.Sms.DeviceConnections
     public sealed class ComConnection : IDeviceConnection
     {
         private readonly object _lockItem = "";
-        private readonly ILog _log = LogManager.GetLogger(typeof (ComConnection));
+        private readonly ILog _log = LogManager.GetLogger(typeof(ComConnection));
         private readonly SerialPort _serialPort;
         private bool _hasReturnValue;
         private StringBuilder _returnValue;
 
         public ComConnection(string portName, int baudRate)
         {
-            if (portName == null) 
+            if (portName == null)
                 throw new ArgumentNullException("portName");
             portName = portName;
             BaudRate = baudRate;
@@ -76,9 +76,15 @@ namespace Qi.Sms.DeviceConnections
 
 
         public bool IsConnected { get; private set; }
-
+        public void Send(string command)
+        {
+            
+            _log.Debug("Send:" + command);
+            _serialPort.WriteLine(command + "\r\n");
+        }
         public string Send(AbstractCommand command)
         {
+            
             if (SendingEvent != null)
                 SendingEvent(this, new DeviceCommandEventHandlerArgs(command.CompleteCommand()));
             _log.InfoFormat("send command {0}\r\n", command);
@@ -125,7 +131,7 @@ namespace Qi.Sms.DeviceConnections
 
         private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            var serialPort = (SerialPort) sender;
+            var serialPort = (SerialPort)sender;
             var result = new StringBuilder();
             while (serialPort.BytesToRead > 0)
             {
@@ -146,6 +152,7 @@ namespace Qi.Sms.DeviceConnections
 
         public void OnReceiveEvent(string command)
         {
+            _log.Debug("Receive:" + command);
             if (ReceivedEvent != null)
             {
                 ThreadPool.QueueUserWorkItem(e => ReceivedEvent(this, new DeviceCommandEventHandlerArgs(command)));

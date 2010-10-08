@@ -15,10 +15,9 @@ namespace Qi.Sms.ConsoleTest
     {
         private static void Main(string[] args)
         {
-
             try
             {
-               // _log.Info("Start Sms Service");
+                // _log.Info("Start Sms Service");
 
                 var _smsChannel = new TcpChannel(Configuration.Remoteing.Port);
                 ChannelServices.RegisterChannel(_smsChannel, false);
@@ -28,20 +27,28 @@ namespace Qi.Sms.ConsoleTest
             }
             catch (DeviceConnectionException ex)
             {
-               // _log.Error("Start sms service have error", ex);
+                // _log.Error("Start sms service have error", ex);
             }
             catch (Exception ex)
             {
-               // _log.Error("Start sms service have error", ex);
+                // _log.Error("Start sms service have error", ex);
                 Thread.Sleep(1000);
             }
-
+            //var conn = new ComConnection("COM8", 9600);
+            //conn.Open();
             //try
             //{
-            //    var conn = new ComConnection("COM8", 9600);
-            //    var service = new SmsService(conn);
-            //    service.ServiceCenterNumber = service.GetServicePhone();
-            //    ThreadPool.QueueUserWorkItem(MultiSend1, service);
+
+
+            //    while (true)
+            //    {
+            //        string command = Console.ReadLine();
+            //        //var com = new Protocol.SendCommands.SetSmsFromatCommand(SmsFormat.Pdu);
+            //        conn.Send(command);
+            //    }
+            //    //var service = new SmsService(conn);
+            //    //service.ServiceCenterNumber = service.GetServicePhone();
+            //    //ThreadPool.QueueUserWorkItem(MultiSend1, service);
             //    //ThreadPool.QueueUserWorkItem(MultiSend2, service);
             //    //ThreadPool.QueueUserWorkItem(MultiSend3, service);
             //}
@@ -50,6 +57,10 @@ namespace Qi.Sms.ConsoleTest
             //    Exception exx = ex;
             //    Console.Read();
             //}
+            //finally
+            //{
+            //    conn.Close();
+            //}
             Console.Read();
             Console.Read();
             Console.Read();
@@ -57,7 +68,7 @@ namespace Qi.Sms.ConsoleTest
 
         public static void MultiSend1(object state)
         {
-            var sender = (SmsService) state;
+            var sender = (SmsService)state;
             var sb = new StringBuilder();
             for (int i = 0; i < 141; i++)
             {
@@ -68,7 +79,7 @@ namespace Qi.Sms.ConsoleTest
 
         public static void MultiSend2(object state)
         {
-            var sender = (SmsService) state;
+            var sender = (SmsService)state;
             var sb = new StringBuilder();
             for (int i = 0; i < 210; i++)
             {
@@ -79,7 +90,7 @@ namespace Qi.Sms.ConsoleTest
 
         public static void MultiSend3(object state)
         {
-            var sender = (SmsService) state;
+            var sender = (SmsService)state;
             var sb = new StringBuilder();
             for (int i = 0; i < 210; i++)
             {

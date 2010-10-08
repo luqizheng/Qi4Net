@@ -23,7 +23,17 @@ namespace Qi.Sms
             _deviceConnectin.ReceivedEvent += DeviceConnectinReceivedEvent;
         }
 
-        public string ServiceCenterNumber { get; set; }
+        private string _serviceCenterNumber;
+        public string ServiceCenterNumber
+        {
+            get
+            {
+                if (_serviceCenterNumber == null)
+                    _serviceCenterNumber = GetServicePhone();
+                return _serviceCenterNumber;
+            }
+            set { _serviceCenterNumber = value; }
+        }
 
         #region IDisposable Members
 

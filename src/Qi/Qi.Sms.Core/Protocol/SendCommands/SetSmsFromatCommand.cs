@@ -40,9 +40,7 @@ namespace Qi.Sms.Protocol.SendCommands
 
         protected override bool InitContent(string content)
         {
-            if (content.Contains(this.ToString()) && content.Contains("OK"))
-                return true;
-            return false;
+            return true;
         }
     }
 }

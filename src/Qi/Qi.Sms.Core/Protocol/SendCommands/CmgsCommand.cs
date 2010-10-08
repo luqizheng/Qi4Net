@@ -1,4 +1,6 @@
-﻿namespace Qi.Sms.Protocol.SendCommands
+﻿using System;
+
+namespace Qi.Sms.Protocol.SendCommands
 {
     public class CmgsCommand : AtCommand
     {
@@ -18,9 +20,16 @@
             set { Arguments[0] = value; }
         }
 
+        public override bool Init(string command)
+        {
+            var a = command.Contains(">");
+            Success = a;
+            return a;
+        }
+
         protected override bool InitContent(string content)
         {
-            return content.Contains("AT+CMGS") && content.Contains(Argument) && content.Contains(">");
+            return false;
         }
     }
 }

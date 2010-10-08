@@ -11,8 +11,6 @@ namespace Qi.Sms.Protocol.SendCommands
 
         protected override bool InitContent(string content)
         {
-            if (!content.Contains(Command))
-                return false;
             return true;
         }
         public int SmsIndex

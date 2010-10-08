@@ -4,6 +4,8 @@ namespace Qi.Sms.Remotes
 {
     public interface ISmsHandler
     {
+        ISmsProvider Priovider { get; set; }
+
         /// <summary>
         /// 收到短信的时候，返回true表示保留短信，返回false表示删除短信。
         /// </summary>

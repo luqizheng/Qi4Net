@@ -56,6 +56,7 @@
     <Compile Include="Protocol\SmsEncodes\AbstractEncoder.cs" />
     <Compile Include="Protocol\SmsEncodes\Chinese\ChinaMobileEncoder.cs" />
     <Compile Include="Protocol\SmsEncodes\ChineseSms.cs" />
+    <Compile Include="Remotes\ISmsHandler.cs" />
     <Compile Include="Remotes\ISmsProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\AbstractCommand.cs" />

@@ -18,6 +18,8 @@ namespace Qi.Sms.Remotes.Providers
         {
             var com = new ComConnection(Configuration.PortName, Configuration.BaudRate);
             _handler = Configuration.SmsHandler;
+            if (_handler != null)
+                _handler.Priovider = this;
             _service = new SmsService(com);
             _service.ReceiveSmsEvent += ServiceNewSmsEvent;
             _log = LogManager.GetLogger(GetType());
@@ -47,7 +49,7 @@ namespace Qi.Sms.Remotes.Providers
                 }
                 if (sendSms)
                 {
-                    ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Send(mobile, content, type), _service);
+                    ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Send(mobile, content, type), _service);
                 }
             }
             catch (Exception ex)
@@ -64,7 +66,7 @@ namespace Qi.Sms.Remotes.Providers
         public void Delete(int smsIndex)
         {
             _log.InfoFormat("Delete sms, index is smsIndex.");
-            ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Delete(smsIndex), _service);
+            ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Delete(smsIndex), _service);
         }
 
         #endregion

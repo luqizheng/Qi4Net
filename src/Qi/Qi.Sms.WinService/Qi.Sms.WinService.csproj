@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{61CFFFED-7159-4B3C-9160-BBAE1DDF262D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{90B2976F-D9E0-4248-B9E2-508934E02F1A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Qi.Sms.ConsoleTest</RootNamespace>
-    <AssemblyName>Qi.Sms.ConsoleTest</AssemblyName>
+    <RootNamespace>Qi.Sms.WinService</RootNamespace>
+    <AssemblyName>Qi.Sms.WinService</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,9 +36,11 @@
       <HintPath>..\..\..\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -47,12 +49,32 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QiSmsService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="QiSmsService.Designer.cs">
+      <DependentUpon>QiSmsService.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="QiSmsService.resx">
+      <DependentUpon>QiSmsService.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Qi.Sms.Core\Qi.Sms.Core.csproj">
@@ -62,6 +84,10 @@
     <ProjectReference Include="..\Qi.Sms\Qi.Sms.csproj">
       <Project>{1E17A7C3-7946-416B-9208-D03C92A5DF6E}</Project>
       <Name>Qi.Sms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Qi\Qi.csproj">
+      <Project>{109EBD31-85C7-45C9-A850-EF3457055670}</Project>
+      <Name>Qi</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

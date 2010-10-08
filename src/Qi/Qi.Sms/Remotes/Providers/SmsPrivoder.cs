@@ -1,44 +1,51 @@
 ﻿using System;
 using System.Threading;
 using log4net;
+using Qi.Sms.Config;
 using Qi.Sms.DeviceConnections;
 using Qi.Sms.Protocol.SendCommands;
 
-namespace Qi.Sms.Remotes
+namespace Qi.Sms.Remotes.Providers
 {
-    public class SmsProvider : ISmsProvider
+    public class SmsProvider : MarshalByRefObject, ISmsProvider
     {
         public static readonly SmsProvider Instance = new SmsProvider();
         private readonly ISmsHandler _handler;
         private readonly SmsService _service;
-        private readonly ILog log;
+        private readonly ILog _log;
 
-        private SmsProvider()
+        public SmsProvider()
         {
             var com = new ComConnection(Configuration.PortName, Configuration.BaudRate);
             _handler = Configuration.SmsHandler;
             _service = new SmsService(com);
             _service.ReceiveSmsEvent += ServiceNewSmsEvent;
-            log = LogManager.GetLogger(GetType());
+            _log = LogManager.GetLogger(GetType());
         }
 
         #region ISmsProvider Members
 
         public void Send(string mobile, string content, SmsFormat type)
         {
-            bool sendSms = true;
-            if (_handler != null)
+            try
             {
-                log.InfoFormat("send a new message, content:{0}, target mobile:{1},SmsFromat:{2}", content, mobile, type);
-                sendSms = _handler.OnSending(mobile, content, type);
+                bool sendSms = true;
+                if (_handler != null)
+                {
+                    _log.InfoFormat("send a new message, content:{0}, target mobile:{1},SmsFromat:{2}", content, mobile,
+                                    type);
+                    sendSms = _handler.OnSending(mobile, content, type);
+                }
+                if (sendSms)
+                {
+                    ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Send(mobile, content, type), _service);
+                }
             }
-            if (sendSms)
+            catch (Exception ex)
             {
-                ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Send(mobile, content, type), _service);
+                _log.Error("Send sms fail.", ex);
             }
         }
-
-        #endregion
 
         public ReceiveSms GetSms(int index)
         {
@@ -47,9 +54,11 @@ namespace Qi.Sms.Remotes
 
         public void Delete(int smsIndex)
         {
-            log.InfoFormat("Delete sms, index is smsIndex.");
-            ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Delete(smsIndex), _service);
+            _log.InfoFormat("Delete sms, index is smsIndex.");
+            ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Delete(smsIndex), _service);
         }
+
+        #endregion
 
         private void ServiceNewSmsEvent(object sender, NewMessageEventHandlerArgs e)
         {
@@ -57,7 +66,7 @@ namespace Qi.Sms.Remotes
             {
                 int index = e.SmsIndex;
                 ReceiveSms sms = _service.GetSms(index);
-                log.InfoFormat("Receive new sms,content:{0},Mobile{1}", sms.Content, sms.SendMobile);
+                _log.InfoFormat("Receive new sms,content:{0},Mobile{1}", sms.Content, sms.SendMobile);
                 if (_handler != null)
                 {
                     if (!_handler.OnReceived(sms))
@@ -66,7 +75,7 @@ namespace Qi.Sms.Remotes
             }
             catch (Exception ex)
             {
-                log.Error("Get a new message ,but found the error.", ex);
+                _log.Error("Get a new message ,but found the error.", ex);
                 Delete(e.SmsIndex);
                 throw;
             }

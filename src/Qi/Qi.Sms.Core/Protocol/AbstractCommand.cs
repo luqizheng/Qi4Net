@@ -7,7 +7,7 @@ using Qi.Sms.Protocol.SendCommands;
 
 namespace Qi.Sms.Protocol
 {
-    public abstract class AbstractCommand: ICloneable
+    public abstract class AbstractCommand : ICloneable
     {
         private static readonly IList<AbstractCommand> CommandSet = new List<AbstractCommand>();
 
@@ -46,9 +46,9 @@ namespace Qi.Sms.Protocol
         /// Command is ok?
         /// </summary>
         public bool Success { get; set; }
-     
 
-       
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -64,7 +64,7 @@ namespace Qi.Sms.Protocol
             return result;
         }
 
-       
+
         /// <summary>
         /// 
         /// </summary>
@@ -72,8 +72,21 @@ namespace Qi.Sms.Protocol
         /// <returns></returns>
         public virtual bool Init(string command)
         {
-            Success = command.Contains("OK");
-            return InitContent(command);
+            if (command.ToUpper().Contains("OK"))
+            {
+                Success = true;
+                return true;
+            }
+            else if (Command.ToUpper().Contains("ERROR"))
+            {
+                Success = false;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
         /// <summary>
         /// 

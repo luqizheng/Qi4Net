@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Tcp;
 using System.Text;
 using System.Threading;
+using Qi.Sms.Config;
 using Qi.Sms.DeviceConnections;
 using Qi.Sms.Protocol.SendCommands;
+using Qi.Sms.Remotes.Providers;
 
 namespace Qi.Sms.ConsoleTest
 {
@@ -10,20 +15,41 @@ namespace Qi.Sms.ConsoleTest
     {
         private static void Main(string[] args)
         {
+
             try
             {
-                var conn = new ComConnection("COM8", 9600);
-                var service = new SmsService(conn);
-                service.ServiceCenterNumber = service.GetServicePhone();
-                ThreadPool.QueueUserWorkItem(MultiSend1, service);
-                //ThreadPool.QueueUserWorkItem(MultiSend2, service);
-                //ThreadPool.QueueUserWorkItem(MultiSend3, service);
+               // _log.Info("Start Sms Service");
+
+                var _smsChannel = new TcpChannel(Configuration.Remoteing.Port);
+                ChannelServices.RegisterChannel(_smsChannel, false);
+                RemotingConfiguration.RegisterWellKnownServiceType(typeof(SmsProvider),
+                                                                   Configuration.Remoteing.ServiceName,
+                                                                   WellKnownObjectMode.Singleton);
+            }
+            catch (DeviceConnectionException ex)
+            {
+               // _log.Error("Start sms service have error", ex);
             }
             catch (Exception ex)
             {
-                Exception exx = ex;
-                Console.Read();
+               // _log.Error("Start sms service have error", ex);
+                Thread.Sleep(1000);
             }
+
+            //try
+            //{
+            //    var conn = new ComConnection("COM8", 9600);
+            //    var service = new SmsService(conn);
+            //    service.ServiceCenterNumber = service.GetServicePhone();
+            //    ThreadPool.QueueUserWorkItem(MultiSend1, service);
+            //    //ThreadPool.QueueUserWorkItem(MultiSend2, service);
+            //    //ThreadPool.QueueUserWorkItem(MultiSend3, service);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Exception exx = ex;
+            //    Console.Read();
+            //}
             Console.Read();
             Console.Read();
             Console.Read();

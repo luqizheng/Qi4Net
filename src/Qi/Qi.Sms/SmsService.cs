@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using log4net.Config;
 using Qi.Sms.Protocol;
 using Qi.Sms.Protocol.Encodes;
 using Qi.Sms.Protocol.SendCommands;
+[assembly: XmlConfigurator(Watch = true)]
 
 namespace Qi.Sms
 {
@@ -73,9 +75,9 @@ namespace Qi.Sms
             return result.ToArray();
         }
 
-        public void Send(string phone, string sms, SmsFormat format)
+        public bool Send(string phone, string sms, SmsFormat format)
         {
-            lock (typeof (SmsService))
+            lock (typeof(SmsService))
             {
                 MakeSureConnection();
                 sms = sms.Replace("\r\n", "");
@@ -85,7 +87,9 @@ namespace Qi.Sms
                 {
                     string content = contentSet[i];
                     var messageFromat = new SetSmsFromatCommand(format);
-                    Send(messageFromat);
+                    var resultCommand = Send(messageFromat);
+                    if (!resultCommand.Success)
+                        return false;
 
                     var cmgsCommand = new CmgsCommand();
 
@@ -101,16 +105,22 @@ namespace Qi.Sms
                         cmgsCommand.Argument = phone;
                     }
 
-                    Send(cmgsCommand);
+                    resultCommand = Send(cmgsCommand);
+                    if (!resultCommand.Success)
+                        return false;
                     var directCommand = new SendContent
                                             {
-                                                Content = string.Format("{0}{1}", content, (char) 26)
+                                                Content = string.Format("{0}{1}", content, (char)26)
                                             };
-                    Send(directCommand);
+                    resultCommand = Send(directCommand);
+                    if (!resultCommand.Success)
+                        return false;
+
                     Thread.Sleep(1000);
                 }
                 Thread.Sleep(1000);
             }
+            return true;
         }
 
         private void MakeSureConnection()
@@ -127,7 +137,7 @@ namespace Qi.Sms
                 SendingEvent(this, new CommandEventHandlerArgs(command));
 
             string value = _deviceConnectin.Send(command);
-            var result = (AbstractCommand) command.Clone();
+            var result = (AbstractCommand)command.Clone();
             result.Init(value);
             OnReceivedEvent(result);
             return result;
@@ -135,7 +145,7 @@ namespace Qi.Sms
 
         public ReceiveSms GetSms(int position)
         {
-            var cmglCommand = (CmgrCommand) Send(new CmgrCommand {MessageIndex = position});
+            var cmglCommand = (CmgrCommand)Send(new CmgrCommand { MessageIndex = position });
             return new ReceiveSms
                        {
                            Content = cmglCommand.Content,
@@ -163,13 +173,13 @@ namespace Qi.Sms
         public string GetServicePhone()
         {
             MakeSureConnection();
-            var result = (CscaCommand) Send(new CscaCommand());
+            var result = (CscaCommand)Send(new CscaCommand());
             return result.ServiceCenterNumber;
         }
 
         public bool Delete(int i)
         {
-            return Send(new DeleteSms {SmsIndex = i}).Success;
+            return Send(new DeleteSms { SmsIndex = i }).Success;
         }
     }
 }

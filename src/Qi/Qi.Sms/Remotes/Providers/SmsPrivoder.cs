@@ -23,6 +23,7 @@ namespace Qi.Sms.Remotes.Providers
             _service = new SmsService(com);
             _service.ReceiveSmsEvent += ServiceNewSmsEvent;
             _log = LogManager.GetLogger(GetType());
+            _service.SetSmsAutoRecieve();
         }
 
         #region IDisposable Members

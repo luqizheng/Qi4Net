@@ -19,7 +19,13 @@ namespace Qi.Sms.Protocol
                     arguments = "?";
             }
 
-            return string.Format("AT+{0}{1}", Command, arguments);
+            return string.Format("AT+{0}{1}{2}", Command, arguments, CompleteSymblo);
         }
+
+        protected virtual string CompleteSymblo
+        {
+            get { return "\r\n"; }
+        }
+
     }
 }

@@ -74,7 +74,10 @@ namespace Qi.Sms.DeviceConnections
             }
         }
 
-
+        public SerialPort SerialPort
+        {
+            get { return _serialPort; }
+        }
         public bool IsConnected { get; private set; }
         public void Send(string command)
         {
@@ -90,7 +93,7 @@ namespace Qi.Sms.DeviceConnections
             _log.InfoFormat("send command {0}\r\n", command);
             lock (_lockItem)
             {
-                ThreadPool.QueueUserWorkItem(delegate { _serialPort.WriteLine(command + "\r\n"); });
+                ThreadPool.QueueUserWorkItem(delegate { _serialPort.WriteLine(command.CompleteCommand()); });
 
                 _returnValue = new StringBuilder();
                 DateTime now = DateTime.Now;

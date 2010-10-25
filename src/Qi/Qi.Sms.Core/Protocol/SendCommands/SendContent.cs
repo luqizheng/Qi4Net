@@ -16,7 +16,7 @@
 
         public override string CompleteCommand()
         {
-            return Content;
+            return string.Format("{0}\x01a", Content);;
         }
     }
 }

@@ -15,6 +15,8 @@ namespace Qi.Sms.ConsoleTest
     {
         private static void Main(string[] args)
         {
+            //Console.WriteLine(String.Format("\x01a"));
+            //Console.ReadLine();
             //try
             //{
             //    // _log.Info("Start Sms Service");
@@ -46,8 +48,11 @@ namespace Qi.Sms.ConsoleTest
                 //    //var com = new Protocol.SendCommands.SetSmsFromatCommand(SmsFormat.Pdu);
                 //    conn.Send(command);
                 //}
-                var service = new SmsService(conn);
-                service.ServiceCenterNumber = service.GetServicePhone();
+                var service = new SmsService(conn, "8613800756500");
+                //service.ChinaMobile = false;
+
+
+                //service.ServiceCenterNumber = "8613800756500";//service.GetServicePhone();
                 ThreadPool.QueueUserWorkItem(MultiSend1, service);
                 //ThreadPool.QueueUserWorkItem(MultiSend2, service);
                 //ThreadPool.QueueUserWorkItem(MultiSend3, service);
@@ -69,11 +74,8 @@ namespace Qi.Sms.ConsoleTest
         public static void MultiSend1(object state)
         {
             var sender = (SmsService)state;
-            var sb = new StringBuilder();
-            for (int i = 0; i < 135; i++)
-            {
-                sb.Append("一");
-            }
+            var sb = new StringBuilder("其实这是一个中文长短信的测试，这里有多少字，我其实也不知道，不过只要超过70个字符就可以了，所以就随便写写东西上去，如一二三，你知道我不知道但他知道的事情。");
+
             sender.Send("8613532290006", sb.ToString(), SmsFormat.Pdu);
         }
 

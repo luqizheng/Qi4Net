@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using log4net.Config;
 using Qi.Sms.Protocol;
@@ -13,7 +14,11 @@ namespace Qi.Sms
     {
         private readonly IDeviceConnection _deviceConnectin;
 
-
+        public SmsService(IDeviceConnection connection, string mobile)
+            : this(connection)
+        {
+            _serviceCenterNumber = mobile;
+        }
         public SmsService(IDeviceConnection connection)
         {
             ChinaMobile = true;
@@ -97,7 +102,8 @@ namespace Qi.Sms
                 string[] contentSet = CutMessageFromContent(sms);
                 if (ChinaMobile && contentSet.Length > 1)
                 {
-                    SendMobile(phone, sms, format);
+                    return SendMobile(phone, sms, format);
+
                 }
                 for (int i = 0; i < contentSet.Length; i++)
                 {
@@ -139,7 +145,7 @@ namespace Qi.Sms
             return true;
         }
 
-        private void SendMobile(string phone, string sms, SmsFormat format)
+        private bool SendMobile(string phone, string sms, SmsFormat format)
         {
             int rem = 0;
             var count = Math.DivRem(sms.Length, maxSmsLength, out rem);
@@ -147,31 +153,46 @@ namespace Qi.Sms
             {
                 count++;
             }
-           
+            var messageFromat = new SetSmsFromatCommand(format);
+            var resultCommand = Send(messageFromat);
+            if (!resultCommand.Success)
+                return false;
+            sms = PDUdecoding.EncodingOther(sms);
             for (int i = 0; i < count; i++)
             {
-                var messageFromat = new SetSmsFromatCommand(format);
-                var resultCommand = Send(messageFromat);
-                if(!resultCommand.Success)
-                    return;
+                //    string length;
+
+                //    var sendMessage = PDUdecoding.EncodingSMS(this.ServiceCenterNumber, phone, count, i+1, sms, out length);
+                //    var cmgs = new CmgsCommand { Argument = length };
+                //    resultCommand = Send(cmgs);
+                //    if (!resultCommand.Success)
+                //        return false;
+                //    var directCommand = new SendContent()
+                //                            {
+                //                                Content = sendMessage
+                //                            };
+                //    resultCommand = Send(directCommand);
+                //    if (!resultCommand.Success)
+                //        return false;
+
+                //    Thread.Sleep(1000);
+
+                //}
+
 
                 string length;
-                var sendMessage = PDUdecoding.EncodingSMS(this.ServiceCenterNumber, phone, sms, count, i, out length);
-                var cmgs = new CmgsCommand {Argument = length};
-                resultCommand=Send(cmgs);
-                if(!resultCommand.Success)
-                    return;
-                var directCommand = new SendContent()
-                                        {
-                                            Content = sendMessage
-                                        };
-                Send(directCommand);
-                if (!resultCommand.Success)
-                    return;
-
+                string msg = PDUdecoding.EncodingSMS(this.ServiceCenterNumber, phone, count, i + 1, sms, out length);
+                byte[] buf = Encoding.ASCII.GetBytes(String.Format("AT+CMGS={0}\r", length));
+                this._deviceConnectin.SerialPort.Write(buf, 0, buf.Length);
                 Thread.Sleep(1000);
+                buf = Encoding.ASCII.GetBytes(String.Format("{0}\x01a", msg));
+                this._deviceConnectin.SerialPort.Write(buf, 0, buf.Length);
 
             }
+
+
+
+            return true;
         }
 
         private void MakeSureConnection()

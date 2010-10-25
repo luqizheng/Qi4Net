@@ -148,6 +148,10 @@ namespace Qi.Sms.Protocol.Encodes
         /// <returns></returns>
         public static string EncodingSMS(string center, string phone, string content, int count, int i, out string length)
         {
+            if (center.StartsWith("+"))
+            {
+                center = center.Substring(1);
+            }
             if (content.Length <= PDUdecoding.MAX_CHAR_COUNT)
             {
                 return PDUdecoding.EncodingSMS(center, phone, content, out length);
@@ -170,23 +174,23 @@ namespace Qi.Sms.Protocol.Encodes
 
                 DateTime tm = DateTime.Now;
 
-                result = string.Format("{0}44000D91{1}0008{2}{3:X2}05000304{4:D2}{5:D2}{6}",
-                                        center,
-                                        DecodingPhone(phone),
-                                        ParityChange(string.Format("{0:X2}{1:X2}{2:X2}{3:X2}{4:X2}{5:X2}08", tm.Year - 2000, tm.Month, tm.Day, tm.Hour, tm.Minute, tm.Second)),
-                                        (content.Length + 12) / 2,
-                                        count,
-                                        i + 1,
-                                        content
-                                        );
-
-                //result = string.Format("005100{0}{1}0008A7{2:X2}05000304{3:D2}{4:D2}{5}",
+                //result = string.Format("{0}44000D91{1}0008{2}{3:X2}05000304{4:D2}{5:D2}{6}",
                 //                        center,
                 //                        DecodingPhone(phone),
+                //                        ParityChange(string.Format("{0:X2}{1:X2}{2:X2}{3:X2}{4:X2}{5:X2}08", tm.Year - 2000, tm.Month, tm.Day, tm.Hour, tm.Minute, tm.Second)),
                 //                        (content.Length + 12) / 2,
                 //                        count,
                 //                        i + 1,
-                //                        content);
+                //                        content
+                //                        );
+
+                result = string.Format("005100{0}{1}0008A7{2:X2}05000304{3:D2}{4:D2}{5}",
+                                        center,
+                                        DecodingPhone(phone),
+                                        (content.Length + 12) / 2,
+                                        count,
+                                        i + 1,
+                                        content);
 
                 length = String.Format("{0:D2}", result.Length / 2 - center.Length / 2);//获取短信内容加上手机号码长度
                 return result;

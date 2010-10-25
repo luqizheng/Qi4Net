@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO.Ports;
 using Qi.Sms.Protocol;
 
 namespace Qi.Sms
@@ -11,5 +12,6 @@ namespace Qi.Sms
         void Open();
         void Close();
         string Send(AbstractCommand command);
+        SerialPort SerialPort { get; }
     }
 }

@@ -36,7 +36,7 @@ namespace Qi.Sms.ConsoleTest
             //    // _log.Error("Start sms service have error", ex);
             //    Thread.Sleep(1000);
             //}
-            var conn = new ComConnection("COM3", 9600);
+            var conn = new ComConnection("COM3", 38400);
             conn.Open();
             try
             {

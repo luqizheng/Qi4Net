@@ -115,7 +115,7 @@ namespace Qi.Sms.DeviceConnections
                     }
                     Thread.Sleep(100);
                     TimeSpan span = DateTime.Now - now;
-                    if (span.Seconds > 5)
+                    if (span.Seconds > 10)
                     {
                         _log.InfoFormat("Send command timeout,and exit");
                         return ""; //throw new TimeoutException("Timeout {0} send fail.");

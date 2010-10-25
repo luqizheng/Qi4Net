@@ -160,33 +160,34 @@ namespace Qi.Sms
             sms = PDUdecoding.EncodingOther(sms);
             for (int i = 0; i < count; i++)
             {
-                //    string length;
-
-                //    var sendMessage = PDUdecoding.EncodingSMS(this.ServiceCenterNumber, phone, count, i+1, sms, out length);
-                //    var cmgs = new CmgsCommand { Argument = length };
-                //    resultCommand = Send(cmgs);
-                //    if (!resultCommand.Success)
-                //        return false;
-                //    var directCommand = new SendContent()
-                //                            {
-                //                                Content = sendMessage
-                //                            };
-                //    resultCommand = Send(directCommand);
-                //    if (!resultCommand.Success)
-                //        return false;
-
-                //    Thread.Sleep(1000);
-
-                //}
-
-
                 string length;
-                string msg = PDUdecoding.EncodingSMS(this.ServiceCenterNumber, phone, count, i + 1, sms, out length);
-                byte[] buf = Encoding.ASCII.GetBytes(String.Format("AT+CMGS={0}\r", length));
-                this._deviceConnectin.SerialPort.Write(buf, 0, buf.Length);
+
+                var sendMessage = PDUdecoding.EncodingSMS(this.ServiceCenterNumber, phone, count, i + 1, sms, out length);
+                var cmgs = new CmgsCommand { Argument = length };
+                resultCommand = Send(cmgs);
+                if (!resultCommand.Success)
+                    return false;
+                var directCommand = new SendContent()
+                                        {
+                                            Content = sendMessage
+                                        };
+                resultCommand = Send(directCommand);
+                if (!resultCommand.Success)
+                    return false;
+
                 Thread.Sleep(1000);
-                buf = Encoding.ASCII.GetBytes(String.Format("{0}\x01a", msg));
-                this._deviceConnectin.SerialPort.Write(buf, 0, buf.Length);
+
+
+
+
+                //string length;
+                //string msg = PDUdecoding.EncodingSMS(this.ServiceCenterNumber, phone, count, i + 1, sms, out length);
+                //byte[] buf = Encoding.ASCII.GetBytes(String.Format("AT+CMGS={0}\r", length));
+                //this._deviceConnectin.SerialPort.Write(buf, 0, buf.Length);
+                //Thread.Sleep(2000);
+                //buf = Encoding.ASCII.GetBytes(String.Format("{0}\x01a", msg));
+                //this._deviceConnectin.SerialPort.Write(buf, 0, buf.Length);
+                //Thread.Sleep(4000);
 
             }
 

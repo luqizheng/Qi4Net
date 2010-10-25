@@ -16,6 +16,7 @@ namespace Qi.Sms
 
         public SmsService(IDeviceConnection connection)
         {
+            ChinaMobile = true;
             if (connection == null)
                 throw new ArgumentNullException("connection");
 
@@ -66,16 +67,16 @@ namespace Qi.Sms
                 OnNewMessageEventHandlerArgs(cmd);
             }
         }
-
+        public bool ChinaMobile { get; set; }
         public event EventHandler<CommandEventHandlerArgs> SendingEvent;
         public event EventHandler<CommandEventHandlerArgs> ReceivedEvent;
         public event EventHandler<NewMessageEventHandlerArgs> ReceiveSmsEvent;
-
+        const int maxSmsLength = 70;
         public static string[] CutMessageFromContent(string message)
         {
             var result = new List<string>();
             int current = 0;
-            const int maxSmsLength = 70;
+
             while (current < message.Length)
             {
                 int end = current + maxSmsLength > message.Length ? message.Length - current : maxSmsLength;
@@ -94,6 +95,10 @@ namespace Qi.Sms
                 sms = sms.Replace("\r\n", "");
 
                 string[] contentSet = CutMessageFromContent(sms);
+                if (ChinaMobile && contentSet.Length > 1)
+                {
+                    SendMobile(phone, sms, format);
+                }
                 for (int i = 0; i < contentSet.Length; i++)
                 {
                     string content = contentSet[i];
@@ -132,6 +137,41 @@ namespace Qi.Sms
                 Thread.Sleep(1000);
             }
             return true;
+        }
+
+        private void SendMobile(string phone, string sms, SmsFormat format)
+        {
+            int rem = 0;
+            var count = Math.DivRem(sms.Length, maxSmsLength, out rem);
+            if (rem > 0)
+            {
+                count++;
+            }
+           
+            for (int i = 0; i < count; i++)
+            {
+                var messageFromat = new SetSmsFromatCommand(format);
+                var resultCommand = Send(messageFromat);
+                if(!resultCommand.Success)
+                    return;
+
+                string length;
+                var sendMessage = PDUdecoding.EncodingSMS(this.ServiceCenterNumber, phone, sms, count, i, out length);
+                var cmgs = new CmgsCommand {Argument = length};
+                resultCommand=Send(cmgs);
+                if(!resultCommand.Success)
+                    return;
+                var directCommand = new SendContent()
+                                        {
+                                            Content = sendMessage
+                                        };
+                Send(directCommand);
+                if (!resultCommand.Success)
+                    return;
+
+                Thread.Sleep(1000);
+
+            }
         }
 
         private void MakeSureConnection()

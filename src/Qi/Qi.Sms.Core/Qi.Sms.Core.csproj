@@ -52,6 +52,7 @@
     <Compile Include="CommandEventHandler.cs" />
     <Compile Include="IDeviceConnection.cs" />
     <Compile Include="Protocol\Encodes\ChinaCmppPduEncoding.cs" />
+    <Compile Include="Protocol\Encodes\USC2.cs" />
     <Compile Include="Protocol\IEncoder.cs" />
     <Compile Include="Protocol\SmsEncodes\AbstractEncoder.cs" />
     <Compile Include="Protocol\SmsEncodes\Chinese\ChinaMobileEncoder.cs" />

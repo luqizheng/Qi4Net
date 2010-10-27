@@ -57,7 +57,7 @@ namespace Qi.Sms.Remotes.Providers
                 }
                 if (sendSms)
                 {
-                    ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Send(mobile, content, type), _service);
+                    ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Send(mobile, content, type), _service);
                 }
             }
             catch (Exception ex)
@@ -73,8 +73,8 @@ namespace Qi.Sms.Remotes.Providers
 
         public void Delete(int smsIndex)
         {
-            _log.InfoFormat("Delete sms, index is smsIndex.");
-            ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Delete(smsIndex), _service);
+            _log.InfoFormat("Delete sms, index is {0}.", smsIndex);
+            ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Delete(smsIndex), _service);
         }
 
         #endregion

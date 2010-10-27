@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Configuration;
+using log4net;
 using Qi.Sms.Remotes;
 
 namespace Qi.Sms.Config
 {
     public static class Configuration
     {
+        private static ILog log = LogManager.GetLogger(typeof(Configuration));
         public static string PortName
         {
             get { return ConfigurationManager.AppSettings["SMS_PORT_NAME"] ?? "COM1"; }
@@ -22,11 +24,13 @@ namespace Qi.Sms.Config
             {
                 if (ConfigurationManager.AppSettings["SMS_Handler"] != null)
                 {
+                    log.Info("SMS_Handler is " + ConfigurationManager.AppSettings["SMS_Handler"]);
                     object s =
                         Activator.CreateInstance(Type.GetType(ConfigurationManager.AppSettings["SMS_Handler"]));
                     var result = s as ISmsHandler;
                     return result;
                 }
+                log.Info("Can't find SMS_Handler.");
                 return null;
             }
         }

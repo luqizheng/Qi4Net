@@ -1,40 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using log4net;
+using Qi.Sms.Protocol.SendCommands;
 
 namespace Qi.Sms.Remotes.Providers
 {
-    
     public class RemotePrivoder : MarshalByRefObject, ISmsProvider
     {
-        public static SmsProvider SmsProvider;
-        #region IDisposable Members
+        private ILog log;
 
-        public void Dispose()
+        public RemotePrivoder()
         {
-            SmsProvider.Dispose();
+            log = LogManager.GetLogger(this.GetType());
         }
 
-        #endregion
 
         #region ISmsProvider Members
 
-        public void Send(string mobile, string content, Qi.Sms.Protocol.SendCommands.SmsFormat type)
+        public void Send(string mobile, string content, SmsFormat type)
         {
-            SmsProvider.Send(mobile, content, type);
+            try
+            {
+                SmsProvider.Instance.Send(mobile, content, type);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message, ex);
+                throw;
+            }
         }
 
         public ReceiveSms GetSms(int index)
         {
-            return SmsProvider.GetSms(index);
+            try
+            {
+                return SmsProvider.Instance.GetSms(index);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message, ex);
+                throw;
+            }
+
         }
 
         public void Delete(int smsIndex)
         {
-            SmsProvider.Delete(smsIndex);
+            try
+            {
+                SmsProvider.Instance.Delete(smsIndex);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message, ex);
+                throw;
+            }
         }
 
         #endregion
+
     }
 }

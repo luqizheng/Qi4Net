@@ -74,7 +74,7 @@ namespace Qi.Sms.ConsoleTest
         public static void MultiSend1(object state)
         {
             var sender = (SmsService)state;
-            var sb = new StringBuilder("其实这是一个中文长短信的测试，这里有多少字，我其实也不知道，不过只要超过70个字符就可以了，所以就随便写写东西上去，如一二三，你知道我不知道但他知道的事情。");
+            var sb = new StringBuilder("其实这是一个中文长短信的测试，这里有多少字，我其实也不知道，不过只要超过70个字符就可以了，。");
 
             sender.Send("8613532290006", sb.ToString(), SmsFormat.Pdu);
         }

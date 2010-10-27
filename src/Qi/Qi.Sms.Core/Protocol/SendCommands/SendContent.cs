@@ -11,7 +11,8 @@
 
         protected override bool InitContent(string content)
         {
-            return content.Contains("+CMGS") && !content.Contains("AT+");
+            return true;
+            //return content.Contains("+CMGS") && !content.Contains("AT+");
         }
 
         public override string CompleteCommand()

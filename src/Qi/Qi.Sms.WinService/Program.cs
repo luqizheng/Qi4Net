@@ -1,26 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.ServiceProcess;
-using System.Text;
 using log4net.Config;
-
-[assembly: XmlConfigurator(Watch = true)]
 
 namespace Qi.Sms.WinService
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        private static void Main()
         {
+            var file = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "log4net.config");
+            XmlConfigurator.ConfigureAndWatch(file);
             ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-			{ 
-				new QiSmsService() 
-			};
+            ServicesToRun = new ServiceBase[]
+                                {
+                                    new QiSmsService()
+                                };
             ServiceBase.Run(ServicesToRun);
         }
     }

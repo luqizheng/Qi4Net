@@ -7,13 +7,14 @@ using Qi.Sms.Protocol.SendCommands;
 
 namespace Qi.Sms.Remotes.Providers
 {
-    public class SmsProvider : ISmsProvider, IDisposable
+    public sealed class SmsProvider : ISmsProvider, IDisposable
     {
+        public static readonly SmsProvider Instance = new SmsProvider();
         private readonly ISmsHandler _handler;
         private readonly ILog _log;
         private readonly SmsService _service;
 
-        public SmsProvider()
+        private SmsProvider()
         {
             try
             {
@@ -26,7 +27,7 @@ namespace Qi.Sms.Remotes.Providers
                 _log = LogManager.GetLogger(GetType());
                 _service.SetSmsAutoRecieve();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _log.Error("Ini error.", ex);
             }
@@ -56,7 +57,7 @@ namespace Qi.Sms.Remotes.Providers
                 }
                 if (sendSms)
                 {
-                    ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Send(mobile, content, type), _service);
+                    ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Send(mobile, content, type), _service);
                 }
             }
             catch (Exception ex)
@@ -73,7 +74,7 @@ namespace Qi.Sms.Remotes.Providers
         public void Delete(int smsIndex)
         {
             _log.InfoFormat("Delete sms, index is smsIndex.");
-            ThreadPool.QueueUserWorkItem(state => ((SmsService)state).Delete(smsIndex), _service);
+            ThreadPool.QueueUserWorkItem(state => ((SmsService) state).Delete(smsIndex), _service);
         }
 
         #endregion

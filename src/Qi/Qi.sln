@@ -23,6 +23,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.Sms.WinService", "Qi.Sms.WinService\Qi.Sms.WinService.csproj", "{90B2976F-D9E0-4248-B9E2-508934E02F1A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{B48C6C58-6DDE-4840-83FB-205082AB7EE5}"
+	ProjectSection(SolutionItems) = preProject
+		log4net.config = log4net.config
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Qi.SmsServiceSetup", "Qi.SmsServiceSetup\Qi.SmsServiceSetup.vdproj", "{60FAD4AD-D505-4B62-9190-3C9688DE48BE}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Qi.vsmdi
@@ -106,6 +113,12 @@ Global
 		{90B2976F-D9E0-4248-B9E2-508934E02F1A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{90B2976F-D9E0-4248-B9E2-508934E02F1A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{90B2976F-D9E0-4248-B9E2-508934E02F1A}.Release|Win32.ActiveCfg = Release|Any CPU
+		{60FAD4AD-D505-4B62-9190-3C9688DE48BE}.Debug|Any CPU.ActiveCfg = Debug
+		{60FAD4AD-D505-4B62-9190-3C9688DE48BE}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{60FAD4AD-D505-4B62-9190-3C9688DE48BE}.Debug|Win32.ActiveCfg = Debug
+		{60FAD4AD-D505-4B62-9190-3C9688DE48BE}.Release|Any CPU.ActiveCfg = Release
+		{60FAD4AD-D505-4B62-9190-3C9688DE48BE}.Release|Mixed Platforms.ActiveCfg = Release
+		{60FAD4AD-D505-4B62-9190-3C9688DE48BE}.Release|Win32.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,5 +130,6 @@ Global
 		{1E17A7C3-7946-416B-9208-D03C92A5DF6E} = {C9ADBC87-850F-444E-A596-67D977179D00}
 		{470F5E37-57D1-42B5-8E13-80F5782F8D89} = {C9ADBC87-850F-444E-A596-67D977179D00}
 		{90B2976F-D9E0-4248-B9E2-508934E02F1A} = {C9ADBC87-850F-444E-A596-67D977179D00}
+		{60FAD4AD-D505-4B62-9190-3C9688DE48BE} = {C9ADBC87-850F-444E-A596-67D977179D00}
 	EndGlobalSection
 EndGlobal

@@ -26,7 +26,8 @@ namespace Qi.IO
             }
         }
 
-        public static FileInfo[] GetFilesEx(this DirectoryInfo parentDirectory, string searchPattern, SearchOption searchOption)
+        public static FileInfo[] GetFilesEx(this DirectoryInfo parentDirectory, string searchPattern,
+                                            SearchOption searchOption)
         {
             string[] searchPatterns = searchPattern.Split('|');
             var files = new List<FileInfo>();

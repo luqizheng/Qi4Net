@@ -4,6 +4,7 @@ using System.Web;
 
 namespace Qi.Web
 {
+
     public static class WebExtender
     {
         public static IPAddress GetClientIp(this HttpRequest request)

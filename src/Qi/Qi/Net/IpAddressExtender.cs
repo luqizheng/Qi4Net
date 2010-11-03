@@ -13,13 +13,15 @@ namespace Qi.Net
         private static extern Int32 inet_addr(string ip);
 
         /// <summary>
-        /// 
+        /// 通过IPAddress 获取Mac地址，只是用于同网段
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
         /// <exception cref="NetworkException">failed to get client mac</exception>
         public static string GetMac(this IPAddress client)
         {
+            if (client == null)
+                throw new ArgumentNullException("client");
             try
             {
                 int ldest = inet_addr(client.ToString()); //目的地的ip

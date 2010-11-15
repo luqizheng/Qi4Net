@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\log4net.dll</HintPath>
+      <HintPath>..\..\..\..\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
@@ -85,7 +85,7 @@
       <Project>{1E17A7C3-7946-416B-9208-D03C92A5DF6E}</Project>
       <Name>Qi.Sms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Qi\Qi.csproj">
+    <ProjectReference Include="..\..\Qi\Qi.csproj">
       <Project>{109EBD31-85C7-45C9-A850-EF3457055670}</Project>
       <Name>Qi</Name>
     </ProjectReference>

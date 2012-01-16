@@ -25,10 +25,7 @@ namespace Qi.Sms.Protocol
             get { return _command; }
         }
 
-        protected override bool InitContent(string content)
-        {
-            return true;
-        }
+    
 
         public override string CompleteCommand()
         {

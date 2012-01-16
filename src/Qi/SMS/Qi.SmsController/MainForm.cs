@@ -36,7 +36,7 @@ namespace Qi.SmsController
         {
             if (!InvokeRequired)
             {
-                richTextBoxOutput.Text = e.Command + richTextBoxOutput.Text;
+               // richTextBoxOutput.Text = e.Command + richTextBoxOutput.Text;
             }
             else
             {
@@ -58,7 +58,7 @@ namespace Qi.SmsController
                     com = new ComConnection(comboBoxCOMList.SelectedItem.ToString(),
                                             Convert.ToInt32(comboBoxBIT.SelectedItem.ToString()));
                     com.ReceivedEvent += com_ReceivedOrReceiveEvent;
-                    com.SendingEvent += com_ReceivedOrReceiveEvent;
+                    //com.SendingEvent += com_ReceivedOrReceiveEvent;
                     com.Open();
 
                     smsService = new SmsService(com);

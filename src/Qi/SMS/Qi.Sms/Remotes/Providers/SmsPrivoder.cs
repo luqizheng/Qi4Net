@@ -9,12 +9,12 @@ namespace Qi.Sms.Remotes.Providers
 {
     public sealed class SmsProvider : ISmsProvider, IDisposable
     {
-        public static readonly SmsProvider Instance = new SmsProvider();
+        
         private readonly ISmsHandler _handler;
         private readonly ILog _log;
         private readonly SmsService _service;
 
-        private SmsProvider()
+        public SmsProvider()
         {
             try
             {

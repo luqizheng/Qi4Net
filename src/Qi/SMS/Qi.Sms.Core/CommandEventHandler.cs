@@ -6,12 +6,12 @@ namespace Qi.Sms
 {
     public class DeviceCommandEventHandlerArgs : EventArgs
     {
-        public DeviceCommandEventHandlerArgs(string command)
+        public DeviceCommandEventHandlerArgs(int[] receiverSmsIndex)
         {
-            Command = command;
+            SmsIndex = receiverSmsIndex;
         }
 
-        public string Command { get; private set; }
+        public int[] SmsIndex { get; private set; }
     }
 
     public class CommandEventHandlerArgs : EventArgs
@@ -31,9 +31,9 @@ namespace Qi.Sms
 
     public class NewMessageEventHandlerArgs : EventArgs
     {
-        public NewMessageEventHandlerArgs(CmtiCommand commad)
+        public NewMessageEventHandlerArgs(int smsIndex)
         {
-            SmsIndex = commad.SmsIndex;
+            SmsIndex = smsIndex;
         }
 
         public int SmsIndex { get; private set; }

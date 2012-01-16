@@ -16,18 +16,23 @@ namespace Qi.Sms.Protocol.SendCommands
 
         public string ServiceCenterNumber { get; private set; }
 
-        protected override bool InitContent(string content)
+        public override bool Init(string command)
         {
-            if (!content.Contains("+" + Command + ":"))
-                return false;
-
-            Match match = Regex.Match(content, "\".*\"");
-            if (match.Success)
+            var result = base.Init(command);
+            if (Success)
             {
-                string resultValue = match.Value;
-                ServiceCenterNumber = resultValue.Substring(1, resultValue.Length - 2);
+                if (!command.Contains("+" + Command + ":"))
+                    return false;
+
+                Match match = Regex.Match(command, "\".*\"");
+                if (match.Success)
+                {
+                    string resultValue = match.Value;
+                    ServiceCenterNumber = resultValue.Substring(1, resultValue.Length - 2);
+                }
+                return true;
             }
-            return true;
+            return result;
         }
     }
 }

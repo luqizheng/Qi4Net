@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using log4net;
 using Qi.Sms.Protocol.SendCommands;
+using log4net;
 
 namespace Qi.Sms.Protocol
 {
@@ -11,9 +9,9 @@ namespace Qi.Sms.Protocol
     {
         private static readonly IList<AbstractCommand> CommandSet = new List<AbstractCommand>();
 
+        protected ILog Log;
         private List<string> _arguments;
 
-        protected ILog Log;
         /// <summary>
         /// 
         /// </summary>
@@ -23,6 +21,7 @@ namespace Qi.Sms.Protocol
             CommandSet.Add(new SetSmsFromatCommand());
             CommandSet.Add(new CscaCommand());
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -30,10 +29,12 @@ namespace Qi.Sms.Protocol
         {
             Log = LogManager.GetLogger(GetType());
         }
+
         /// <summary>
         /// 
         /// </summary>
         public abstract string Command { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -47,7 +48,7 @@ namespace Qi.Sms.Protocol
         /// </summary>
         public bool Success { get; set; }
 
-
+        #region ICloneable Members
 
         /// <summary>
         /// 
@@ -55,50 +56,44 @@ namespace Qi.Sms.Protocol
         /// <returns></returns>
         public object Clone()
         {
-            var result = (AbstractCommand)Activator.CreateInstance(GetType());
+            var result = (AbstractCommand) Activator.CreateInstance(GetType());
             result.Success = Success;
-            foreach (var item in Arguments)
+            foreach (string item in Arguments)
             {
                 result.Arguments.Add(item);
             }
             return result;
         }
 
+        #endregion
 
         /// <summary>
-        /// 
+        /// Init command from string command, if this command belong to this command return true, or return false.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         public virtual bool Init(string command)
         {
+            bool result = false;
             if (command.ToUpper().Contains("OK"))
             {
                 Success = true;
-                return InitContent(command);
+                result = true;
             }
             else if (command.ToUpper().Contains("ERROR"))
             {
                 Success = false;
-                return InitContent(command);
+                result = true;
             }
-            else
-            {
-                return false;
-            }
-
+            return result;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        protected abstract bool InitContent(string content);
+
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
         public abstract string CompleteCommand();
+
         /// <summary>
         /// 
         /// </summary>
@@ -107,6 +102,7 @@ namespace Qi.Sms.Protocol
         {
             return CompleteCommand();
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -115,12 +111,12 @@ namespace Qi.Sms.Protocol
         public static IList<AbstractCommand> CreateCommand(string command)
         {
             var result = new List<AbstractCommand>();
-            foreach (var baseCommand in CommandSet)
+            foreach (AbstractCommand baseCommand in CommandSet)
             {
                 if (command.Contains(baseCommand.Command))
                 {
                     //有可能返回2条记录。
-                    var receiveCommand = (AbstractCommand)baseCommand.Clone();
+                    var receiveCommand = (AbstractCommand) baseCommand.Clone();
                     receiveCommand.Init(command);
                     result.Add(receiveCommand);
                 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,8 +10,28 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Qi</RootNamespace>
     <AssemblyName>Qi</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>http://localhost/Qi/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +41,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,13 +50,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.Services">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Net">
@@ -43,10 +62,6 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -58,15 +73,78 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IO\IniReader.cs" />
+    <Compile Include="ApplicationHelper.cs" />
+    <Compile Include="ArrayHelper.cs" />
+    <Compile Include="DataTables\Calculators\Avg.cs" />
+    <Compile Include="DataTables\Calculators\Avgs\AvgInt32.cs" />
+    <Compile Include="DataTables\Calculators\Avgs\AvgInt32Nullable.cs" />
+    <Compile Include="DataTables\Calculators\Avgs\AvgInt64.cs" />
+    <Compile Include="DataTables\Calculators\Avgs\AvgInt64Nullable.cs" />
+    <Compile Include="DataTables\Calculators\CalculatorBase.cs" />
+    <Compile Include="DataTables\Calculators\Avgs\AvgDecimal.cs" />
+    <Compile Include="DataTables\Calculators\Avgs\AvgDecimalNullable.cs" />
+    <Compile Include="DataTables\Calculators\Avgs\AvgDouble.cs" />
+    <Compile Include="DataTables\Calculators\Avgs\AvgDoubleNullable.cs" />
+    <Compile Include="DataTables\Columns\CustomeCalculatorColumn.cs" />
+    <Compile Include="DataTables\Columns\ReferenceColumn.cs" />
+    <Compile Include="DataTables\CreatingResultException.cs" />
+    <Compile Include="DataTables\HorizontalCalulator.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumDecimal.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumDecimalNullable.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumDouble.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumDoubleNullable.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumInt32.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumInt32Nullable.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumInt64.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumInt64Nullable.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumSingleNullable.cs" />
+    <Compile Include="DataTables\Calculators\Sums\SumSingle.cs" />
+    <Compile Include="DataTables\Columns\AbstractColumn.cs" />
+    <Compile Include="DataTables\Columns\CalculatorColumn.cs" />
+    <Compile Include="DataTables\GetValueEventAgrs.cs" />
+    <Compile Include="DataTables\ICalculator.cs" />
+    <Compile Include="DataTables\IColumn.cs" />
+    <Compile Include="DataTables\Calculator.cs" />
+    <Compile Include="DataTables\IDataTable.cs" />
+    <Compile Include="DataTables\Calculators\Sum.cs" />
+    <Compile Include="DataTables\SummaryHelper.cs" />
+    <Compile Include="EnumDescription.cs" />
+    <Compile Include="EnumHelper.cs" />
     <Compile Include="IO\IoExtender.cs" />
-    <Compile Include="Net\IpAddressExtender.cs" />
+    <Compile Include="IO\Serialization\SerializationHelper.cs" />
+    <Compile Include="Net\MacAddress.cs" />
     <Compile Include="Net\NetworkException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DataTables\Columns\Column.cs" />
+    <Compile Include="DataTables\ColumnCollection.cs" />
+    <Compile Include="DataTables\DataTable.cs" />
+    <Compile Include="QFunc.cs" />
+    <Compile Include="QMath.cs" />
+    <Compile Include="Secret\DESHelper.cs" />
     <Compile Include="Text\NamedFormatterHelper.cs" />
-    <Compile Include="Web\JsonHelper.cs" />
-    <Compile Include="Web\WebExtender.cs" />
+    <Compile Include="Secret\EncryptHelper.cs" />
+    <Compile Include="Threads\MultiExecute.cs" />
+    <Compile Include="Threads\ThreadHelper.cs" />
+    <Compile Include="Time.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

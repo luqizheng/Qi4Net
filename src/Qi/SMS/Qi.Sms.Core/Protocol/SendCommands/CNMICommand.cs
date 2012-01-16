@@ -2,6 +2,9 @@
 
 namespace Qi.Sms.Protocol.SendCommands
 {
+    /// <summary>
+    /// 设定Sms保存方式及通知方式
+    /// </summary>
     public class CNMICommand : AtCommand
     {
         /// <summary>
@@ -44,7 +47,7 @@ namespace Qi.Sms.Protocol.SendCommands
             set { Arguments[0] = Convert.ToInt32(value).ToString(); }
         }
 
-        protected override bool InitContent(string content)
+        public override bool Init(string content)
         {
             return content.Contains("CNMI");
         }

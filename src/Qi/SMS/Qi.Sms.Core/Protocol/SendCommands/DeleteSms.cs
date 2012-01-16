@@ -8,11 +8,7 @@ namespace Qi.Sms.Protocol.SendCommands
         {
             get { return "CMGD"; }
         }
-
-        protected override bool InitContent(string content)
-        {
-            return true;
-        }
+      
         public int SmsIndex
         {
             get

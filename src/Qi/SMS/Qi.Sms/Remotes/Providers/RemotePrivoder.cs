@@ -4,13 +4,14 @@ using Qi.Sms.Protocol.SendCommands;
 
 namespace Qi.Sms.Remotes.Providers
 {
-    public class RemotePrivoder : MarshalByRefObject, ISmsProvider
+    public class RemotePrivoder : MarshalByRefObject, ISmsProvider, IDisposable
     {
         private ILog log;
-
+        private SmsProvider _vider;
         public RemotePrivoder()
         {
             log = LogManager.GetLogger(this.GetType());
+            _vider = new SmsProvider();
         }
 
 
@@ -20,7 +21,7 @@ namespace Qi.Sms.Remotes.Providers
         {
             try
             {
-                SmsProvider.Instance.Send(mobile, content, type);
+                _vider.Send(mobile, content, type);
             }
             catch (Exception ex)
             {
@@ -33,7 +34,7 @@ namespace Qi.Sms.Remotes.Providers
         {
             try
             {
-                return SmsProvider.Instance.GetSms(index);
+                return _vider.GetSms(index);
             }
             catch (Exception ex)
             {
@@ -47,7 +48,7 @@ namespace Qi.Sms.Remotes.Providers
         {
             try
             {
-                SmsProvider.Instance.Delete(smsIndex);
+                _vider.Delete(smsIndex);
             }
             catch (Exception ex)
             {
@@ -58,5 +59,10 @@ namespace Qi.Sms.Remotes.Providers
 
         #endregion
 
+        public void Dispose()
+        {
+            _vider.Dispose();
+            log.Info("disposing the Privoder.");
+        }
     }
 }

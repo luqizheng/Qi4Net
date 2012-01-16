@@ -9,12 +9,6 @@
             get { return Content; }
         }
 
-        protected override bool InitContent(string content)
-        {
-            return true;
-            //return content.Contains("+CMGS") && !content.Contains("AT+");
-        }
-
         public override string CompleteCommand()
         {
             return string.Format("{0}\x01a", Content);;

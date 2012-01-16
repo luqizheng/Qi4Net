@@ -1,7 +1,7 @@
 ﻿using System;
-using Ornament.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using Qi.Text;
 
 namespace Qi.Test
 {

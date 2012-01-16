@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Ornament.Text
+namespace Qi.Text
 {
     public static class NamedFormatterHelper
     {
@@ -18,8 +18,8 @@ namespace Ornament.Text
             if (replacePattern == null)
                 throw new ArgumentNullException("replacePattern");
             var pattern = new string[replacePattern.Count];
-            var index = 0;
-            foreach (var key in replacePattern.Keys)
+            int index = 0;
+            foreach (string key in replacePattern.Keys)
             {
                 pattern[index] = string.Format("\\[{0}\\]", key);
                 index++;
@@ -31,6 +31,7 @@ namespace Ornament.Text
             return rex.Replace(formatString,
                                match => replacePattern[match.Value.Substring(1, match.Value.Length - 2)]);
         }
+
         /// <summary>
         /// Collect variable express in <seealso cref="content"/>, such as "I am a [varName]"
         /// </summary>

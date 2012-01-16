@@ -15,38 +15,14 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_1B53457245E9BDC46BAEB7FC1EF6834D"
-        "OwnerKey" = "8:_4306158CE848486C8D4C16C442D98B9E"
+        "MsmKey" = "8:_0403BC3843CF4C50B87B021DC87F18B7"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_1B53457245E9BDC46BAEB7FC1EF6834D"
-        "OwnerKey" = "8:_6125E0F7C0B323199649248FFBE2F41E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_24B6BBED11989F70929AC9C484B6F65C"
-        "OwnerKey" = "8:_4306158CE848486C8D4C16C442D98B9E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3D67CC455F2A1F27CDD3B3FC90181CF8"
-        "OwnerKey" = "8:_4306158CE848486C8D4C16C442D98B9E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3D67CC455F2A1F27CDD3B3FC90181CF8"
-        "OwnerKey" = "8:_6125E0F7C0B323199649248FFBE2F41E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3D67CC455F2A1F27CDD3B3FC90181CF8"
-        "OwnerKey" = "8:_1B53457245E9BDC46BAEB7FC1EF6834D"
+        "MsmKey" = "8:_2CA1164A0AA54EADB43C4E33C8AEF177"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -57,44 +33,62 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_565C27D5C10D45B3A856033B5C8415C2"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_45E58E58FE49DF017BB8016CE7CC3C55"
+        "OwnerKey" = "8:_0403BC3843CF4C50B87B021DC87F18B7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6125E0F7C0B323199649248FFBE2F41E"
-        "OwnerKey" = "8:_4306158CE848486C8D4C16C442D98B9E"
+        "MsmKey" = "8:_45E58E58FE49DF017BB8016CE7CC3C55"
+        "OwnerKey" = "8:_F3B8340724F3AD07D334D43CFBC1762F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D7F61F37351205C633079872ED942E37"
+        "OwnerKey" = "8:_45E58E58FE49DF017BB8016CE7CC3C55"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D7F61F37351205C633079872ED942E37"
+        "OwnerKey" = "8:_F3B8340724F3AD07D334D43CFBC1762F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D7F61F37351205C633079872ED942E37"
+        "OwnerKey" = "8:_0403BC3843CF4C50B87B021DC87F18B7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F3B8340724F3AD07D334D43CFBC1762F"
+        "OwnerKey" = "8:_0403BC3843CF4C50B87B021DC87F18B7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3D67CC455F2A1F27CDD3B3FC90181CF8"
+        "OwnerKey" = "8:_D7F61F37351205C633079872ED942E37"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4306158CE848486C8D4C16C442D98B9E"
+        "OwnerKey" = "8:_0403BC3843CF4C50B87B021DC87F18B7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_24B6BBED11989F70929AC9C484B6F65C"
+        "OwnerKey" = "8:_F3B8340724F3AD07D334D43CFBC1762F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6125E0F7C0B323199649248FFBE2F41E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1B53457245E9BDC46BAEB7FC1EF6834D"
+        "OwnerKey" = "8:_45E58E58FE49DF017BB8016CE7CC3C55"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -115,6 +109,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
+                    {
+                    "Name" = "8:.NET Framework 3.5 SP1"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -131,6 +146,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
+                    {
+                    "Name" = "8:.NET Framework 3.5 SP1"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -188,14 +224,34 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1B53457245E9BDC46BAEB7FC1EF6834D"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2CA1164A0AA54EADB43C4E33C8AEF177"
+            {
+            "SourcePath" = "8:..\\log4net.config"
+            "TargetName" = "8:log4net.config"
+            "Tag" = "8:"
+            "Folder" = "8:_2E15E30C0700483DAF449D4366128489"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_45E58E58FE49DF017BB8016CE7CC3C55"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Qi.Sms.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1B53457245E9BDC46BAEB7FC1EF6834D"
+                    "_45E58E58FE49DF017BB8016CE7CC3C55"
                     {
                     "Name" = "8:Qi.Sms.Core.dll"
                     "Attributes" = "3:512"
@@ -219,45 +275,14 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_24B6BBED11989F70929AC9C484B6F65C"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Qi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_24B6BBED11989F70929AC9C484B6F65C"
-                    {
-                    "Name" = "8:Qi.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Qi.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_2E15E30C0700483DAF449D4366128489"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3D67CC455F2A1F27CDD3B3FC90181CF8"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D7F61F37351205C633079872ED942E37"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_3D67CC455F2A1F27CDD3B3FC90181CF8"
+                    "_D7F61F37351205C633079872ED942E37"
                     {
                     "Name" = "8:log4net.dll"
                     "Attributes" = "3:512"
@@ -281,34 +306,14 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_565C27D5C10D45B3A856033B5C8415C2"
-            {
-            "SourcePath" = "8:..\\log4net.config"
-            "TargetName" = "8:log4net.config"
-            "Tag" = "8:"
-            "Folder" = "8:_2E15E30C0700483DAF449D4366128489"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6125E0F7C0B323199649248FFBE2F41E"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F3B8340724F3AD07D334D43CFBC1762F"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Qi.Sms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6125E0F7C0B323199649248FFBE2F41E"
+                    "_F3B8340724F3AD07D334D43CFBC1762F"
                     {
                     "Name" = "8:Qi.Sms.dll"
                     "Attributes" = "3:512"
@@ -508,6 +513,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CB8517C722824E32A774D9B55CDEF5A4"
+            {
+            "Name" = "8:Sms Controller"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_0403BC3843CF4C50B87B021DC87F18B7"
+            "Folder" = "8:_4C1A820F7FE44C0DA70209EC5702E827"
+            "WorkingFolder" = "8:_2E15E30C0700483DAF449D4366128489"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
@@ -907,6 +926,34 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0403BC3843CF4C50B87B021DC87F18B7"
+            {
+            "SourcePath" = "8:..\\Qi.SmsController\\obj\\Debug\\Qi.SmsController.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_2E15E30C0700483DAF449D4366128489"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{4D948117-E649-4C4C-BBA6-56E0639E4B99}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4306158CE848486C8D4C16C442D98B9E"
             {
             "SourcePath" = "8:..\\Qi.Sms.WinService\\obj\\Debug\\Qi.Sms.WinService.exe"

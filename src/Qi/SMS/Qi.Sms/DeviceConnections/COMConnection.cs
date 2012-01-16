@@ -2,31 +2,31 @@
 using System.IO.Ports;
 using System.Text;
 using System.Threading;
-using log4net;
 using Qi.Sms.Protocol;
+using Qi.Sms.Protocol.SendCommands;
+using log4net;
 
 namespace Qi.Sms.DeviceConnections
 {
     public sealed class ComConnection : IDeviceConnection
     {
+        private readonly StringBuilder _buffer = new StringBuilder();
         private readonly object _lockItem = "";
         private readonly ILog _log = LogManager.GetLogger(typeof(ComConnection));
         private readonly SerialPort _serialPort;
-        private bool _hasReturnValue;
-        private StringBuilder _returnValue;
-
         public ComConnection(string portName, int baudRate)
         {
             if (portName == null)
                 throw new ArgumentNullException("portName");
-            this.PortName = portName;
+            PortName = portName;
             BaudRate = baudRate;
-            _serialPort = new SerialPort(portName, BaudRate, Parity.None, 8, StopBits.One)
-                              {
-                                  DtrEnable = true,
-                                  RtsEnable = true,
-                                  Handshake = Handshake.None
-                              };
+            _serialPort = new SerialPort(portName, BaudRate);
+            //{
+            //    DtrEnable = true,
+            //    RtsEnable = true,
+            //    Handshake = Handshake.None
+            //};
+
             _serialPort.DataReceived += SerialPortDataReceived;
         }
 
@@ -36,7 +36,6 @@ namespace Qi.Sms.DeviceConnections
 
         #region IDeviceConnection Members
 
-        public event EventHandler<DeviceCommandEventHandlerArgs> SendingEvent;
         public event EventHandler<DeviceCommandEventHandlerArgs> ReceivedEvent;
 
         public void Dispose()
@@ -46,6 +45,7 @@ namespace Qi.Sms.DeviceConnections
                 _serialPort.Close();
                 _serialPort.Dispose();
             }
+            _log.Info("ComConnection is disposed.");
         }
 
         public void Open()
@@ -78,87 +78,90 @@ namespace Qi.Sms.DeviceConnections
         {
             get { return _serialPort; }
         }
-        public bool IsConnected { get; private set; }
-        public void Send(string command)
-        {
 
-            _log.Debug("Send:" + command);
-            _serialPort.WriteLine(command + "\r\n");
-        }
+        public bool IsConnected { get; private set; }
+
         public string Send(AbstractCommand command)
         {
-
-            if (SendingEvent != null)
-                SendingEvent(this, new DeviceCommandEventHandlerArgs(command.CompleteCommand()));
-            _log.InfoFormat("send command {0}\r\n", command);
             lock (_lockItem)
             {
-                ThreadPool.QueueUserWorkItem(delegate { _serialPort.WriteLine(command.CompleteCommand()); });
-
-                _returnValue = new StringBuilder();
-                DateTime now = DateTime.Now;
-
-
-                while (true)
+                try
                 {
-                    if (_hasReturnValue)
-                    {
-                        _log.Debug("Receive data:" + _returnValue);
-                        if (command.Init(_returnValue.ToString()))
-                        {
-                            _log.Debug("Data is correct for command =" + command.GetType().Name);
-                            break;
-                        }
-                        _log.Debug("Receive data isn't expected, so continue to wait");
-                        _returnValue = new StringBuilder();
-                        _hasReturnValue = false;
-                    }
-                    Thread.Sleep(100);
-                    TimeSpan span = DateTime.Now - now;
-                    if (span.Seconds > 10)
-                    {
-                        _log.InfoFormat("Send command timeout,and exit");
-                        return ""; //throw new TimeoutException("Timeout {0} send fail.");
-                    }
+                    _buffer.Remove(0, _buffer.Length);
+                    ThreadPool.QueueUserWorkItem(delegate { _serialPort.WriteLine(command.CompleteCommand()); });
+                    return WaitReturn(command);
                 }
-
-                string result = _returnValue.ToString();
-                _hasReturnValue = false;
-                _returnValue = null;
-                _log.InfoFormat("receive command \r\n {0}", result);
-                return result;
+                finally
+                {
+                    _log.Info("Complete receive is: " + _buffer.ToString());
+                    _buffer.Remove(0, _buffer.Length);
+                }
             }
         }
 
         #endregion
-
-        private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+        [Obsolete]
+        public void InvokeSend(AbstractCommand command, int sleepMilSeconds)
         {
-            var serialPort = (SerialPort)sender;
-            var result = new StringBuilder();
-            while (serialPort.BytesToRead > 0)
+            lock (_lockItem)
             {
-                string re = serialPort.ReadExisting();
-                result.Append(re);
-                if (_returnValue != null)
+                _log.Debug("Invoke send");
+                _buffer.Remove(0, _buffer.Length);
+                _serialPort.WriteLine(command.CompleteCommand());
+                _log.Debug("Invoke send success and wait " + sleepMilSeconds);
+                Thread.Sleep(sleepMilSeconds);
+                _buffer.Remove(0, _buffer.Length);
+            }
+        }
+
+        private string WaitReturn(AbstractCommand command)
+        {
+            var now = DateTime.Now;
+            while (true)
+            {
+                if ((DateTime.Now - now).TotalSeconds > 12)
                 {
-                    _returnValue.Append(re);
+                    _log.Warn("waiting return timeout.");
+                    break;
+                }
+                if (command.Init(_buffer.ToString()))
+                {
+                    _log.Debug("Return value,command is success or not?" + command.Success);
+                    break;
                 }
                 Thread.Sleep(100);
             }
-            if (_returnValue != null)
-            {
-                _hasReturnValue = true;
-            }
-            OnReceiveEvent(result.ToString());
+            string result = _buffer.ToString();
+            //_log.InfoFormat("Wait Return  command \r\n {0}", result);
+            return result;
         }
 
-        public void OnReceiveEvent(string command)
+        public void Send(string command)
         {
-            _log.Debug("Receive:" + command);
+            _serialPort.WriteLine(command + "\r\n");
+        }
+
+        private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            _log.Debug("receiver something.");
+            var serialPort = (SerialPort)sender;
+            _buffer.Append(serialPort.ReadExisting());
+            var result = CmtiCommand.GetSmsIndex(_buffer.ToString());
+            _log.Debug(_buffer.ToString());
+            //_log.Debug("sms receive :" + result.Length);
+            if (result.Length != 0)
+            {
+                OnReceiveSms(result);
+            }
+        }
+
+        private void OnReceiveSms(int[] command)
+        {
             if (ReceivedEvent != null)
             {
-                ThreadPool.QueueUserWorkItem(e => ReceivedEvent(this, new DeviceCommandEventHandlerArgs(command)));
+
+                ThreadPool.QueueUserWorkItem(s => ReceivedEvent(this, new DeviceCommandEventHandlerArgs((int[])s)), command);
+
             }
         }
     }

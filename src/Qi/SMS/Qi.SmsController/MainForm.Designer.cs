@@ -30,6 +30,8 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.textBoxSmsCenter = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.ButtonSend = new System.Windows.Forms.Button();
@@ -42,8 +44,6 @@
             this.comboBoxBIT = new System.Windows.Forms.ComboBox();
             this.comboBoxCOMList = new System.Windows.Forms.ComboBox();
             this.ButtonConnect = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.textBoxSmsCenter = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -58,10 +58,11 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Enabled = false;
-            this.tabControl1.Location = new System.Drawing.Point(0, 41);
+            this.tabControl1.Location = new System.Drawing.Point(0, 55);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1011, 229);
+            this.tabControl1.Size = new System.Drawing.Size(1348, 305);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -69,19 +70,40 @@
             this.tabPage1.Controls.Add(this.textBoxSmsCenter);
             this.tabPage1.Controls.Add(this.button2);
             this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1003, 203);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Size = new System.Drawing.Size(1340, 276);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "BaseCommand";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // textBoxSmsCenter
+            // 
+            this.textBoxSmsCenter.Location = new System.Drawing.Point(11, 11);
+            this.textBoxSmsCenter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxSmsCenter.Name = "textBoxSmsCenter";
+            this.textBoxSmsCenter.Size = new System.Drawing.Size(293, 22);
+            this.textBoxSmsCenter.TabIndex = 2;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(313, 11);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(100, 31);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "GetSmsCenter";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(8, 58);
+            this.button1.Location = new System.Drawing.Point(11, 77);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(100, 31);
             this.button1.TabIndex = 0;
             this.button1.Text = "Delete All Message";
             this.button1.UseVisualStyleBackColor = true;
@@ -91,19 +113,21 @@
             // 
             this.tabPage2.Controls.Add(this.ButtonSend);
             this.tabPage2.Controls.Add(this.textBoxCommandLine);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(598, 137);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Size = new System.Drawing.Size(1340, 276);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "AT Commander";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // ButtonSend
             // 
-            this.ButtonSend.Location = new System.Drawing.Point(278, 18);
+            this.ButtonSend.Location = new System.Drawing.Point(371, 24);
+            this.ButtonSend.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ButtonSend.Name = "ButtonSend";
-            this.ButtonSend.Size = new System.Drawing.Size(75, 23);
+            this.ButtonSend.Size = new System.Drawing.Size(100, 31);
             this.ButtonSend.TabIndex = 1;
             this.ButtonSend.Text = "Send";
             this.ButtonSend.UseVisualStyleBackColor = true;
@@ -111,9 +135,10 @@
             // 
             // textBoxCommandLine
             // 
-            this.textBoxCommandLine.Location = new System.Drawing.Point(8, 18);
+            this.textBoxCommandLine.Location = new System.Drawing.Point(11, 24);
+            this.textBoxCommandLine.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBoxCommandLine.Name = "textBoxCommandLine";
-            this.textBoxCommandLine.Size = new System.Drawing.Size(264, 21);
+            this.textBoxCommandLine.Size = new System.Drawing.Size(351, 22);
             this.textBoxCommandLine.TabIndex = 0;
             // 
             // groupBox1
@@ -121,9 +146,11 @@
             this.groupBox1.Controls.Add(this.richTextBoxOutput);
             this.groupBox1.Controls.Add(this.panel1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox1.Location = new System.Drawing.Point(0, 270);
+            this.groupBox1.Location = new System.Drawing.Point(0, 360);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1011, 180);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(1348, 240);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Output";
@@ -131,9 +158,10 @@
             // richTextBoxOutput
             // 
             this.richTextBoxOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBoxOutput.Location = new System.Drawing.Point(3, 52);
+            this.richTextBoxOutput.Location = new System.Drawing.Point(4, 66);
+            this.richTextBoxOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.richTextBoxOutput.Name = "richTextBoxOutput";
-            this.richTextBoxOutput.Size = new System.Drawing.Size(1005, 125);
+            this.richTextBoxOutput.Size = new System.Drawing.Size(1340, 170);
             this.richTextBoxOutput.TabIndex = 6;
             this.richTextBoxOutput.Text = "";
             // 
@@ -141,16 +169,18 @@
             // 
             this.panel1.Controls.Add(this.buttonClear);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(3, 17);
+            this.panel1.Location = new System.Drawing.Point(4, 19);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1005, 35);
+            this.panel1.Size = new System.Drawing.Size(1340, 47);
             this.panel1.TabIndex = 5;
             // 
             // buttonClear
             // 
-            this.buttonClear.Location = new System.Drawing.Point(4, 6);
+            this.buttonClear.Location = new System.Drawing.Point(5, 8);
+            this.buttonClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(75, 23);
+            this.buttonClear.Size = new System.Drawing.Size(100, 31);
             this.buttonClear.TabIndex = 5;
             this.buttonClear.Text = "Clear";
             this.buttonClear.UseVisualStyleBackColor = true;
@@ -163,8 +193,10 @@
             this.groupBox2.Controls.Add(this.ButtonConnect);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1011, 41);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Size = new System.Drawing.Size(1348, 55);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
@@ -177,9 +209,10 @@
             "9600",
             "38400",
             "57600"});
-            this.comboBoxBIT.Location = new System.Drawing.Point(131, 15);
+            this.comboBoxBIT.Location = new System.Drawing.Point(175, 20);
+            this.comboBoxBIT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxBIT.Name = "comboBoxBIT";
-            this.comboBoxBIT.Size = new System.Drawing.Size(121, 20);
+            this.comboBoxBIT.Size = new System.Drawing.Size(160, 24);
             this.comboBoxBIT.TabIndex = 5;
             // 
             // comboBoxCOMList
@@ -196,46 +229,32 @@
             "COM7",
             "COM8",
             "COM9"});
-            this.comboBoxCOMList.Location = new System.Drawing.Point(3, 15);
+            this.comboBoxCOMList.Location = new System.Drawing.Point(4, 20);
+            this.comboBoxCOMList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxCOMList.Name = "comboBoxCOMList";
-            this.comboBoxCOMList.Size = new System.Drawing.Size(121, 20);
+            this.comboBoxCOMList.Size = new System.Drawing.Size(160, 24);
             this.comboBoxCOMList.TabIndex = 4;
             // 
             // ButtonConnect
             // 
-            this.ButtonConnect.Location = new System.Drawing.Point(258, 12);
+            this.ButtonConnect.Location = new System.Drawing.Point(344, 16);
+            this.ButtonConnect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ButtonConnect.Name = "ButtonConnect";
-            this.ButtonConnect.Size = new System.Drawing.Size(75, 23);
+            this.ButtonConnect.Size = new System.Drawing.Size(100, 31);
             this.ButtonConnect.TabIndex = 3;
             this.ButtonConnect.Text = "Connect";
             this.ButtonConnect.UseVisualStyleBackColor = true;
             this.ButtonConnect.Click += new System.EventHandler(this.ButtonConnect_Click_1);
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(235, 8);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "GetSmsCenter";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // textBoxSmsCenter
-            // 
-            this.textBoxSmsCenter.Location = new System.Drawing.Point(8, 8);
-            this.textBoxSmsCenter.Name = "textBoxSmsCenter";
-            this.textBoxSmsCenter.Size = new System.Drawing.Size(221, 21);
-            this.textBoxSmsCenter.TabIndex = 2;
-            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1011, 450);
+            this.ClientSize = new System.Drawing.Size(1348, 600);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "MainForm";
             this.Text = "Sms控制台";
             this.Load += new System.EventHandler(this.Form1_Load);

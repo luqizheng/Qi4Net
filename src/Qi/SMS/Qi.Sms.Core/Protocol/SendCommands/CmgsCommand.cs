@@ -27,9 +27,6 @@ namespace Qi.Sms.Protocol.SendCommands
             return a;
         }
 
-        protected override bool InitContent(string content)
-        {
-            return false;
-        }
+     
     }
 }

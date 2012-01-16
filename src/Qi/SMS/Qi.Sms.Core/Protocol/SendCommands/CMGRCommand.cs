@@ -33,28 +33,31 @@ namespace Qi.Sms.Protocol.SendCommands
 
         public DateTime ReceiveTime { get; set; }
 
-        protected override bool InitContent(string content)
+        public override bool Init(string content)
         {
-            if (!content.Contains("CMGR:"))
-                return false;
-
-            var a = new SmsInfo();
-            int pos = content.IndexOf("CMGR:");
-            pos = content.IndexOf("\r\n", pos) + 2;
-            int pos2 = content.IndexOf("\r\n", pos);
-            if (pos2 == -1)
+            var result = base.Init(content);
+            if (Success)
             {
-                pos2 = content.Length;
+                if (!content.Contains("CMGR:"))
+                    return false;
+
+                var a = new SmsInfo();
+                int pos = content.IndexOf("CMGR:");
+                pos = content.IndexOf("\r\n", pos) + 2;
+                int pos2 = content.IndexOf("\r\n", pos);
+                if (pos2 == -1)
+                {
+                    pos2 = content.Length;
+                }
+                string smsContent = content.Substring(pos, pos2 - pos);
+                SmsInfo ra = a.DecodingSMS(smsContent);
+                Content = ra.UD.Replace("\\0", "");
+                SendMobile = ra.OAAddr;
+                SCAAddr = ra.SCAAddr;
+                ReceiveTime = DateTime.Parse(ra.SCTS);
             }
-            string smsContent = content.Substring(pos, pos2 - pos);
-            SmsInfo ra = a.DecodingSMS(smsContent);
-            Content = ra.UD.Replace("\\0", "");
-            SendMobile = ra.OAAddr;
-            SCAAddr = ra.SCAAddr;
-            ReceiveTime = DateTime.Parse(ra.SCTS);
 
-
-            return true;
+            return result;
         }
     }
 }

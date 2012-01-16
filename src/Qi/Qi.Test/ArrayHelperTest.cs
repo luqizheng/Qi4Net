@@ -153,44 +153,34 @@ namespace Qi.Test
         [TestMethod()]
         public void SubArrayTest()
         {
-            int[] array = new int[25];
-            for (int i = 0; i < array.Length; i++)
+            int[] array = new int[]
             {
-                array[i] = i;
-            }
-            int start = 1;
-            int length = 2;
+                0,1,2,3,4,5
+            };
 
-            var actual = ArrayHelper.SubArray(array, start, length);
-            int excepIndex = start;
-            Assert.AreEqual(length, actual.Length);
-            foreach (var resultItem in actual)
-            {
-                Assert.AreEqual(array[excepIndex], resultItem);
-                excepIndex++;
-            }
+            var target = array.SubArray(1,2);
+            Assert.AreEqual(1, target[0]);
+            Assert.AreEqual(2, target[1]);
+            
         }
 
 
         [TestMethod()]
         public void SubArray_Test()
         {
-            int[] array = new int[25];
-            for (int i = 0; i < array.Length; i++)
+            int[] array = new int[]
             {
-                array[i] = i;
-            }
-            int start = 1;
-            int length = array.Length - 1;
+                0,1,2,3,4,5
+            };
 
-            var actual = ArrayHelper.SubArray(array, start);
-            int excepIndex = start;
-            Assert.AreEqual(length, actual.Length);
-            foreach (var resultItem in actual)
-            {
-                Assert.AreEqual(array[excepIndex], resultItem);
-                excepIndex++;
-            }
+            var target = array.SubArray(1);
+            Assert.AreEqual(1, target[0]);
+            Assert.AreEqual(2, target[1]);
+            Assert.AreEqual(3, target[2]);
+            Assert.AreEqual(4, target[3]);
+            Assert.AreEqual(5, target[4]);
         }
+
+
     }
 }

@@ -41,8 +41,7 @@ namespace Qi.IO
         /// <param name="searchPattern">support *.exe, or *.bat|*.exe|*.dll </param>
         /// <param name="searchOption"></param>
         /// <returns></returns>
-        public static FileInfo[] GetFilesEx(this DirectoryInfo parentDirectory, string searchPattern,
-                                            SearchOption searchOption)
+        public static FileInfo[] GetFilesEx(this DirectoryInfo parentDirectory, string searchPattern,SearchOption searchOption)
         {
             if (String.IsNullOrEmpty(searchPattern))
                 throw new ArgumentNullException("searchPattern");

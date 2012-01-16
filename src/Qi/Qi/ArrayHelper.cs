@@ -6,13 +6,22 @@ namespace Qi
 {
     public static class ArrayHelper
     {
-        public static T[] SubArray<T>(T[] array, int start, int length)
+        /// <summary>
+        /// a <see cref="System.String.Substring"/> method of array.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static T[] SubArray<T>(this T[] array, int start, int length)
         {
+            var s = "";
             if (array.Length - 1 < start)
             {
                 throw new ArgumentOutOfRangeException("start", "start index is larger than array");
             }
-            if ((start + length) > (array.Length - 1))
+            if ((start + length) > (array.Length))
             {
                 throw new ArgumentOutOfRangeException("length", "length is out of rang.");
             }
@@ -20,7 +29,13 @@ namespace Qi
             Array.Copy(array, start, result, 0, length);
             return result;
         }
-
+        /// <summary>
+        /// a <see cref="System.String.Substring"/> method of array.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="start"></param>
+        /// <returns></returns>
         public static T[] SubArray<T>(this T[] array, int start)
         {
             if (array.Length - 1 < start)
@@ -29,10 +44,15 @@ namespace Qi
             }
             return SubArray(array, start, array.Length - start);
         }
-
+        /// <summary>
+        /// Convert byte to string
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static string ToStringEx(this byte[] bytes, string format)
         {
-            var stringbuilder = new StringBuilder(bytes.Length*2);
+            var stringbuilder = new StringBuilder(bytes.Length * 2);
             foreach (byte byt in bytes)
             {
                 stringbuilder.Append(byt.ToString(format));
@@ -88,14 +108,14 @@ namespace Qi
                 for (int i = 0; i < arySetLen; i++)
                 {
                     var aryItems = new T[maxLengthOfAry];
-                    Array.Copy(ary, maxLengthOfAry*i, aryItems, 0, maxLengthOfAry);
+                    Array.Copy(ary, maxLengthOfAry * i, aryItems, 0, maxLengthOfAry);
                     arySet.Add(aryItems);
                 }
             }
             if (remainder != 0)
             {
                 var aryItems = new T[remainder];
-                Array.Copy(ary, maxLengthOfAry*arySetLen, aryItems, 0, remainder);
+                Array.Copy(ary, maxLengthOfAry * arySetLen, aryItems, 0, remainder);
                 arySet.Add(aryItems);
             }
             return arySet;

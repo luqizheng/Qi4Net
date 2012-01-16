@@ -120,6 +120,7 @@
     <Compile Include="DataTables\DataTable.cs" />
     <Compile Include="QFunc.cs" />
     <Compile Include="QMath.cs" />
+    <Compile Include="Secret\AesUtil.cs" />
     <Compile Include="Secret\DESHelper.cs" />
     <Compile Include="Text\NamedFormatterHelper.cs" />
     <Compile Include="Secret\EncryptHelper.cs" />

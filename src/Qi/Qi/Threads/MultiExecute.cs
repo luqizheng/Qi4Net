@@ -20,7 +20,9 @@ namespace Qi.Threads
                 throw new ArgumentOutOfRangeException("threadCount", "Should be between 1~9999");
             _threadCount = threadCount;
         }
+
         #region exeute handler with return Value
+
         /// <summary>
         /// 
         /// </summary>
@@ -44,9 +46,11 @@ namespace Qi.Threads
                                                                                   callback();
                                                                           }, null);
         }
+
         #endregion
 
         #region without handler
+
         public void Execute<T>(T[] data, VoidFunc<T[]> executeFunc)
         {
             if (data == null)
@@ -59,17 +63,16 @@ namespace Qi.Threads
 
         public void Execute<T>(T[] data, VoidFunc<T[]> executeFunc, VoidFunc callback)
         {
-
             if (data == null)
                 throw new ArgumentNullException("data");
             if (data.Length == 0)
                 return;
             var handler = new VoidFunc<T[], VoidFunc<T[]>, VoidFunc>(ActualExecute);
             handler.BeginInvoke(data, executeFunc, null, a =>
-            {
-                if (callback != null)
-                    callback();
-            }, null);
+                                                             {
+                                                                 if (callback != null)
+                                                                     callback();
+                                                             }, null);
         }
 
         public void Execute<T>(T[] data, VoidFunc<T[]> executeFunc, VoidFunc threadComplete, VoidFunc callback)
@@ -87,7 +90,9 @@ namespace Qi.Threads
                                                                                callback();
                                                                        }, null);
         }
+
         #endregion
+
         /// <summary>
         /// 
         /// </summary>
@@ -100,7 +105,7 @@ namespace Qi.Threads
             var globalCheck = new ManualResetEvent(false);
             T[][] splitData = AssignThread(datas, out threads, state =>
                                                                    {
-                                                                       executeHandler((T[])state);
+                                                                       executeHandler((T[]) state);
                                                                        if (threadComplete != null)
                                                                        {
                                                                            threadComplete();
@@ -129,7 +134,7 @@ namespace Qi.Threads
             var globalCheck = new ManualResetEvent(false);
             T[][] splitData = AssignThread(datas, out threads, state =>
                                                                    {
-                                                                       TReturn retrunValue = executeHandler((T[])state);
+                                                                       TReturn retrunValue = executeHandler((T[]) state);
                                                                        if (threadComplete != null)
                                                                        {
                                                                            threadComplete(retrunValue);
@@ -164,7 +169,7 @@ namespace Qi.Threads
             threads = new Thread[result.Length];
             for (int i = 0; i < result.Length; i++)
             {
-                threads[i] = new Thread(completeCallback) { IsBackground = true };
+                threads[i] = new Thread(completeCallback) {IsBackground = true};
             }
             datas = null;
             return result;

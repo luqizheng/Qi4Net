@@ -112,12 +112,15 @@
     <Compile Include="EnumHelper.cs" />
     <Compile Include="IO\IoExtender.cs" />
     <Compile Include="IO\Serialization\SerializationHelper.cs" />
+    <Compile Include="NotFoundCacheObjectException.cs" />
+    <Compile Include="ObjectPools.cs" />
     <Compile Include="Net\MacAddress.cs" />
     <Compile Include="Net\NetworkException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataTables\Columns\Column.cs" />
     <Compile Include="DataTables\ColumnCollection.cs" />
     <Compile Include="DataTables\DataTable.cs" />
+    <Compile Include="QCache.cs" />
     <Compile Include="QFunc.cs" />
     <Compile Include="QMath.cs" />
     <Compile Include="Secret\DESHelper.cs" />

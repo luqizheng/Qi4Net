@@ -93,12 +93,38 @@ namespace Qi.Test
         }
 
         /// <summary>
+        ///A test for Ceilling
+        ///</summary>
+        [TestMethod()]
+        public void CeillingTest_d_over_point()
+        {
+            Decimal i = 16.156m;
+            int midPointRouting = 4;
+            Decimal expected = 16.156m;
+            Decimal actual;
+            actual = QMath.Ceilling(i, midPointRouting);
+            Assert.AreEqual(expected, actual);
+        }
+
+        /// <summary>
+        ///A test for Ceilling
+        ///</summary>
+        [TestMethod()]
+        public void CeillingTest_d_midPointRouting()
+        {
+            Decimal i = 16.156m;
+            int midPointRouting = 0;
+            Decimal expected = 17;
+            Decimal actual;
+            actual = QMath.Ceilling(i, midPointRouting);
+            Assert.AreEqual(expected, actual);
+        }
+        /// <summary>
         ///A test for Truncate
         ///</summary>
         [TestMethod()]
         public void TruncateTest()
         {
-
             Decimal i = 16.151m;
             int midPointRouting = 2;
             Decimal expected = 16.15m;

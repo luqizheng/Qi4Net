@@ -9,20 +9,20 @@ using Property = NHibernate.Mapping.Property;
 namespace Qi.Web.Mvc
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class NHModelFounderAttribute : Attribute
+    public class NhModelFounderAttribute : Attribute
     {
         private readonly string _hql;
         private readonly string _mappingPropertyName;
         private readonly bool _uniqueResult;
 
-        public NHModelFounderAttribute(string mappingPropertyName, bool uniqueResult)
+        public NhModelFounderAttribute(string mappingPropertyName, bool uniqueResult)
         {
             if (mappingPropertyName == null) throw new ArgumentNullException("mappingPropertyName");
             _mappingPropertyName = mappingPropertyName;
             _uniqueResult = uniqueResult;
         }
 
-        public NHModelFounderAttribute(bool uniqueResult, string hql)
+        public NhModelFounderAttribute(bool uniqueResult, string hql)
         {
             _hql = hql;
             _uniqueResult = uniqueResult;
@@ -31,7 +31,7 @@ namespace Qi.Web.Mvc
         /// <summary>
         /// Use persistent's id for searching.
         /// </summary>
-        public NHModelFounderAttribute()
+        public NhModelFounderAttribute()
         {
         }
 
@@ -78,7 +78,8 @@ namespace Qi.Web.Mvc
         {
             var idType = type as NullableType;
             if (idType == null)
-                throw new OrnamentException("Resource's Id only support mapping from  NullableType in nhibernate.");
+                throw new NhConfigurationException(
+                    "Resource's Id only support mapping from  NullableType in nhibernate.");
             return idType.FromStringValue(id);
         }
     }

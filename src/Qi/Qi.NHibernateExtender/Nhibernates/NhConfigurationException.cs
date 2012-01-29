@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Qi.Nhibernates
 {
-    public class ConfigurationException:ApplicationException
+    public class NhConfigurationException:ApplicationException
     {
-        public ConfigurationException(string msg):base(msg)
+        public NhConfigurationException(string msg):base(msg)
         {
             
         }

@@ -77,7 +77,7 @@ namespace Qi.Web.Mvc
                                            Type modelType)
         {
             string strValue = controllerContext.RequestContext.HttpContext.Request[propertyDescriptor.Name];
-            NHModelFounderAttribute founderAttribute = GetEntityFounder(propertyDescriptor, modelType);
+            NhModelFounderAttribute founderAttribute = GetEntityFounder(propertyDescriptor, modelType);
             object value = founderAttribute.Find(SessionManager.Instance, strValue, propertyDescriptor.PropertyType);
             return value;
         }
@@ -88,16 +88,16 @@ namespace Qi.Web.Mvc
             return res != null;
         }
 
-        private static NHModelFounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
+        private static NhModelFounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (NHModelFounderAttribute),
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (NhModelFounderAttribute),
                                                                                    true);
             if (customAttributes.Length == 0)
             {
-                return new NHModelFounderAttribute();
+                return new NhModelFounderAttribute();
             }
-            return (NHModelFounderAttribute) customAttributes[0];
+            return (NhModelFounderAttribute) customAttributes[0];
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Qi.Web.Mvc
         {
             PersistentClass mappingInfo = SessionManager.Instance.Config.NHConfiguration.GetClassMapping(modelType);
             string idValue = request[mappingInfo.IdentifierProperty.Name];
-            var s = new NHModelFounderAttribute();
+            var s = new NhModelFounderAttribute();
             return s.Find(SessionManager.Instance, idValue, modelType);
         }
     }

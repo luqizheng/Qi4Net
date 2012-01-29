@@ -99,7 +99,7 @@ namespace Qi.Nhibernates
         public static SessionManager GetInstance(string sessionFactoryName)
         {
             if (!SessionManagers.ContainsKey(sessionFactoryName))
-                throw new ConfigurationException("Can't find the session-factory named " + sessionFactoryName);
+                throw new NhConfigurationException("Can't find the session-factory named " + sessionFactoryName);
             return SessionManagers[sessionFactoryName];
         }
 
@@ -152,7 +152,7 @@ namespace Qi.Nhibernates
         {
             if (SessionManagers.ContainsKey(info.SessionFactoryName))
             {
-                throw new ConfigurationException("Can't add exist config file.");
+                throw new NhConfigurationException("Can't add exist config file.");
             }
 
             SessionManagers.Add(info.SessionFactoryName, new SessionManager(info));

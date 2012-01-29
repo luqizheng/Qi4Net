@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.Win32", "Qi.Win32\Qi.Win
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreadPerformerTest", "ThreadPerformerTest\ThreadPerformerTest.csproj", "{040FE2E3-6CE5-40EA-AFAF-59201F440512}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.NHibernateExtender", "Qi.NHibernateExtender\Qi.NHibernateExtender.csproj", "{310038D7-CC1C-49EC-A560-8CF2370A0DA7}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Qi.vsmdi
@@ -106,6 +108,18 @@ Global
 		{040FE2E3-6CE5-40EA-AFAF-59201F440512}.Release|Win32.ActiveCfg = Release|x86
 		{040FE2E3-6CE5-40EA-AFAF-59201F440512}.Release|x86.ActiveCfg = Release|x86
 		{040FE2E3-6CE5-40EA-AFAF-59201F440512}.Release|x86.Build.0 = Release|x86
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Release|Win32.ActiveCfg = Release|Any CPU
+		{310038D7-CC1C-49EC-A560-8CF2370A0DA7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

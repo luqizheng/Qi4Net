@@ -1,0 +1,16 @@
+
+/src/Qi/Qi.NHibernateExtender/bin
+/src/Qi/Qi.NHibernateExtender/obj
+/src/Qi/_ReSharper.Qi
+/src/Qi/Qi/obj
+/src/Qi/Qi/bin
+/src/Qi/Qi.Test/obj
+/src/Qi/Qi.Test/bin
+/src/Qi/Qi.Test.Console/obj
+/src/Qi/Qi.Test.Console/bin
+/src/Qi/Qi.Web/obj
+/src/Qi/Qi.Web/bin
+/src/Qi/Qi.Win32/obj
+/src/Qi/Qi.Win32/bin
+/src/Qi/ThreadPerformerTest/obj
+/src/Qi/ThreadPerformerTest/bin

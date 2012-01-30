@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\NHibernates\DaoBase.cs" />
     <Compile Include="Nhibernates\NhConfigurationException.cs" />
     <Compile Include="Nhibernates\DaoBase.cs" />
     <Compile Include="Nhibernates\NhConfig.cs" />

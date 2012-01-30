@@ -81,23 +81,7 @@ namespace Qi.Domain
 
         void Update(TReturn t);
 
-        /// <summary>
-        /// </summary>
-        /// <param name="pageIndex">
-        /// pageInde. start from 1
-        /// </param>
-        /// <param name="pageSize">
-        /// the number of the records to return
-        /// </param>
-        /// <returns>
-        /// </returns>
-        IList<TReturn> FindAll(int pageIndex, int pageSize);
-
-        /// <summary>
-        /// Counts all entities of the type
-        /// </summary>
-        /// <returns></returns>
-        int CountAll();
+      
 
         /// <summary>
         /// </summary>

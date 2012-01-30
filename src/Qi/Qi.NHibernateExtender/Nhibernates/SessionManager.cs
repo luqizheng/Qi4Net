@@ -12,23 +12,23 @@ namespace Qi.Nhibernates
             new SortedDictionary<string, SessionManager>();
 
 
-        private readonly NhConfigFileInfo _configInfo;
+        private readonly NhConfig _configInfo;
 
         static SessionManager()
         {
-            NhConfigFileInfo[] nhFileInfos = NhConfigFileInfo.GetNHFileInfos();
-            for (int i = 0; i < nhFileInfos.Length; i++)
+            NhConfig[] nh = NhConfig.GetNHFileInfos();
+            for (int i = 0; i < nh.Length; i++)
             {
-                Add(nhFileInfos[i], i == 0 || nhFileInfos[i].SessionFactoryName == "default");
+                Add(nh[i], i == 0 || nh[i].SessionFactoryName == "default");
             }
         }
 
-        private SessionManager(NhConfigFileInfo nhConfigFileInfo)
+        private SessionManager(NhConfig nhConfig)
         {
-            if (nhConfigFileInfo == null)
-                throw new ArgumentNullException("nhConfigFileInfo");
+            if (nhConfig == null)
+                throw new ArgumentNullException("nhConfig");
 
-            _configInfo = nhConfigFileInfo;
+            _configInfo = nhConfig;
         }
 
         public static string DefaultSessionFactoryKey { get; private set; }
@@ -66,7 +66,7 @@ namespace Qi.Nhibernates
             get { return GetSessionFactory().OpenStatelessSession(); }
         }
 
-        public NhConfigFileInfo Config
+        public NhConfig Config
         {
             get { return _configInfo; }
         }
@@ -148,7 +148,7 @@ namespace Qi.Nhibernates
             }
         }
 
-        public static void Add(NhConfigFileInfo info, bool isDefault)
+        public static void Add(NhConfig info, bool isDefault)
         {
             if (SessionManagers.ContainsKey(info.SessionFactoryName))
             {
@@ -162,7 +162,7 @@ namespace Qi.Nhibernates
             }
         }
 
-        public static void Remove(NhConfigFileInfo info)
+        public static void Remove(NhConfig info)
         {
             if (info == null) throw new ArgumentNullException("info");
             SessionManagers.Remove(info.SessionFactoryName);

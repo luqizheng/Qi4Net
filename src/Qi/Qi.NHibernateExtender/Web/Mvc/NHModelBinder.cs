@@ -104,7 +104,6 @@ namespace Qi.Web.Mvc
         /// if model is nh mapping class, use this found to getit.
         /// </summary>
         /// <param name="modelType"></param>
-        /// <param name="session"></param>
         /// <param name="request"></param>
         /// <returns></returns>
         protected virtual Object GeModelFromNH(Type modelType, HttpRequestBase request)

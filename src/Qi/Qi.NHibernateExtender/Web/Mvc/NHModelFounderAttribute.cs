@@ -12,20 +12,50 @@ namespace Qi.Web.Mvc
     public class NhModelFounderAttribute : Attribute
     {
         private readonly string _hql;
+        private readonly IType _hqlParameterType;
         private readonly string _mappingPropertyName;
+        private readonly int _parameterTypePosition;
+        private readonly object[] _anotherHqlValue;
+        private readonly IType[] _anohterHqlType;
         private readonly bool _uniqueResult;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mappingPropertyName">property of the mapping class</param>
+        /// <param name="uniqueResult">result is unique or not</param>
         public NhModelFounderAttribute(string mappingPropertyName, bool uniqueResult)
         {
             if (mappingPropertyName == null) throw new ArgumentNullException("mappingPropertyName");
             _mappingPropertyName = mappingPropertyName;
             _uniqueResult = uniqueResult;
         }
+        /// <summary>
+        /// use hql to found the object, submit value will set it to first place.
+        /// </summary>
+        /// <param name="hql"></param>
+        /// <param name="parameterType"></param>
+        public NhModelFounderAttribute(string hql, IType parameterType)
+            : this(true, hql, parameterType, 0, null, null)
+        {
+        }
 
-        public NhModelFounderAttribute(bool uniqueResult, string hql)
+        /// <summary>
+        /// use hql to creating the Founder.
+        /// </summary>
+        /// <param name="uniqueResult"></param>
+        /// <param name="hql"></param>
+        /// <param name="parameterTypePosition"> </param>
+        /// <param name="anotherHqlValue"> </param>
+        /// <param name="anohterHqlType"> </param>
+        public NhModelFounderAttribute(bool uniqueResult, string hql, IType parameterType, int parameterTypePosition,
+                                       object[] anotherHqlValue, IType[] anohterHqlType)
         {
             _hql = hql;
             _uniqueResult = uniqueResult;
+            _hqlParameterType = parameterType;
+            _parameterTypePosition = parameterTypePosition;
+            _anotherHqlValue = anotherHqlValue;
+            _anohterHqlType = anohterHqlType;
         }
 
         /// <summary>
@@ -44,13 +74,14 @@ namespace Qi.Web.Mvc
 
                 if (String.IsNullOrEmpty(_mappingPropertyName)) // use id to get object
                 {
-                    object idValue = ConvertObject(propertyStrVal, mappingInfo.Identifier.Type);
+                    //use Property to find the name.
+                    object idValue = ConvertStringToObject(propertyStrVal, mappingInfo.Identifier.Type);
                     return session.CurrentSession.Load(entityType, idValue);
                 }
                 if (!String.IsNullOrEmpty(_hql))
                 {
-                    IQuery crit = session.CurrentSession.CreateQuery(_hql);
-                    return _uniqueResult ? crit.UniqueResult() : crit.List();
+                    //use hql to get the object;
+                    return GetObjectByHql(session, propertyStrVal);
                 }
                 return FindByMappingProperty(session, propertyStrVal, entityType, mappingInfo);
             }
@@ -63,24 +94,42 @@ namespace Qi.Web.Mvc
             }
         }
 
+        private object GetObjectByHql(SessionManager session, string propertyStrVal)
+        {
+            IQuery crit = session.CurrentSession.CreateQuery(_hql);
+            object inputParameter = ConvertStringToObject(propertyStrVal, _hqlParameterType);
+            crit.SetParameter(_parameterTypePosition, inputParameter, _hqlParameterType);
+            if (_anohterHqlType != null)
+            {
+                int i = 1;
+                foreach (var val in _anotherHqlValue)
+                {
+                    crit.SetParameter(i, val, _anohterHqlType[i - 1]);
+                    i++;
+                }
+            }
+
+            return _uniqueResult ? crit.UniqueResult() : crit.List();
+        }
+
         private object FindByMappingProperty(SessionManager session, string propertyStrVal, Type entityType,
                                              PersistentClass mappingInfo)
         {
             Property property = mappingInfo.GetProperty(_mappingPropertyName);
-            object propertyValue = ConvertObject(propertyStrVal, property.Type);
+            object propertyValue = ConvertStringToObject(propertyStrVal, property.Type);
             ICriteria crit = DetachedCriteria.For(entityType).Add(
                 Restrictions.Eq(_mappingPropertyName, propertyValue)).GetExecutableCriteria(
                     session.CurrentSession);
             return _uniqueResult ? crit.UniqueResult() : crit.List();
         }
 
-        private static object ConvertObject(string id, IType type)
+        private static object ConvertStringToObject(string valStrExpress, IType type)
         {
             var idType = type as NullableType;
             if (idType == null)
                 throw new NhConfigurationException(
                     "Resource's Id only support mapping from  NullableType in nhibernate.");
-            return idType.FromStringValue(id);
+            return idType.FromStringValue(valStrExpress);
         }
     }
 }

@@ -54,7 +54,7 @@
   <ItemGroup>
     <Compile Include="Nhibernates\NhConfigurationException.cs" />
     <Compile Include="Nhibernates\DaoBase.cs" />
-    <Compile Include="Nhibernates\NhConfigFileInfo.cs" />
+    <Compile Include="Nhibernates\NhConfig.cs" />
     <Compile Include="Nhibernates\SessionManager.cs" />
     <Compile Include="Nhibernates\Types\AbstractTimeType.cs" />
     <Compile Include="Nhibernates\Types\KeyValueCollectionType.cs" />
@@ -63,6 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\Mvc\NHModelBinder.cs" />
     <Compile Include="Web\Mvc\NHModelFounderAttribute.cs" />
+    <Compile Include="Web\Mvc\SessionAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

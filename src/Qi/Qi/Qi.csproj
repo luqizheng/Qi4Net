@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\Qi.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,7 +108,6 @@
     <Compile Include="DataTables\Calculator.cs" />
     <Compile Include="DataTables\IDataTable.cs" />
     <Compile Include="DataTables\Calculators\Sum.cs" />
-    <Compile Include="DataTables\SummaryHelper.cs" />
     <Compile Include="Domain\DomainObject.cs" />
     <Compile Include="Domain\IDao.cs" />
     <Compile Include="EnumDescription.cs" />

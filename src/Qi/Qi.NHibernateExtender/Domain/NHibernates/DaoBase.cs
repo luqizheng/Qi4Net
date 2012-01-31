@@ -1,27 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
-using Qi.Domain;
 using Qi.Nhibernates;
 
 namespace Qi.Domain.NHibernates
 {
+    /// <summary>
+    /// Dao base for nhibernate implement
+    /// </summary>
+    /// <typeparam name="TId"></typeparam>
+    /// <typeparam name="TObject"></typeparam>
     public abstract class DaoBase<TId, TObject> : IDao<TObject, TId>
     {
+        private readonly string _sessionFactoryName;
         private readonly bool _useGlobalSession;
-        private string sessionFactoryName;
         private ISession _privateSession;
-        private string _sessionFactoryName;
+
+
         protected DaoBase()
             : this(true)
         {
         }
+
         protected DaoBase(string sessionFactoryName, bool useGlobalSession)
         {
             _sessionFactoryName = sessionFactoryName;
             _useGlobalSession = useGlobalSession;
         }
+
         protected DaoBase(string sessionFactoryName)
         {
             _sessionFactoryName = sessionFactoryName;
@@ -33,20 +39,29 @@ namespace Qi.Domain.NHibernates
         }
 
 
+        private SessionManager GetSessionManager()
+        {
+            return !string.IsNullOrEmpty(_sessionFactoryName)
+                ? SessionManager.GetInstance(_sessionFactoryName) : SessionManager.GetInstance(typeof(TObject));
+        }
+
 
         protected ISession CurrentSession
         {
             get
             {
                 if (_useGlobalSession)
-                    return SessionManager.Instance.CurrentSession;
-                return _privateSession ?? (_privateSession = SessionManager.Instance.NewSession);
+                {
+                    return GetSessionManager().CurrentSession;
+                }
+                return _privateSession ??
+                       (_privateSession = GetSessionManager().NewSession);
             }
         }
 
         protected IStatelessSession StatelessSession
         {
-            get { return SessionManager.Instance.Sessionless; }
+            get { return GetSessionManager().Sessionless; }
         }
 
         #region IDao<TObject,TId> Members
@@ -70,7 +85,6 @@ namespace Qi.Domain.NHibernates
         {
             CurrentSession.Update(t);
         }
-
 
 
         public virtual void Delete(TObject t)

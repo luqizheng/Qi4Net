@@ -16,6 +16,7 @@ namespace Qi.Web.Mvc
         private readonly string _sessionFactoryName;
         private bool _autoCloase;
         private ITransaction _tras;
+
         /// <summary>
         /// 
         /// </summary>
@@ -25,8 +26,9 @@ namespace Qi.Web.Mvc
         {
             Order = 0;
             _enabled = enabled;
-            _sessionFactoryName = sessionFactoryName;           
+            _sessionFactoryName = sessionFactoryName;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -35,6 +37,7 @@ namespace Qi.Web.Mvc
             : this(enabled, null)
         {
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -43,16 +46,19 @@ namespace Qi.Web.Mvc
         {
             Order = 0;
         }
+
         /// <summary>
         /// Gets or sets the value indecate use transaction or not.
         /// </summary>
         public bool Transaction { get; set; }
+
         /// <summary>
         /// Gets or sets the IsolationLevel, default use the config setting.
         /// </summary>
         public IsolationLevel? IsolationLevel { get; set; }
 
         #region IExceptionFilter Members
+
         /// <summary>
         /// 
         /// </summary>
@@ -67,6 +73,7 @@ namespace Qi.Web.Mvc
         }
 
         #endregion
+
         /// <summary>
         /// 
         /// </summary>
@@ -75,21 +82,18 @@ namespace Qi.Web.Mvc
         {
             if (_enabled)
             {
-                if (!String.IsNullOrEmpty(_sessionFactoryName))
-                    _autoCloase = SessionManager.GetInstance(_sessionFactoryName).IniSession();
-                else
-                    _autoCloase = SessionManager.Instance.IniSession();
-
+                _autoCloase = !String.IsNullOrEmpty(_sessionFactoryName)
+                                  ? SessionManager.GetInstance(_sessionFactoryName).IniSession()
+                                  : SessionManager.Instance.IniSession();
             }
             if (Transaction)
             {
-                if (IsolationLevel != null)
-                    _tras = SessionManager.Instance.CurrentSession.BeginTransaction(IsolationLevel.Value);
-                else
-                    _tras = SessionManager.Instance.CurrentSession.BeginTransaction();
-
+                _tras = IsolationLevel != null
+                            ? SessionManager.Instance.CurrentSession.BeginTransaction(IsolationLevel.Value)
+                            : SessionManager.Instance.CurrentSession.BeginTransaction();
             }
         }
+
         /// <summary>
         /// 
         /// </summary>

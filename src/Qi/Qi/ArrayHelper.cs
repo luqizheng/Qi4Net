@@ -4,19 +4,23 @@ using System.Text;
 
 namespace Qi
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ArrayHelper
     {
         /// <summary>
-        /// a <see cref="System.String.Substring"/> method of array.
+        /// a <see>
+        ///     <cref>System.String.Substring</cref>
+        ///   </see> method of array.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">item of array</typeparam>
         /// <param name="array"></param>
         /// <param name="start"></param>
         /// <param name="length"></param>
         /// <returns></returns>
         public static T[] SubArray<T>(this T[] array, int start, int length)
         {
-            var s = "";
             if (array.Length - 1 < start)
             {
                 throw new ArgumentOutOfRangeException("start", "start index is larger than array");
@@ -29,8 +33,11 @@ namespace Qi
             Array.Copy(array, start, result, 0, length);
             return result;
         }
+
         /// <summary>
-        /// a <see cref="System.String.Substring"/> method of array.
+        /// a <see>
+        ///     <cref>System.String.Substring</cref>
+        ///   </see> method of array.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="array"></param>

@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Qi
 {
+    /// <summary>
+    /// Application extend methods
+    /// </summary>
     public class ApplicationHelper
     {
         /// <summary>

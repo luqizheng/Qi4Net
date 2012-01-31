@@ -59,7 +59,7 @@ namespace Qi.Nhibernates
         }
 
         /// <summary>
-        /// 這個也要自己Handler
+        /// Sessionless,需要自行处理close 
         /// </summary>
         public IStatelessSession Sessionless
         {

@@ -18,7 +18,7 @@ namespace Qi
             int key;
             return Once(initMethod, out key);
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -33,7 +33,7 @@ namespace Qi
             {
                 _inits.Add(key, initMethod());
             }
-            return (T)_inits[key];
+            return (T) _inits[key];
         }
 
         /// <summary>
@@ -51,13 +51,13 @@ namespace Qi
             {
                 _inits.Add(key, new WeakReference(initMethod()));
             }
-            var weObject = (WeakReference)_inits[key];
+            var weObject = (WeakReference) _inits[key];
             if (weObject.IsAlive)
             {
-                return (T)weObject.Target;
+                return (T) weObject.Target;
             }
             _inits[key] = new WeakReference(initMethod());
-            return (T)((WeakReference)_inits[key]).Target;
+            return (T) ((WeakReference) _inits[key]).Target;
         }
 
         /// <summary>
@@ -91,9 +91,9 @@ namespace Qi
                 {
                     throw new NotFoundCacheObjectException(key);
                 }
-                return (T)timeoutItem.Target;
+                return (T) timeoutItem.Target;
             }
-            return (T)result;
+            return (T) result;
         }
     }
 }

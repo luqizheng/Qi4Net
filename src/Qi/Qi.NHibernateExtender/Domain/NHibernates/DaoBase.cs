@@ -39,13 +39,6 @@ namespace Qi.Domain.NHibernates
         }
 
 
-        private SessionManager GetSessionManager()
-        {
-            return !string.IsNullOrEmpty(_sessionFactoryName)
-                ? SessionManager.GetInstance(_sessionFactoryName) : SessionManager.GetInstance(typeof(TObject));
-        }
-
-
         protected ISession CurrentSession
         {
             get
@@ -104,7 +97,7 @@ namespace Qi.Domain.NHibernates
 
         public virtual TId Save(TObject t)
         {
-            return (TId)CurrentSession.Save(t);
+            return (TId) CurrentSession.Save(t);
         }
 
         public virtual IList<TObject> FindByExample(TObject exampleInstance, params string[] propertiesToExclude)
@@ -137,15 +130,22 @@ namespace Qi.Domain.NHibernates
 
         #endregion
 
+        private SessionManager GetSessionManager()
+        {
+            return !string.IsNullOrEmpty(_sessionFactoryName)
+                       ? SessionManager.GetInstance(_sessionFactoryName)
+                       : SessionManager.GetInstance(typeof (TObject));
+        }
+
         protected DetachedCriteria CreateDetachedCriteria()
         {
-            return DetachedCriteria.For(typeof(TObject));
+            return DetachedCriteria.For(typeof (TObject));
         }
 
 
         protected virtual ICriteria CreateCriteria()
         {
-            return CurrentSession.CreateCriteria(typeof(TObject));
+            return CurrentSession.CreateCriteria(typeof (TObject));
         }
 
         protected virtual IQuery CreateQuery(string query)

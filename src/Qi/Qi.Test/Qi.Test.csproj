@@ -129,15 +129,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Shadow Include="Test References\Qi.accessor" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resource1.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource1.zh-CN.resx" />
     <EmbeddedResource Include="Resource1.zh-TW.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test References\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

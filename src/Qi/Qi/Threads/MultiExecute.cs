@@ -5,6 +5,9 @@ using System.Threading;
 
 namespace Qi.Threads
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class MultiExecute
     {
         private readonly int _threadCount;

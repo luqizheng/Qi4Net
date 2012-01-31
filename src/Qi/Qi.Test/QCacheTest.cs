@@ -117,22 +117,7 @@ namespace Qi.Test
 
 
 
-        /// <summary>
-        ///A test for FindIndex
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Qi.dll")]
-        public void FindIndexTest()
-        {
-            QCache_Accessor target = new QCache_Accessor(); // TODO: Initialize to an appropriate value
-            DateTime lessThanDateTime = new DateTime(); // TODO: Initialize to an appropriate value
-            int expected = 0; // TODO: Initialize to an appropriate value
-            int actual;
-            actual = target.FindIndex(lessThanDateTime);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
+    
 
     }
 }

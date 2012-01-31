@@ -279,19 +279,19 @@ namespace Qi.Test
         }
 
 
-        /// <summary>
-        ///A test for CheckTimeSpanBound
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("Ornament.Core.dll")]
-        public void CheckTimeSpanBoundTest()
-        {
-            TimeSpan time = new TimeSpan(10, 23, 2, 3);
-            TimeSpan expected = new TimeSpan(23, 2, 3);
-            TimeSpan actual;
-            actual = Time_Accessor.CheckTimeSpanBound(time);
-            Assert.AreEqual(expected, actual);
+        ///// <summary>
+        /////A test for CheckTimeSpanBound
+        /////</summary>
+        //[TestMethod()]
+        //[DeploymentItem("Qi.dll")]
+        //public void CheckTimeSpanBoundTest()
+        //{
+        //    TimeSpan time = new TimeSpan(10, 23, 2, 3);
+        //    TimeSpan expected = new TimeSpan(23, 2, 3);
+        //    TimeSpan actual;
+        //    actual = Time_Accessor.CheckTimeSpanBound(time);
+        //    Assert.AreEqual(expected, actual);
 
-        }
+        //}
     }
 }

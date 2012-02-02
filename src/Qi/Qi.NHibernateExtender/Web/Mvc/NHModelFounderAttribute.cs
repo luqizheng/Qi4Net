@@ -11,13 +11,14 @@ namespace Qi.Web.Mvc
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class NhModelFounderAttribute : Attribute
     {
+        private readonly string[] _anohterHqlType;
+        private readonly object[] _anotherHqlValue;
         private readonly string _hql;
-        private readonly IType _hqlParameterType;
+        private readonly string _hqlParameterType;
         private readonly string _mappingPropertyName;
         private readonly int _parameterTypePosition;
-        private readonly object[] _anotherHqlValue;
-        private readonly IType[] _anohterHqlType;
         private readonly bool _uniqueResult;
+
         /// <summary>
         /// 
         /// </summary>
@@ -29,13 +30,14 @@ namespace Qi.Web.Mvc
             _mappingPropertyName = mappingPropertyName;
             _uniqueResult = uniqueResult;
         }
+
         /// <summary>
         /// use hql to found the object, submit value will set it to first place.
         /// </summary>
         /// <param name="hql"></param>
-        /// <param name="parameterType"></param>
-        public NhModelFounderAttribute(string hql, IType parameterType)
-            : this(true, hql, parameterType, 0, null, null)
+        /// <param name="nhibernateType">NHibernate string Type such as String,Int32,Int64,Guid,Decimal,Decimal(19,2)</param>
+        public NhModelFounderAttribute(string hql, string nhibernateType)
+            : this(true, hql, nhibernateType, 0, null, null)
         {
         }
 
@@ -46,9 +48,9 @@ namespace Qi.Web.Mvc
         /// <param name="hql"></param>
         /// <param name="parameterTypePosition"> </param>
         /// <param name="anotherHqlValue"> </param>
-        /// <param name="anohterHqlType"> </param>
-        public NhModelFounderAttribute(bool uniqueResult, string hql, IType parameterType, int parameterTypePosition,
-                                       object[] anotherHqlValue, IType[] anohterHqlType)
+        /// <param name="anohterHqlType">NHibernate string Type such as String,Int32,Int64,Guid,Decimal,Decimal(19,2)</param>
+        public NhModelFounderAttribute(bool uniqueResult, string hql, string parameterType, int parameterTypePosition,
+                                       object[] anotherHqlValue, string[] anohterHqlType)
         {
             _hql = hql;
             _uniqueResult = uniqueResult;
@@ -97,14 +99,18 @@ namespace Qi.Web.Mvc
         private object GetObjectByHql(SessionManager session, string propertyStrVal)
         {
             IQuery crit = session.CurrentSession.CreateQuery(_hql);
-            object inputParameter = ConvertStringToObject(propertyStrVal, _hqlParameterType);
-            crit.SetParameter(_parameterTypePosition, inputParameter, _hqlParameterType);
+
+            IType hqlType = TypeFactory.Basic(_hqlParameterType);
+
+            object inputParameter = ConvertStringToObject(propertyStrVal, hqlType);
+            crit.SetParameter(_parameterTypePosition, inputParameter, hqlType);
             if (_anohterHqlType != null)
             {
                 int i = 1;
-                foreach (var val in _anotherHqlValue)
+                foreach (object val in _anotherHqlValue)
                 {
-                    crit.SetParameter(i, val, _anohterHqlType[i - 1]);
+                    IType paramType = TypeFactory.Basic(_anohterHqlType[i - 1]);
+                    crit.SetParameter(i, val, paramType);
                     i++;
                 }
             }

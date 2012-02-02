@@ -1,4 +1,5 @@
-﻿using Qi;
+﻿using System.Collections.Generic;
+using Qi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading;
@@ -64,7 +65,19 @@ namespace Qi.Test
         //
         #endregion
 
+        [TestMethod]
+        public void Ad()
+        {
+            var s = new string[] { "a", "b" };
+            var s1 = new List<string>()
+                         {
+                             "a",
+                             "b"
+                         };
+            var a = s.GetType();
+            var b = s1.GetType();
 
+        }
         /// <summary>
         ///A test for QCache Constructor
         ///</summary>
@@ -117,7 +130,7 @@ namespace Qi.Test
 
 
 
-    
+
 
     }
 }

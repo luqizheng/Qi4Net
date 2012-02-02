@@ -13,8 +13,6 @@ namespace Qi.Web.Mvc
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
         private readonly bool _enabled;
-        private readonly string _sessionFactoryName;
-        private bool _autoCloase;
         private ITransaction _tras;
 
         /// <summary>
@@ -26,8 +24,10 @@ namespace Qi.Web.Mvc
         {
             Order = 0;
             _enabled = enabled;
-            _sessionFactoryName = sessionFactoryName;
+            SessionFactoryName = sessionFactoryName ?? SessionManager.Instance.Config.SessionFactoryName;
         }
+
+        public string SessionFactoryName { get; private set; }
 
         /// <summary>
         /// 
@@ -82,9 +82,11 @@ namespace Qi.Web.Mvc
         {
             if (_enabled)
             {
-                _autoCloase = !String.IsNullOrEmpty(_sessionFactoryName)
-                                  ? SessionManager.GetInstance(_sessionFactoryName).IniSession()
-                                  : SessionManager.Instance.IniSession();
+                if (String.IsNullOrEmpty(SessionFactoryName))
+                    SessionManager.Instance.IniSession();
+                else
+                    SessionManager.GetInstance(SessionFactoryName).IniSession();
+
             }
             if (Transaction)
             {
@@ -100,14 +102,12 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            if (_autoCloase)
+            if (!String.IsNullOrEmpty(SessionFactoryName))
             {
-                if (!String.IsNullOrEmpty(_sessionFactoryName))
-                {
-                    SessionManager.GetInstance(_sessionFactoryName).CleanUp();
-                }
-                SessionManager.Instance.CleanUp();
+                SessionManager.GetInstance(SessionFactoryName).CleanUp();
+                return;
             }
+            SessionManager.Instance.CleanUp();
         }
     }
 }

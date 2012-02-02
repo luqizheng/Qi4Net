@@ -55,7 +55,10 @@ namespace Qi.Nhibernates
                         }
                         else if (IsChanged)
                         {
-                            _factory.GetCurrentSession().Close();
+                            if (!_factory.IsClosed)
+                            {
+                                _factory.Close();
+                            }
                             _factory = NHConfiguration.BuildSessionFactory();
                         }
                     }

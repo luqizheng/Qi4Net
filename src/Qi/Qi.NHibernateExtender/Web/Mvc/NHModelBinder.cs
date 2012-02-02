@@ -50,7 +50,7 @@ namespace Qi.Web.Mvc
                 return base.CreateModel(controllerContext, bindingContext, modelType);
             }
             HttpRequestBase request = controllerContext.RequestContext.HttpContext.Request;
-            object result = GeModelFromNH(modelType, request);
+            object result = GeModelFromNH(modelType, request, controllerContext);
             if (result == null)
             {
                 return
@@ -115,7 +115,7 @@ namespace Qi.Web.Mvc
             string strValue = controllerContext.RequestContext.HttpContext.Request[propertyDescriptor.Name];
             NhModelFounderAttribute founderAttribute = GetEntityFounder(propertyDescriptor, modelType);
             var sessionManager = BuildSessionManager(propertyDescriptor.PropertyType);
-            return founderAttribute.Find(sessionManager, strValue, propertyDescriptor.PropertyType);
+            return founderAttribute.Find(sessionManager, propertyDescriptor.Name, strValue, propertyDescriptor.PropertyType, controllerContext);
         }
 
         private static bool IsPersistentType(Type modelType)
@@ -141,13 +141,13 @@ namespace Qi.Web.Mvc
         /// <param name="modelType"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        protected virtual Object GeModelFromNH(Type modelType, HttpRequestBase request)
+        protected virtual Object GeModelFromNH(Type modelType, HttpRequestBase request, ControllerContext context)
         {
             SessionManager sessionManager = BuildSessionManager(modelType);
             PersistentClass mappingInfo = sessionManager.Config.NHConfiguration.GetClassMapping(modelType);
             string idValue = request[mappingInfo.IdentifierProperty.Name];
             var s = new NhModelFounderAttribute();
-            return s.Find(SessionManager.Instance, idValue, modelType);
+            return s.Find(SessionManager.Instance, mappingInfo.IdentifierProperty.Name, idValue, modelType, context);
         }
 
         private SessionManager BuildSessionManager(Type modelType)

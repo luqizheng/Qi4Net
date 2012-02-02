@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Mapping;
@@ -12,11 +13,10 @@ namespace Qi.Web.Mvc
     public class NhModelFounderAttribute : Attribute
     {
         private readonly string[] _anohterHqlType;
-        private readonly object[] _anotherHqlValue;
+        private readonly string[] _anotherHqlName;
         private readonly string _hql;
         private readonly string _hqlParameterType;
         private readonly string _mappingPropertyName;
-        private readonly int _parameterTypePosition;
         private readonly bool _uniqueResult;
 
         /// <summary>
@@ -34,10 +34,10 @@ namespace Qi.Web.Mvc
         /// <summary>
         /// use hql to found the object, submit value will set it to first place.
         /// </summary>
-        /// <param name="hql"></param>
+        /// <param name="hql">hql, the Parameter should be same as model's Property Name</param>
         /// <param name="nhibernateType">NHibernate string Type such as String,Int32,Int64,Guid,Decimal,Decimal(19,2)</param>
         public NhModelFounderAttribute(string hql, string nhibernateType)
-            : this(true, hql, nhibernateType, 0, null, null)
+            : this(true, hql, nhibernateType, null, null)
         {
         }
 
@@ -46,17 +46,16 @@ namespace Qi.Web.Mvc
         /// </summary>
         /// <param name="uniqueResult"></param>
         /// <param name="hql"></param>
-        /// <param name="parameterTypePosition"> </param>
-        /// <param name="anotherHqlValue"> </param>
+        /// <param name="parameterType">the type of post data</param>
+        /// <param name="anotherHqlName"> </param>
         /// <param name="anohterHqlType">NHibernate string Type such as String,Int32,Int64,Guid,Decimal,Decimal(19,2)</param>
-        public NhModelFounderAttribute(bool uniqueResult, string hql, string parameterType, int parameterTypePosition,
-                                       object[] anotherHqlValue, string[] anohterHqlType)
+        public NhModelFounderAttribute(bool uniqueResult, string hql, string parameterType, string[] anotherHqlName,
+                                       string[] anohterHqlType)
         {
             _hql = hql;
             _uniqueResult = uniqueResult;
             _hqlParameterType = parameterType;
-            _parameterTypePosition = parameterTypePosition;
-            _anotherHqlValue = anotherHqlValue;
+            _anotherHqlName = anotherHqlName;
             _anohterHqlType = anohterHqlType;
         }
 
@@ -67,14 +66,15 @@ namespace Qi.Web.Mvc
         {
         }
 
-        public object Find(SessionManager session, string propertyStrVal, Type entityType)
+        public object Find(SessionManager session, string propertyName, string propertyStrVal, Type entityType,
+                           ControllerContext context)
         {
             bool result = session.IniSession();
             try
             {
                 PersistentClass mappingInfo = session.Config.NHConfiguration.GetClassMapping(entityType);
 
-                if (String.IsNullOrEmpty(_mappingPropertyName)) // use id to get object
+                if (!String.IsNullOrEmpty(_mappingPropertyName)) // use id to get object
                 {
                     //use Property to find the name.
                     object idValue = ConvertStringToObject(propertyStrVal, mappingInfo.Identifier.Type);
@@ -83,7 +83,7 @@ namespace Qi.Web.Mvc
                 if (!String.IsNullOrEmpty(_hql))
                 {
                     //use hql to get the object;
-                    return GetObjectByHql(session, propertyStrVal);
+                    return GetObjectByHql(session, propertyStrVal, propertyName, context);
                 }
                 return FindByMappingProperty(session, propertyStrVal, entityType, mappingInfo);
             }
@@ -96,21 +96,26 @@ namespace Qi.Web.Mvc
             }
         }
 
-        private object GetObjectByHql(SessionManager session, string propertyStrVal)
+        private object GetObjectByHql(SessionManager session, string propertyStrVal, string propertyName,
+                                      ControllerContext context)
         {
             IQuery crit = session.CurrentSession.CreateQuery(_hql);
 
             IType hqlType = TypeFactory.Basic(_hqlParameterType);
 
             object inputParameter = ConvertStringToObject(propertyStrVal, hqlType);
-            crit.SetParameter(_parameterTypePosition, inputParameter, hqlType);
+            crit.SetParameter(propertyName, inputParameter, hqlType);
             if (_anohterHqlType != null)
             {
                 int i = 1;
-                foreach (object val in _anotherHqlValue)
+                foreach (string paramer in _anotherHqlName)
                 {
+                    string strValu = context.RequestContext.HttpContext.Request[paramer];
+
                     IType paramType = TypeFactory.Basic(_anohterHqlType[i - 1]);
-                    crit.SetParameter(i, val, paramType);
+                    object val = ConvertStringToObject(strValu, paramType);
+
+                    crit.SetParameter(paramer, val, paramType);
                     i++;
                 }
             }

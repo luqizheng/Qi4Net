@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using NHibernate.Mapping;
 using Qi.Nhibernates;
+using Qi.Web.Mvc.Founders;
 
 namespace Qi.Web.Mvc
 {
@@ -20,25 +21,23 @@ namespace Qi.Web.Mvc
         /// </summary>
         private readonly IDictionary<string, bool> _sessionHandlerByFilters = new Dictionary<string, bool>();
 
-        #region IDisposable Members
-
         private void ClearUp()
         {
             foreach (string a in _sessionHandlerByFilters.Keys)
             {
-                if (!_sessionHandlerByFilters[a])//if value is false, cloed by this instanced.
+                if (!_sessionHandlerByFilters[a]) //if value is false, cloed by this instanced.
                 {
                     SessionManager.Instance.CleanUp();
                 }
             }
         }
 
-        #endregion
         protected override void OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             base.OnModelUpdated(controllerContext, bindingContext);
             ClearUp();
         }
+
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
@@ -63,12 +62,11 @@ namespace Qi.Web.Mvc
 
         private void IndecalteAttribute(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-
             var reflectedControllerDescriptor = new ReflectedControllerDescriptor(controllerContext.Controller.GetType());
 
             string actionname = controllerContext.RouteData.Values["Action"].ToString();
             ActionDescriptor action = reflectedControllerDescriptor.FindAction(controllerContext, actionname);
-            object[] at = action.GetCustomAttributes(typeof(SessionAttribute), true);
+            object[] at = action.GetCustomAttributes(typeof (SessionAttribute), true);
             foreach (SessionAttribute a in at)
             {
                 _sessionHandlerByFilters.Add(a.SessionFactoryName, true);
@@ -110,12 +108,18 @@ namespace Qi.Web.Mvc
             }
         }
 
-        private object GetPersistentObject(ControllerContext controllerContext, PropertyDescriptor propertyDescriptor, Type modelType)
+        private object GetPersistentObject(ControllerContext controllerContext, PropertyDescriptor propertyDescriptor,
+                                           Type modelType)
         {
             string strValue = controllerContext.RequestContext.HttpContext.Request[propertyDescriptor.Name];
-            NhModelFounderAttribute founderAttribute = GetEntityFounder(propertyDescriptor, modelType);
-            var sessionManager = BuildSessionManager(propertyDescriptor.PropertyType);
-            return founderAttribute.Find(sessionManager, propertyDescriptor.Name, strValue, propertyDescriptor.PropertyType, controllerContext);
+            FounderAttribute founderAttribute = GetEntityFounder(propertyDescriptor, modelType);
+            SessionManager sessionManager = BuildSessionManager(propertyDescriptor.PropertyType);
+            if (founderAttribute.EntityType == null)
+            {
+                founderAttribute.EntityType = propertyDescriptor.PropertyType;
+            }
+            return founderAttribute.GetObject(sessionManager, strValue, propertyDescriptor.Name,
+                                              controllerContext.HttpContext);
         }
 
         private static bool IsPersistentType(Type modelType)
@@ -123,16 +127,16 @@ namespace Qi.Web.Mvc
             return SessionManager.Instance.Config.NHConfiguration.GetClassMapping(modelType) != null;
         }
 
-        private static NhModelFounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
+        private static FounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(NhModelFounderAttribute),
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute),
                                                                                    true);
             if (customAttributes.Length == 0)
             {
-                return new NhModelFounderAttribute();
+                return new IdFounderAttribute();
             }
-            return (NhModelFounderAttribute)customAttributes[0];
+            return (FounderAttribute) customAttributes[0];
         }
 
         /// <summary>
@@ -146,8 +150,11 @@ namespace Qi.Web.Mvc
             SessionManager sessionManager = BuildSessionManager(modelType);
             PersistentClass mappingInfo = sessionManager.Config.NHConfiguration.GetClassMapping(modelType);
             string idValue = request[mappingInfo.IdentifierProperty.Name];
-            var s = new NhModelFounderAttribute();
-            return s.Find(SessionManager.Instance, mappingInfo.IdentifierProperty.Name, idValue, modelType, context);
+            var s = new IdFounderAttribute
+                        {
+                            EntityType = modelType
+                        };
+            return s.GetObject(sessionManager, idValue, mappingInfo.IdentifierProperty.Name, context.HttpContext);
         }
 
         private SessionManager BuildSessionManager(Type modelType)

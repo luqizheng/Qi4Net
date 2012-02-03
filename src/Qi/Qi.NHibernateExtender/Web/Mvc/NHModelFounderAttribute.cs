@@ -5,6 +5,7 @@ using NHibernate.Criterion;
 using NHibernate.Mapping;
 using NHibernate.Type;
 using Qi.Nhibernates;
+using Qi.Web.Mvc.Founders;
 using Property = NHibernate.Mapping.Property;
 
 namespace Qi.Web.Mvc
@@ -17,8 +18,8 @@ namespace Qi.Web.Mvc
         private readonly string _hql;
         private readonly string _hqlParameterType;
         private readonly string _mappingPropertyName;
-        private readonly bool _uniqueResult;
 
+        private readonly FounderAttribute _founderAttribute;
         /// <summary>
         /// 
         /// </summary>
@@ -26,9 +27,18 @@ namespace Qi.Web.Mvc
         /// <param name="uniqueResult">result is unique or not</param>
         public NhModelFounderAttribute(string mappingPropertyName, bool uniqueResult)
         {
-            if (mappingPropertyName == null) throw new ArgumentNullException("mappingPropertyName");
-            _mappingPropertyName = mappingPropertyName;
-            _uniqueResult = uniqueResult;
+            if (mappingPropertyName == null)
+                throw new ArgumentNullException("mappingPropertyName");
+            _founderAttribute = new PropertyFounderAttributeAttribute(mappingPropertyName)
+                           {
+                               Unique = uniqueResult
+                           };
+
+        }
+
+        public NhModelFounderAttribute()
+        {
+            _founderAttribute = new PropertyFounderAttributeAttribute();
         }
 
         /// <summary>
@@ -53,7 +63,6 @@ namespace Qi.Web.Mvc
                                        string[] anohterHqlType)
         {
             _hql = hql;
-            _uniqueResult = uniqueResult;
             _hqlParameterType = parameterType;
             _anotherHqlName = anotherHqlName;
             _anohterHqlType = anohterHqlType;
@@ -64,6 +73,7 @@ namespace Qi.Web.Mvc
         /// </summary>
         public NhModelFounderAttribute()
         {
+            this._founderAttribute = new IdFounderAttributeAttribute();
         }
 
         public object Find(SessionManager session, string propertyName, string propertyStrVal, Type entityType,
@@ -72,21 +82,12 @@ namespace Qi.Web.Mvc
             bool result = session.IniSession();
             try
             {
-                PersistentClass mappingInfo = session.Config.NHConfiguration.GetClassMapping(entityType);
+                if (_founderAttribute.EntityType == null)
+                {
+                    _founderAttribute.EntityType = entityType;
+                }
 
-                if (!String.IsNullOrEmpty(_mappingPropertyName)) // use id to get object
-                {
-                    //use Property to find the entity.
-                    IType type = mappingInfo.GetProperty(_mappingPropertyName).Type;
-                    object idValue = ConvertStringToObject(propertyStrVal, type);
-                    return session.CurrentSession.Load(entityType, idValue);
-                }
-                if (!String.IsNullOrEmpty(_hql))
-                {
-                    //use hql to get the object;
-                    return GetObjectByHql(session, propertyStrVal, propertyName, context);
-                }
-                return FindByMappingProperty(session, propertyStrVal, entityType, mappingInfo);
+                return _founderAttribute.GetObject(session, propertyStrVal, propertyName, context.HttpContext);
             }
             finally
             {
@@ -97,51 +98,10 @@ namespace Qi.Web.Mvc
             }
         }
 
-        private object GetObjectByHql(SessionManager session, string propertyStrVal, string propertyName,
-                                      ControllerContext context)
-        {
-            IQuery crit = session.CurrentSession.CreateQuery(_hql);
 
-            IType hqlType = TypeFactory.Basic(_hqlParameterType);
 
-            object inputParameter = ConvertStringToObject(propertyStrVal, hqlType);
-            crit.SetParameter(propertyName, inputParameter, hqlType);
-            if (_anohterHqlType != null)
-            {
-                int i = 1;
-                foreach (string paramer in _anotherHqlName)
-                {
-                    string strValu = context.RequestContext.HttpContext.Request[paramer];
 
-                    IType paramType = TypeFactory.Basic(_anohterHqlType[i - 1]);
-                    object val = ConvertStringToObject(strValu, paramType);
 
-                    crit.SetParameter(paramer, val, paramType);
-                    i++;
-                }
-            }
 
-            return _uniqueResult ? crit.UniqueResult() : crit.List();
-        }
-
-        private object FindByMappingProperty(SessionManager session, string propertyStrVal, Type entityType,
-                                             PersistentClass mappingInfo)
-        {
-            Property property = mappingInfo.GetProperty(_mappingPropertyName);
-            object propertyValue = ConvertStringToObject(propertyStrVal, property.Type);
-            ICriteria crit = DetachedCriteria.For(entityType).Add(
-                Restrictions.Eq(_mappingPropertyName, propertyValue)).GetExecutableCriteria(
-                    session.CurrentSession);
-            return _uniqueResult ? crit.UniqueResult() : crit.List();
-        }
-
-        private static object ConvertStringToObject(string valStrExpress, IType type)
-        {
-            var idType = type as NullableType;
-            if (idType == null)
-                throw new NhConfigurationException(
-                    "Resource's Id only support mapping from NullableType in nhibernate.");
-            return idType.FromStringValue(valStrExpress);
-        }
     }
 }

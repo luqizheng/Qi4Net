@@ -12,25 +12,26 @@ namespace Qi.Domain.NHibernates
     /// <typeparam name="TObject"></typeparam>
     public abstract class DaoBase<TId, TObject> : IDao<TObject, TId>
     {
-        private readonly string _sessionFactoryName;
         private readonly bool _useGlobalSession;
         private ISession _privateSession;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected DaoBase()
             : this(true)
         {
         }
-
+        
         protected DaoBase(string sessionFactoryName, bool useGlobalSession)
         {
-            _sessionFactoryName = sessionFactoryName;
+            SessionFactoryName = sessionFactoryName;
             _useGlobalSession = useGlobalSession;
         }
 
         protected DaoBase(string sessionFactoryName)
         {
-            _sessionFactoryName = sessionFactoryName;
+            SessionFactoryName = sessionFactoryName;
         }
 
         protected DaoBase(bool useGlobalSession)
@@ -38,6 +39,7 @@ namespace Qi.Domain.NHibernates
             _useGlobalSession = useGlobalSession;
         }
 
+        public string SessionFactoryName { get; private set; }
 
         protected ISession CurrentSession
         {
@@ -132,22 +134,43 @@ namespace Qi.Domain.NHibernates
 
         private SessionManager GetSessionManager()
         {
-            return !string.IsNullOrEmpty(_sessionFactoryName)
-                       ? SessionManager.GetInstance(_sessionFactoryName)
-                       : SessionManager.GetInstance(typeof (TObject));
+            SessionManager result;
+            if (!string.IsNullOrEmpty(SessionFactoryName))
+            {
+                result = SessionManager.GetInstance(SessionFactoryName);
+            }
+            else if (SessionManager.Instance.Config.NHConfiguration.GetClassMapping(typeof (TObject)) != null)
+            {
+                result = SessionManager.Instance;
+            }
+            else
+            {
+                result = SessionManager.GetInstance(typeof (TObject));
+            }
+            SessionFactoryName = result.Config.SessionFactoryName; // set it and make quick in next time.
+            return result;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected DetachedCriteria CreateDetachedCriteria()
         {
             return DetachedCriteria.For(typeof (TObject));
         }
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected virtual ICriteria CreateCriteria()
         {
             return CurrentSession.CreateCriteria(typeof (TObject));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         protected virtual IQuery CreateQuery(string query)
         {
             return CurrentSession.CreateQuery(query);

@@ -79,6 +79,7 @@
     <Compile Include="ArrayHelperTest.cs" />
     <Compile Include="EncryptHelperTest.cs" />
     <Compile Include="EnumDescriptionAttributeTest.cs" />
+    <Compile Include="IoExtenderTest.cs" />
     <Compile Include="JsonHelperTest.cs" />
     <Compile Include="MacAddressTest.cs" />
     <Compile Include="NamedFormatterHelperTest.cs" />

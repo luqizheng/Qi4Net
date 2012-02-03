@@ -19,6 +19,8 @@ namespace Qi
         /// <param name="start"></param>
         /// <param name="length"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException">start is less than 0</exception>
+        /// /// <exception cref="ArgumentOutOfRangeException">end is less than start, or larger than array</exception>
         public static T[] SubArray<T>(this T[] array, int start, int length)
         {
             if (array.Length - 1 < start)

@@ -21,18 +21,23 @@ namespace Qi.DataTables.Calculators
 
         #region ICalculator Members
 
-        public virtual object Result { get; private set; }
+        private object _result;
+        public virtual object Result
+        {
+            get { return _result; }
+            private set { _result = value; }
+        }
 
         public abstract string Name { get; }
 
         public virtual void SetValue(object rowValue)
         {
-            Result = _calculate(Result == null ? default(T) : (T)Result, _convertor(rowValue));
+            _result = _calculate(_result == null ? default(T) : (T)_result, _convertor(rowValue));
         }
 
-        public void Clear()
+        public virtual void Clear()
         {
-            Result = default(T);
+            _result = default(T);
         }
 
         #endregion

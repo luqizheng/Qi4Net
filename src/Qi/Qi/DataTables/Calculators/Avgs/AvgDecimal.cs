@@ -14,7 +14,5 @@ namespace Qi.DataTables.Calculators.Avgs
         {
             return new AvgDecimal();
         }
-
-
     }
 }

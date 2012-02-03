@@ -4,7 +4,7 @@ using Qi.DataTables.Calculators;
 
 namespace Qi.DataTables.Columns
 {
-   
+
     /// <summary>
     /// 
     /// </summary>
@@ -74,7 +74,7 @@ namespace Qi.DataTables.Columns
             return null;
         }
 
-      
+
 
         /// <summary>
         /// Reset all the result include calculator
@@ -95,7 +95,10 @@ namespace Qi.DataTables.Columns
         {
             _cacheData = null;
         }
-
+        /// <summary>
+        /// Add new calulator for this Column
+        /// </summary>
+        /// <param name="result"></param>
         public void Add(ICalculator result)
         {
             if (result == null)

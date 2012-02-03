@@ -19,6 +19,7 @@ namespace Qi.DataTables
         {
             return columnNames.Select(name => table.Columns[name]).ToArray();
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -55,6 +56,7 @@ namespace Qi.DataTables
             table.Columns.Add(column);
             return column;
         }
+
         /// <summary>
         /// 创建一个列，这个列的结果由其他列组合而成的。有方法<see cref="customeFunc"/>计算结果
         /// </summary>
@@ -65,7 +67,7 @@ namespace Qi.DataTables
         /// <param name="columnNames">这个列有哪些列计算而成</param>
         /// <returns></returns>
         public static IColumn Column<TReturnVaue>(this IDataTable table, string columnName,
-                                                  Func<IColumn[], TReturnVaue> customeFunc,
+                                                  Func<object[], TReturnVaue> customeFunc,
                                                   params string[] columnNames)
         {
             IColumn[] columns = table.GetColumns(columnNames);

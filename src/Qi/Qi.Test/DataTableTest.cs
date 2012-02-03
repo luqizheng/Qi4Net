@@ -52,6 +52,7 @@ namespace Qi.Test
             decimal s = Convert.ToInt32(f);
             Assert.AreEqual(11m, s);
         }
+
         [TestMethod]
         public void CalcuteColumns()
         {
@@ -67,7 +68,6 @@ namespace Qi.Test
                                     {
                                         Name = "B",
                                         Amount = 2m,
-                                        
                                     },
                                 new SettlementDetails
                                     {
@@ -83,6 +83,7 @@ namespace Qi.Test
             Assert.AreEqual(7m, target.GetSummaries("Sum")[1]);
             Assert.AreEqual(7m, target.Columns["Ammount"].SumResult());
         }
+
         [TestMethod]
         public void BuildRepoert_empty()
         {
@@ -151,6 +152,109 @@ namespace Qi.Test
 
             Assert.AreEqual(items.Sum(item => item.Amount), (colum4CalculateRow1).SumResult());
             Assert.AreEqual(items.Sum(item => item.Amount1), (colum4CalculateRow2).SumResult());
+        }
+
+        [TestMethod]
+        public void TestSum_in_column()
+        {
+            var items = new List<SettlementDetails>
+                            {
+                                new SettlementDetails
+                                    {
+                                        Name = "A",
+                                        Amount = 1m,
+                                    },
+                                new SettlementDetails
+                                    {
+                                        Name = "B",
+                                        Amount = 2m,
+                                        Amount1 = 2,
+                                    },
+                                new SettlementDetails
+                                    {
+                                        Name = "C",
+                                        Amount = 3m,
+                                        Amount1 = 1,
+                                    }
+                            };
+            var target = new DataTable<SettlementDetails>();
+            target.Column("Name", s => s.Name);
+            target.Column("Ammount", s => s.Amount).Sum<Decimal?>();
+            target.SetData(items);
+            target.GetRows();
+            Assert.AreEqual(6m, target.Columns[1].GetResult(0));
+        }
+
+        [TestMethod]
+        public void TestAvg_in_column()
+        {
+            var items = new List<SettlementDetails>
+                            {
+                                new SettlementDetails
+                                    {
+                                        Name = "A",
+                                        Amount = 1m,
+                                    },
+                                new SettlementDetails
+                                    {
+                                        Name = "B",
+                                        Amount = 2m,
+                                        Amount1 = 2,
+                                    },
+                                new SettlementDetails
+                                    {
+                                        Name = "C",
+                                        Amount = 3m,
+                                        Amount1 = 1,
+                                    }
+                            };
+            var target = new DataTable<SettlementDetails>();
+            target.Column("Name", s => s.Name);
+            target.Column("Ammount", s => s.Amount).Avg<Decimal?>();
+            target.SetData(items);
+            target.GetRows();
+            Assert.AreEqual(2m, target.Columns[1].GetResult(0));
+        }
+
+        [TestMethod]
+        public void TestAvg_in_a_row()
+        {
+            var items = new List<SettlementDetails>
+                            {
+                                new SettlementDetails
+                                    {
+                                        Name = "A",
+                                        Amount = 1m,
+                                    },
+                                new SettlementDetails
+                                    {
+                                        Name = "B",
+                                        Amount = 2m,
+                                        Amount1 = 2,
+                                    },
+                                new SettlementDetails
+                                    {
+                                        Name = "C",
+                                        Amount = 3m,
+                                        Amount1 = 1,
+                                    }
+                            };
+            var target = new DataTable<SettlementDetails>();
+            target.Column("Name", s => s.Name);
+            target.Column("Ammount0", s => s.Amount);
+            target.Column("Ammount1", s => s.Amount1);
+            target.Column("合计avg", df =>
+                                       {
+                                           Decimal result = 0m;
+                                           foreach (var col in df)
+                                           {
+                                               result += Convert.ToDecimal(col);
+                                           }
+                                           return result;
+                                       }, "Ammount0", "Ammount1");
+            target.SetData(items);
+            var rows =new List<object[]>(target.GetRows());
+            Assert.AreEqual(1m, rows[0][3]);
         }
 
         #region Nested type: SettlementDetails

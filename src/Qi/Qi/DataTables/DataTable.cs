@@ -70,7 +70,7 @@ namespace Qi.DataTables
         /// <returns></returns>
         IDataTable IDataTable.SetData(IEnumerable<object> items)
         {
-            List<T> a = items.Select(item => (T)item).ToList();
+            List<T> a = items.Select(item => (T) item).ToList();
             return SetData(a);
         }
 
@@ -147,7 +147,7 @@ namespace Qi.DataTables
             {
                 throw new ArgumentOutOfRangeException(columnName + " is duplicate column name.");
             }
-            var column = new Column<T, TReturnValue>(columnName) { Accessor = accessor };
+            var column = new Column<T, TReturnValue>(columnName) {Accessor = accessor};
             Columns.Add(column);
             return column;
         }

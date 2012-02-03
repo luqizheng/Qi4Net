@@ -76,8 +76,9 @@ namespace Qi.Web.Mvc
 
                 if (!String.IsNullOrEmpty(_mappingPropertyName)) // use id to get object
                 {
-                    //use Property to find the name.
-                    object idValue = ConvertStringToObject(propertyStrVal, mappingInfo.Identifier.Type);
+                    //use Property to find the entity.
+                    IType type = mappingInfo.GetProperty(_mappingPropertyName).Type;
+                    object idValue = ConvertStringToObject(propertyStrVal, type);
                     return session.CurrentSession.Load(entityType, idValue);
                 }
                 if (!String.IsNullOrEmpty(_hql))
@@ -139,7 +140,7 @@ namespace Qi.Web.Mvc
             var idType = type as NullableType;
             if (idType == null)
                 throw new NhConfigurationException(
-                    "Resource's Id only support mapping from  NullableType in nhibernate.");
+                    "Resource's Id only support mapping from NullableType in nhibernate.");
             return idType.FromStringValue(valStrExpress);
         }
     }

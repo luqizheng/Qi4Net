@@ -34,6 +34,12 @@ namespace Qi.DataTables.Calculators
             _count++;
         }
 
+        public override void Clear()
+        {
+            base.Clear();
+            _count = 0;
+        }
+
         private object getAvag(decimal total, int count)
         {
             return total / count;

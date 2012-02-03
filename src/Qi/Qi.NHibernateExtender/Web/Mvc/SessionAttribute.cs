@@ -27,8 +27,6 @@ namespace Qi.Web.Mvc
             SessionFactoryName = sessionFactoryName ?? SessionManager.Instance.Config.SessionFactoryName;
         }
 
-        public string SessionFactoryName { get; private set; }
-
         /// <summary>
         /// 
         /// </summary>
@@ -46,6 +44,8 @@ namespace Qi.Web.Mvc
         {
             Order = 0;
         }
+
+        public string SessionFactoryName { get; private set; }
 
         /// <summary>
         /// Gets or sets the value indecate use transaction or not.
@@ -86,7 +86,6 @@ namespace Qi.Web.Mvc
                     SessionManager.Instance.IniSession();
                 else
                     SessionManager.GetInstance(SessionFactoryName).IniSession();
-
             }
             if (Transaction)
             {

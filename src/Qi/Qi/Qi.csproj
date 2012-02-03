@@ -103,7 +103,6 @@
     <Compile Include="DataTables\Calculators\Sums\SumSingle.cs" />
     <Compile Include="DataTables\Columns\AbstractColumn.cs" />
     <Compile Include="DataTables\Columns\CalculatorColumn.cs" />
-    <Compile Include="DataTables\GetValueEventAgrs.cs" />
     <Compile Include="DataTables\ICalculator.cs" />
     <Compile Include="DataTables\IColumn.cs" />
     <Compile Include="DataTables\Calculator.cs" />

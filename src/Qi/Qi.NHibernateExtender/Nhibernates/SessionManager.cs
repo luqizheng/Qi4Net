@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHibernate;
 using NHibernate.Context;
 using NHibernate.Engine;
@@ -164,8 +165,15 @@ namespace Qi.Nhibernates
 
         public static void Remove(NhConfig info)
         {
-            if (info == null) throw new ArgumentNullException("info");
+            if (info == null)
+                throw new ArgumentNullException("info");
+            if (SessionManagers.Count == 1)
+                throw new ApplicationException("can't move the last sessionManager.");
             SessionManagers.Remove(info.SessionFactoryName);
+            if (DefaultSessionFactoryKey == info.SessionFactoryName)
+            {
+                DefaultSessionFactoryKey = SessionManagers.Values.First().Config.SessionFactoryName;
+            }
         }
 
         public static void SetDefault(string sessionFactoryKey)

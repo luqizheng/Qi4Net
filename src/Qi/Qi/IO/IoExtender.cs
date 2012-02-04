@@ -31,6 +31,7 @@ namespace Qi.IO
 
         public static void CreateEx(this DirectoryInfo directory)
         {
+            if (directory == null) throw new ArgumentNullException("directory");
             CreateDirectories(directory.FullName);
         }
 
@@ -41,11 +42,12 @@ namespace Qi.IO
         /// <param name="searchPattern">support *.exe, or *.bat|*.exe|*.dll </param>
         /// <param name="searchOption"></param>
         /// <returns></returns>
-        public static FileInfo[] GetFilesEx(this DirectoryInfo parentDirectory, string searchPattern,SearchOption searchOption)
+        public static FileInfo[] GetFilesEx(this DirectoryInfo parentDirectory, string searchPattern,
+                                            SearchOption searchOption)
         {
             if (String.IsNullOrEmpty(searchPattern))
                 throw new ArgumentNullException("searchPattern");
-            string[] searchPatterns = searchPattern.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] searchPatterns = searchPattern.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
             var files = new List<FileInfo>();
             foreach (string sp in searchPatterns)
             {
@@ -53,6 +55,7 @@ namespace Qi.IO
             }
             return files.ToArray();
         }
+
         /// <summary>
         /// 
         /// </summary>

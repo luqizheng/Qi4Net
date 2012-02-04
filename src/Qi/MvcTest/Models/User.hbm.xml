@@ -6,8 +6,16 @@
     </id>
     <property name="LoginId" length="100" type="String"></property>
     <property name="Password" length="100" type="String"></property>
-    
-    <property name="Name" length="100" type="String"></property>    
+
+    <property name="Name" length="100" type="String"></property>
+
+    <many-to-one class="Role" name="Role"></many-to-one>
+  </class>
+  <class name="Role" table="MBS_ROLE" lazy="false">
+    <id name="Id">
+      <generator class="guid"></generator>
+    </id>
+    <property name="Name" length="100" type="String"></property>
   </class>
 
 </hibernate-mapping>

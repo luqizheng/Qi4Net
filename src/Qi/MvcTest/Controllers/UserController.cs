@@ -9,8 +9,7 @@ namespace MvcTest.Controllers
 {
     public class UserController : Controller
     {
-        //
-        // GET: /User/
+      
         [Session]
         public ActionResult Index()
         {
@@ -46,7 +45,8 @@ namespace MvcTest.Controllers
 
 
         [HttpPost, Session]
-        public ActionResult ChangePassword([ModelBinder(typeof (NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
+        public ActionResult ChangePassword(
+            [ModelBinder(typeof (NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
         {
             if (ModelState.IsValid)
             {
@@ -60,4 +60,6 @@ namespace MvcTest.Controllers
             }
         }
     }
+}
+
 }

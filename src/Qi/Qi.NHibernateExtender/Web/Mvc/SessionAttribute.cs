@@ -21,9 +21,8 @@ namespace Qi.Web.Mvc
         /// <param name="enabled"></param>
         /// <param name="sessionFactoryName"></param>
         public SessionAttribute(bool enabled, string sessionFactoryName)
+            : this(enabled)
         {
-            Order = 0;
-            _enabled = enabled;
             SessionFactoryName = sessionFactoryName ?? SessionManager.Instance.Config.SessionFactoryName;
         }
 
@@ -32,8 +31,9 @@ namespace Qi.Web.Mvc
         /// </summary>
         /// <param name="enabled"></param>
         public SessionAttribute(bool enabled)
-            : this(enabled, null)
         {
+            Order = 0;
+            _enabled = enabled;
         }
 
         /// <summary>
@@ -80,18 +80,16 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            SessionManager manager = BuildSessionManager();
             if (_enabled)
             {
-                if (String.IsNullOrEmpty(SessionFactoryName))
-                    SessionManager.Instance.IniSession();
-                else
-                    SessionManager.GetInstance(SessionFactoryName).IniSession();
+                manager.IniSession();
             }
             if (Transaction)
             {
                 _tras = IsolationLevel != null
-                            ? SessionManager.Instance.CurrentSession.BeginTransaction(IsolationLevel.Value)
-                            : SessionManager.Instance.CurrentSession.BeginTransaction();
+                            ? manager.CurrentSession.BeginTransaction(IsolationLevel.Value)
+                            : manager.CurrentSession.BeginTransaction();
             }
         }
 
@@ -101,12 +99,17 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            if (!String.IsNullOrEmpty(SessionFactoryName))
-            {
-                SessionManager.GetInstance(SessionFactoryName).CleanUp();
-                return;
-            }
-            SessionManager.Instance.CleanUp();
+            BuildSessionManager().CleanUp();
+        }
+
+
+        private SessionManager BuildSessionManager()
+        {
+            SessionManager sessionManager = !String.IsNullOrEmpty(SessionFactoryName)
+                                                ? SessionManager.GetInstance(SessionFactoryName)
+                                                : SessionManager.Instance;
+
+            return sessionManager;
         }
     }
 }

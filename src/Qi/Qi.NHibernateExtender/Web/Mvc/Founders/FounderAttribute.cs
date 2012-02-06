@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Web;
 using NHibernate.Type;
 using Qi.Nhibernates;
@@ -48,8 +49,18 @@ namespace Qi.Web.Mvc.Founders
             bool result = sessionManager.IniSession();
             try
             {
-                object postDataObj = ConvertStringToObject(postData, PostDataType(sessionManager, postName));
-                return GetObject(sessionManager, postDataObj, postName, context);
+                if (context.Request[postName] != null)
+                {
+                    object postDataObj = ConvertStringToObject(postData, PostDataType(sessionManager, postName));
+                    return GetObject(sessionManager, postDataObj, postName, context);
+                }
+                else
+                {
+                    var constructor = this.EntityType
+                        .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                        null, new Type[0], new ParameterModifier[0]);
+                    return constructor.Invoke(null);
+                }
             }
             finally
             {

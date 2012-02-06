@@ -7,18 +7,19 @@ using Qi.Web.Mvc;
 
 namespace MvcTest.Controllers
 {
+    [Session]
     public class UserController : Controller
     {
         //
         // GET: /User/
-        [Session]
+
         public ActionResult Index()
         {
             IList<User> r = SessionManager.Instance.CurrentSession.CreateCriteria<User>().List<User>();
             return View(r);
         }
 
-        [Session]
+
         public ActionResult Edit(Guid? id)
         {
             var r = SessionManager.Instance.CurrentSession.Load<User>(id.Value);
@@ -26,14 +27,14 @@ namespace MvcTest.Controllers
         }
 
 
-        [HttpPost, Session]
+        [HttpPost]
         public ActionResult Edit([ModelBinder(typeof (NHModelBinder))] User user)
         {
             SessionManager.Instance.CurrentSession.SaveOrUpdate(user);
             return RedirectToAction("Index");
         }
 
-        [Session]
+
         public ActionResult ChangePassword(Guid? id)
         {
             var r = SessionManager.Instance.CurrentSession.Load<User>(id.Value);
@@ -45,8 +46,9 @@ namespace MvcTest.Controllers
         }
 
 
-        [HttpPost, Session]
-        public ActionResult ChangePassword([ModelBinder(typeof (NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
+        [HttpPost]
+        public ActionResult ChangePassword(
+            [ModelBinder(typeof (NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
         {
             if (ModelState.IsValid)
             {
@@ -54,10 +56,7 @@ namespace MvcTest.Controllers
                 SessionManager.Instance.CurrentSession.SaveOrUpdate(changeUserPasswordModel.User);
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(changeUserPasswordModel);
-            }
+            return View(changeUserPasswordModel);
         }
     }
 }

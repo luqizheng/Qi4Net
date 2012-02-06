@@ -11,20 +11,22 @@ namespace Qi.Web.Mvc.Founders
     public class PropertyFounderAttribute : FounderAttribute
     {
         private string _propertyName;
+
         /// <summary>
         /// default is the request's propertyName,
         /// </summary>
         public PropertyFounderAttribute()
         {
-            
         }
+
         public PropertyFounderAttribute(string propertyName)
         {
             if (propertyName == null) throw new ArgumentNullException("propertyName");
             _propertyName = propertyName;
         }
 
-        protected override object GetObject(SessionManager sessionManager, object postData, string postName, HttpContextBase context)
+        protected override object GetObject(SessionManager sessionManager, object postData, string postName,
+                                            HttpContextBase context)
         {
             DetachedCriteria cri = DetachedCriteria.For(EntityType).Add(Restrictions.Eq(_propertyName, postData));
             if (!Unique)
@@ -36,7 +38,7 @@ namespace Qi.Web.Mvc.Founders
         {
             if (!string.IsNullOrEmpty(_propertyName))
                 _propertyName = postDataName;
-            
+
             PersistentClass mappingInfo = sessionManager.Config.NHConfiguration.GetClassMapping(EntityType);
             Property property = mappingInfo.GetProperty(_propertyName);
             if (property == null)

@@ -16,11 +16,12 @@ namespace Qi.Web.Mvc.Founders
             _postDataType = postDataType;
         }
 
-        public HqlFounderAttribute(string hql, string postDataType, string[] anotherParameterType, string[] anotherParameterName)
+        public HqlFounderAttribute(string hql, string postDataType, string[] anotherParameterType,
+                                   string[] anotherParameterName)
             : this(hql, postDataType)
         {
-            this.AnotherParameterName = anotherParameterName;
-            this.AnotherParameterType = anotherParameterType;
+            AnotherParameterName = anotherParameterName;
+            AnotherParameterType = anotherParameterType;
         }
 
         public string[] AnotherParameterType { get; set; }

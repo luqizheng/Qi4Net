@@ -188,13 +188,15 @@ namespace Qi.Nhibernates
             }
             return "default";
         }
+
         /// <summary>
         /// It only set the property
         /// </summary>
         /// <param name="file"></param>
         public void Save(string file)
         {
-            const string fixcontent = @"<?xml version=""1.0"" encoding=""utf-8""?>
+            const string fixcontent =
+                @"<?xml version=""1.0"" encoding=""utf-8""?>
 <hibernate-configuration xmlns=""urn:nhibernate-configuration-2.2"">
   <session-factory name=""{0}"">
       {1}
@@ -202,17 +204,17 @@ namespace Qi.Nhibernates
 </hibernate-configuration>";
             var fileContent = new StringBuilder();
 
-            foreach (var a in this.NHConfiguration.Properties)
+            foreach (var a in NHConfiguration.Properties)
             {
                 fileContent.Append(String.Format(@"<property name=""{0}"">{1}</property>", a.Key, a.Value));
             }
             using (var writer = new StreamWriter(file, false))
             {
-                writer.Write(String.Format(fixcontent, this.SessionFactoryName, fileContent.ToString()));
+                writer.Write(String.Format(fixcontent, SessionFactoryName, fileContent));
                 writer.Flush();
                 writer.Close();
             }
-            this.CfgFile = file;
+            CfgFile = file;
             Refresh();
         }
     }

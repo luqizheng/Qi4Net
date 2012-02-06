@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using NHibernate.Mapping;
+using NHibernate.Type;
 using Qi.Nhibernates;
 using Qi.Web.Mvc.Founders;
 
@@ -13,11 +14,10 @@ namespace Qi.Web.Mvc
     public class NHModelBinder : DefaultModelBinder
     {
         /// <summary>
-        /// ModelBinder runs earlier than SessionAttribute,so this instance need open session by itself.
-        /// but close have two choice, closed by SessionAttribute or closed by itself.
-        /// this varialbe is indeciate sesson closed by SessionAttribute or itself.
-        /// 
-        /// Key is session Name, value, ture means handlder by sessionAttribute, false,need close by Binder self
+        /// ModelBinder runs earlier than SessionAttribute, so this instance have to open Session and not depend SessionAttribute.
+        /// We have two choice to close session, closed by SessionAttribute or closed by itself.
+        /// this variable is indeciate sesson closed by SessionAttribute or itself.
+        /// Key is session factory Name, value, ture means handlder by sessionAttribute, false closed by it self.
         /// </summary>
         private readonly IDictionary<string, bool> _sessionHandlerByFilters = new Dictionary<string, bool>();
 
@@ -41,7 +41,7 @@ namespace Qi.Web.Mvc
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
-            IndecalteAttribute(controllerContext, bindingContext);
+            FindAttribute(controllerContext, bindingContext);
 
 
             if (!IsPersistentType(modelType))
@@ -52,24 +52,38 @@ namespace Qi.Web.Mvc
             object result = GeModelFromNH(modelType, request, controllerContext);
             if (result == null)
             {
-                return
-                    modelType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.CreateInstance,
-                                             null,
-                                             null, null);
+                var constructor = modelType
+                       .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                       null, new Type[0], new ParameterModifier[0]);
+                return constructor.Invoke(null);
             }
             return result;
         }
 
-        private void IndecalteAttribute(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="controllerContext"></param>
+        /// <param name="bindingContext"></param>
+        private void FindAttribute(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var reflectedControllerDescriptor = new ReflectedControllerDescriptor(controllerContext.Controller.GetType());
 
+            //find on Action, sessionAttribute 's priority on action is heiher than on controller.
             string actionname = controllerContext.RouteData.Values["Action"].ToString();
             ActionDescriptor action = reflectedControllerDescriptor.FindAction(controllerContext, actionname);
-            object[] at = action.GetCustomAttributes(typeof (SessionAttribute), true);
+            object[] at = action.GetCustomAttributes(typeof(SessionAttribute), true);
             foreach (SessionAttribute a in at)
             {
-                _sessionHandlerByFilters.Add(a.SessionFactoryName, true);
+                _sessionHandlerByFilters.Add(a.SessionFactoryName, a.Enable);
+            }
+            at = controllerContext.Controller.GetType().GetCustomAttributes(typeof(SessionAttribute), true);
+            foreach (SessionAttribute a in at)
+            {
+                if (!_sessionHandlerByFilters.ContainsKey(a.SessionFactoryName))
+                {
+                    _sessionHandlerByFilters.Add(a.SessionFactoryName, a.Enable);
+                }
             }
         }
 
@@ -130,13 +144,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute),
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute),
                                                                                    true);
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
         }
 
         /// <summary>

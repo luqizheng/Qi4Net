@@ -12,7 +12,6 @@ namespace Qi.Web.Mvc
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        private readonly bool _enabled;
         private ITransaction _tras;
 
         /// <summary>
@@ -23,7 +22,7 @@ namespace Qi.Web.Mvc
         public SessionAttribute(bool enabled, string sessionFactoryName)
         {
             Order = 0;
-            _enabled = enabled;
+            Enable = enabled;
             SessionFactoryName = sessionFactoryName ?? SessionManager.Instance.Config.SessionFactoryName;
         }
 
@@ -45,6 +44,7 @@ namespace Qi.Web.Mvc
             Order = 0;
         }
 
+        public bool Enable { get; private set; }
         public string SessionFactoryName { get; private set; }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (_enabled)
+            if (Enable)
             {
                 if (String.IsNullOrEmpty(SessionFactoryName))
                     SessionManager.Instance.IniSession();

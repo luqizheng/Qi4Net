@@ -22,7 +22,7 @@ namespace Qi.Domain.NHibernates
             : this(true)
         {
         }
-        
+
         protected DaoBase(string sessionFactoryName, bool useGlobalSession)
         {
             SessionFactoryName = sessionFactoryName;
@@ -150,6 +150,7 @@ namespace Qi.Domain.NHibernates
             SessionFactoryName = result.Config.SessionFactoryName; // set it and make quick in next time.
             return result;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -158,6 +159,7 @@ namespace Qi.Domain.NHibernates
         {
             return DetachedCriteria.For(typeof (TObject));
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -166,6 +168,7 @@ namespace Qi.Domain.NHibernates
         {
             return CurrentSession.CreateCriteria(typeof (TObject));
         }
+
         /// <summary>
         /// 
         /// </summary>

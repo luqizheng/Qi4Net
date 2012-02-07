@@ -9,7 +9,7 @@ namespace Qi.Web.Mvc
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
         private ITransaction _tras;
@@ -44,8 +44,15 @@ namespace Qi.Web.Mvc
             Order = 0;
         }
 
-        public bool Enable { get; private set; }
-        public string SessionFactoryName { get; private set; }
+        /// <summary>
+        /// Enable session or not.
+        /// </summary>
+        public bool Enable { get; set; }
+
+        /// <summary>
+        /// session factory 
+        /// </summary>
+        public string SessionFactoryName { get; set; }
 
         /// <summary>
         /// Gets or sets the value indecate use transaction or not.
@@ -87,7 +94,7 @@ namespace Qi.Web.Mvc
                 else
                     SessionManager.GetInstance(SessionFactoryName).IniSession();
             }
-            if (Transaction)
+            if (Transaction && Enable)
             {
                 _tras = IsolationLevel != null
                             ? SessionManager.Instance.CurrentSession.BeginTransaction(IsolationLevel.Value)

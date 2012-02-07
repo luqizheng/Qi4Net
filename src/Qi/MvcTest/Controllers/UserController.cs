@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using MvcTest.Models;
+using NHibernate.Criterion;
 using Qi.Nhibernates;
 using Qi.Web.Mvc;
 
@@ -10,8 +11,6 @@ namespace MvcTest.Controllers
     [Session]
     public class UserController : Controller
     {
-        //
-        // GET: /User/
 
         public ActionResult Index()
         {
@@ -28,7 +27,7 @@ namespace MvcTest.Controllers
 
 
         [HttpPost]
-        public ActionResult Edit([ModelBinder(typeof (NHModelBinder))] User user)
+        public ActionResult Edit([ModelBinder(typeof(NHModelBinder))] User user)
         {
             SessionManager.Instance.CurrentSession.SaveOrUpdate(user);
             return RedirectToAction("Index");
@@ -48,7 +47,7 @@ namespace MvcTest.Controllers
 
         [HttpPost]
         public ActionResult ChangePassword(
-            [ModelBinder(typeof (NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
+            [ModelBinder(typeof(NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
         {
             if (ModelState.IsValid)
             {
@@ -58,5 +57,28 @@ namespace MvcTest.Controllers
             }
             return View(changeUserPasswordModel);
         }
+
+        [HttpPost]
+        public ActionResult AssignRole([ModelBinder(typeof(NHModelBinder))]User u)
+        {
+            /*u.Roles.Clear();
+            foreach (var roleId in setRoles)
+            {
+                var role = SessionManager.Instance.CurrentSession.Get<Role>(roleId);
+                u.Roles.Add(role);
+            }*/
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult AssignRole(string id)//user's loginid
+        {
+            ViewBag.Roles = SessionManager.Instance.CurrentSession.CreateCriteria<Role>().List<Role>();
+            var user =
+                SessionManager.Instance.CurrentSession.CreateCriteria<User>().Add(
+                    Restrictions.Eq(Projections.Property<User>(s => s.LoginId), id))
+                    .UniqueResult<User>();
+            return View(user);
+        }
     }
 }
+

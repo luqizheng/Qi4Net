@@ -1,11 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using NHibernate.Mapping;
-using NHibernate.Type;
 using Qi.Nhibernates;
 using Qi.Web.Mvc.Founders;
 
@@ -41,7 +41,7 @@ namespace Qi.Web.Mvc
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
-            FindAttribute(controllerContext, bindingContext);
+            InitSessionAttribute(controllerContext, bindingContext);
 
 
             if (!IsPersistentType(modelType))
@@ -52,9 +52,9 @@ namespace Qi.Web.Mvc
             object result = GeModelFromNH(modelType, request, controllerContext);
             if (result == null)
             {
-                var constructor = modelType
-                       .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                       null, new Type[0], new ParameterModifier[0]);
+                ConstructorInfo constructor = modelType
+                    .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                                    null, new Type[0], new ParameterModifier[0]);
                 return constructor.Invoke(null);
             }
             return result;
@@ -65,20 +65,24 @@ namespace Qi.Web.Mvc
         /// </summary>
         /// <param name="controllerContext"></param>
         /// <param name="bindingContext"></param>
-        private void FindAttribute(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        private void InitSessionAttribute(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var reflectedControllerDescriptor = new ReflectedControllerDescriptor(controllerContext.Controller.GetType());
 
             //find on Action, sessionAttribute 's priority on action is heiher than on controller.
             string actionname = controllerContext.RouteData.Values["Action"].ToString();
             ActionDescriptor action = reflectedControllerDescriptor.FindAction(controllerContext, actionname);
-            object[] at = action.GetCustomAttributes(typeof(SessionAttribute), true);
-            foreach (SessionAttribute a in at)
+
+            //Find session attribute on the action.
+            object[] customAttributes = action.GetCustomAttributes(typeof (SessionAttribute), true);
+            foreach (SessionAttribute a in customAttributes)
             {
                 _sessionHandlerByFilters.Add(a.SessionFactoryName, a.Enable);
             }
-            at = controllerContext.Controller.GetType().GetCustomAttributes(typeof(SessionAttribute), true);
-            foreach (SessionAttribute a in at)
+            //try to find attribute on Controller.
+            customAttributes = controllerContext.Controller.GetType().GetCustomAttributes(typeof (SessionAttribute),
+                                                                                          true);
+            foreach (SessionAttribute a in customAttributes)
             {
                 if (!_sessionHandlerByFilters.ContainsKey(a.SessionFactoryName))
                 {
@@ -91,7 +95,8 @@ namespace Qi.Web.Mvc
                                             PropertyDescriptor propertyDescriptor, object value)
         {
             ModelMetadata propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
-
+            
+            
             if (!IsPersistentType(propertyMetadata.ModelType))
             {
                 base.SetProperty(controllerContext, bindingContext, propertyDescriptor, value);
@@ -103,7 +108,7 @@ namespace Qi.Web.Mvc
                 bindingContext.ModelState[propertyDescriptor.Name].Errors.Clear();
                 value = GetPersistentObject(controllerContext, propertyDescriptor, bindingContext.ModelType);
                 string modelStateKey = CreateSubPropertyName(bindingContext.ModelName, propertyMetadata.PropertyName);
-
+                //skip Readonly properyt.
                 if (!propertyDescriptor.IsReadOnly)
                 {
                     try
@@ -144,13 +149,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute),
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute),
                                                                                    true);
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute)customAttributes[0];
+            return (FounderAttribute) customAttributes[0];
         }
 
         /// <summary>

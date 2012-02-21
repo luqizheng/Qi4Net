@@ -25,7 +25,7 @@ namespace Qi.DataTables.Calculators
 
         public override string Name
         {
-            get { return CalculatorBase<T>.AvgCalculatorName; }
+            get { return AvgCalculatorName; }
         }
 
         public override void SetValue(object rowValue)
@@ -42,7 +42,7 @@ namespace Qi.DataTables.Calculators
 
         private object getAvag(decimal total, int count)
         {
-            return total / count;
+            return total/count;
         }
     }
 }

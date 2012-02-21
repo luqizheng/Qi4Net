@@ -7,7 +7,6 @@ namespace Qi.Domain
         object Id { get; }
     }
 
-
     /// <summary>
     /// For a discussion of this object, see 
     /// http://devlicio.us/blogs/billy_mccafferty/archive/2007/04/25/using-equals-gethashcode-effectively.aspx

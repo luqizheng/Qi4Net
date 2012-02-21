@@ -28,10 +28,11 @@ namespace Qi
         /// <returns></returns>
         public T Once<T>(Func<T> initMethod, out int key)
         {
-            key = initMethod.GetHashCode();
+            T val = initMethod();
+            key = (initMethod.GetHashCode() + val.GetHashCode());
             if (!_inits.ContainsKey(key))
             {
-                _inits.Add(key, initMethod());
+                _inits.Add(key, val);
             }
             return (T) _inits[key];
         }

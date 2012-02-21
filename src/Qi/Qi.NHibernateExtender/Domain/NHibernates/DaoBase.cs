@@ -22,7 +22,11 @@ namespace Qi.Domain.NHibernates
             : this(true)
         {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionFactoryName"></param>
+        /// <param name="useGlobalSession"></param>
         protected DaoBase(string sessionFactoryName, bool useGlobalSession)
         {
             SessionFactoryName = sessionFactoryName;

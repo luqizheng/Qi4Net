@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
@@ -95,8 +94,7 @@ namespace Qi.Web.Mvc
                                             PropertyDescriptor propertyDescriptor, object value)
         {
             ModelMetadata propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
-            
-            
+
             if (!IsPersistentType(propertyMetadata.ModelType))
             {
                 base.SetProperty(controllerContext, bindingContext, propertyDescriptor, value);

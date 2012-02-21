@@ -59,14 +59,14 @@ namespace MvcTest.Controllers
         }
 
         [HttpPost]
-        public ActionResult AssignRole([ModelBinder(typeof(NHModelBinder))]User u)
+        public ActionResult AssignRole([ModelBinder(typeof(NHModelBinder))]User u, Guid[] setRoles)
         {
-            /*u.Roles.Clear();
+            u.Roles.Clear();
             foreach (var roleId in setRoles)
             {
                 var role = SessionManager.Instance.CurrentSession.Get<Role>(roleId);
                 u.Roles.Add(role);
-            }*/
+            }
             return RedirectToAction("Index");
         }
 

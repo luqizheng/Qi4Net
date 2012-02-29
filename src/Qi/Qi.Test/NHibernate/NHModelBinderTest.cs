@@ -1,42 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Iesi.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcTest.Models;
 using Qi.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using Qi.Web.Mvc;
 
-namespace Qi.Test
+namespace Qi.Test.NHibernate
 {
-
-
     /// <summary>
     ///This is a test class for NHModelBinderTest and is intended
     ///to contain all NHModelBinderTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestClass]
     public class NHModelBinderTest
     {
-
-
-        private TestContext testContextInstance;
-
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
         ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
+        public TestContext TestContext { get; set; }
 
         #region Additional test attributes
+
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -64,60 +49,61 @@ namespace Qi.Test
         //{
         //}
         //
-        #endregion
 
+        #endregion
 
         /// <summary>
         ///A test for IsPersistentType
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void IsPersistentTypeTest()
         {
-
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(User)));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(User[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(IList<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(List<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(Iesi.Collections.Generic.ISet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(Iesi.Collections.Generic.HashedSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(Iesi.Collections.Generic.ImmutableSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(Iesi.Collections.Generic.DictionarySet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(Iesi.Collections.Generic.OrderedSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(Iesi.Collections.Generic.Set<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(Iesi.Collections.Generic.SortedSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(Iesi.Collections.Generic.SynchronizedSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof(ISet<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (User)));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (User[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (IList<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (List<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (Iesi.Collections.Generic.ISet<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (HashedSet<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (ImmutableSet<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (DictionarySet<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (OrderedSet<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (Set<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (Iesi.Collections.Generic.SortedSet<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (SynchronizedSet<User>[])));
+            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (System.Collections.Generic.ISet<User>[])));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IsCollectionType()
         {
-
             Type parameterType;
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(User[]), out parameterType));
-            Assert.AreEqual(typeof(User),parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(IList<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(List<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(Iesi.Collections.Generic.ISet<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(Iesi.Collections.Generic.HashedSet<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(Iesi.Collections.Generic.ImmutableSet<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(Iesi.Collections.Generic.DictionarySet<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(Iesi.Collections.Generic.OrderedSet<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(Iesi.Collections.Generic.Set<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(Iesi.Collections.Generic.SortedSet<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(Iesi.Collections.Generic.SynchronizedSet<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
-            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof(ISet<User>[]), out parameterType));
-            Assert.AreEqual(typeof(User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (User[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (IList<User>[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (List<User>[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (Iesi.Collections.Generic.ISet<User>[]),
+                                                            out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (HashedSet<User>[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (ImmutableSet<User>[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (DictionarySet<User>[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (OrderedSet<User>[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (Set<User>[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (Iesi.Collections.Generic.SortedSet<User>[]),
+                                                            out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (SynchronizedSet<User>[]), out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
+            Assert.IsTrue(CollectionHelper.IsCollectionType(typeof (System.Collections.Generic.ISet<User>[]),
+                                                            out parameterType));
+            Assert.AreEqual(typeof (User), parameterType);
         }
     }
 }

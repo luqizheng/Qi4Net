@@ -23,7 +23,14 @@ namespace Qi.Web
             var serializer = new JavaScriptSerializer();
             return serializer.Serialize(obj);
         }
-
+        public static JsonContainer Create(Stream stream)
+        {
+            return JsonContainer.Create(stream);
+        }
+        public static JsonContainer Create(string json)
+        {
+            return JsonContainer.Create(json);
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -50,10 +57,10 @@ namespace Qi.Web
         {
             if (data == null)
                 throw new ArgumentNullException("data");
-            var formatSymbol = format ? "\r\n" : "";
-            
-            var buffer = new StringBuilder(String.Format("{{{0}",formatSymbol));
-            
+            string formatSymbol = format ? "\r\n" : "";
+
+            var buffer = new StringBuilder(String.Format("{{{0}", formatSymbol));
+
             int i = 1;
             foreach (string jsonKeyName in data.Keys)
             {
@@ -64,11 +71,11 @@ namespace Qi.Web
 
                 if (i != data.Count)
                 {
-                    buffer.AppendFormat(",{0}",formatSymbol);
+                    buffer.AppendFormat(",{0}", formatSymbol);
                 }
                 i++;
             }
-            buffer.AppendFormat("}}{0}",formatSymbol);
+            buffer.AppendFormat("}}{0}", formatSymbol);
             return buffer.ToString();
         }
     }

@@ -89,9 +89,9 @@
     <Compile Include="EncryptHelperTest.cs" />
     <Compile Include="EnumDescriptionAttributeTest.cs" />
     <Compile Include="IoExtenderTest.cs" />
+    <Compile Include="JasonContainerTest.cs" />
     <Compile Include="JsonHelperTest.cs" />
     <Compile Include="MacAddressTest.cs" />
-    <Compile Include="NamedFormatterHelperTest.cs" />
     <Compile Include="NHibernate\NHModelBinderTest.cs" />
     <Compile Include="NHModelBinderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -156,11 +156,10 @@
     <EmbeddedResource Include="Resource1.zh-CN.resx" />
     <EmbeddedResource Include="Resource1.zh-TW.resx" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Test References\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
+    <Shadow Include="Test References\Qi.Web.accessor" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

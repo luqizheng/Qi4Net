@@ -127,10 +127,7 @@
     <Compile Include="QMath.cs" />
     <Compile Include="Secret\AesUtil.cs" />
     <Compile Include="Secret\DESHelper.cs" />
-    <Compile Include="Text\NamedFormatterHelper.cs" />
     <Compile Include="Secret\EncryptHelper.cs" />
-    <Compile Include="Threads\MultiExecute.cs" />
-    <Compile Include="Threads\ThreadHelper.cs" />
     <Compile Include="Time.cs" />
   </ItemGroup>
   <ItemGroup>

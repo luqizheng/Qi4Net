@@ -89,7 +89,7 @@
     <Compile Include="EncryptHelperTest.cs" />
     <Compile Include="EnumDescriptionAttributeTest.cs" />
     <Compile Include="IoExtenderTest.cs" />
-    <Compile Include="JasonContainerTest.cs" />
+    <Compile Include="JsonContainerTest.cs" />
     <Compile Include="JsonHelperTest.cs" />
     <Compile Include="MacAddressTest.cs" />
     <Compile Include="NHibernate\NHModelBinderTest.cs" />

@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Qi.DataTables.Calculators;
 
 namespace Qi.DataTables.Columns
 {
-
     /// <summary>
     /// 
     /// </summary>
@@ -24,9 +22,14 @@ namespace Qi.DataTables.Columns
             Name = name;
         }
 
-        private IDictionary<string, ICalculator> Sets
+        private IDictionary<string, ICalculator> Calculators
         {
             get { return _sets ?? (_sets = new SortedDictionary<string, ICalculator>()); }
+        }
+
+        public int Count
+        {
+            get { return Calculators.Count; }
         }
 
         #region IColumn Members
@@ -37,6 +40,7 @@ namespace Qi.DataTables.Columns
         {
             return GetValue(data);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -44,8 +48,9 @@ namespace Qi.DataTables.Columns
         /// <returns></returns>
         public bool HasCaculator(string calculatorName)
         {
-            return Sets.ContainsKey(calculatorName);
+            return Calculators.ContainsKey(calculatorName);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -53,9 +58,9 @@ namespace Qi.DataTables.Columns
         /// <returns></returns>
         public object GetResult(string calculatorName)
         {
-            if (Sets.ContainsKey(calculatorName))
+            if (Calculators.ContainsKey(calculatorName))
             {
-                return Sets[calculatorName].Result;
+                return Calculators[calculatorName].Result;
             }
             return null;
         }
@@ -65,7 +70,7 @@ namespace Qi.DataTables.Columns
             if (_sets == null)
                 return null;
             int i = 0;
-            foreach (var item in _sets.Values)
+            foreach (ICalculator item in _sets.Values)
             {
                 if (i == calculatorIndex)
                     return item.Result;
@@ -75,14 +80,13 @@ namespace Qi.DataTables.Columns
         }
 
 
-
         /// <summary>
         /// Reset all the result include calculator
         /// </summary>
         public void Reset()
         {
             _cacheData = null;
-            foreach (ICalculator a in Sets.Values)
+            foreach (ICalculator a in Calculators.Values)
             {
                 a.Clear();
             }
@@ -95,6 +99,7 @@ namespace Qi.DataTables.Columns
         {
             _cacheData = null;
         }
+
         /// <summary>
         /// Add new calulator for this Column
         /// </summary>
@@ -103,7 +108,7 @@ namespace Qi.DataTables.Columns
         {
             if (result == null)
                 throw new ArgumentNullException("result");
-            Sets.Add(result.Name, result);
+            Calculators.Add(result.Name, result);
         }
 
         #endregion
@@ -117,12 +122,12 @@ namespace Qi.DataTables.Columns
             if (_sets != null && !sameRowObject)
             {
                 _rowObjectHasCode = data.GetHashCode();
-                foreach (ICalculator item in Sets.Values)
+                foreach (ICalculator calculator in Calculators.Values)
                 {
-                    item.SetValue(_cacheData);
+                    calculator.SetValue(_cacheData);
                 }
             }
-            return (T)_cacheData;
+            return (T) _cacheData;
         }
 
         protected abstract object InvokeObject(object rowObject);

@@ -3,10 +3,13 @@ namespace Qi.DataTables
     public interface IColumn
     {
         /// <summary>
-        /// 
+        /// Gets or sets the name of this column
         /// </summary>
         string Name { get; set; }
-
+        /// <summary>
+        /// Gets or sets the Calulator's count
+        /// </summary>
+        int Count { get; }
         /// <summary>
         /// 
         /// </summary>
@@ -33,7 +36,7 @@ namespace Qi.DataTables
         /// <param name="calculatorIndex"></param>
         /// <returns></returns>
         object GetResult(int calculatorIndex);
-       
+
 
         /// <summary>
         /// 

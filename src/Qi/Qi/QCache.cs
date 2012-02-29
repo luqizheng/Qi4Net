@@ -10,17 +10,20 @@ namespace Qi
     public class QCache : IDisposable
     {
         private readonly Dictionary<int, TimeoutItem> _objectPools = new Dictionary<int, TimeoutItem>();
+        private readonly bool _slideTime;
         private readonly SortedList<DateTime, int> _timeoutPools = new SortedList<DateTime, int>();
-        bool _slideTime;
-        Thread _thread;
+        private Thread _thread;
+
         public QCache(bool slideTime)
         {
             _slideTime = slideTime;
         }
+
         public QCache()
             : this(false)
         {
         }
+
         #region IDisposable Members
 
         public void Dispose()
@@ -34,7 +37,6 @@ namespace Qi
                     _timeoutPools.Clear();
                 }
             }
-
         }
 
         #endregion
@@ -57,12 +59,12 @@ namespace Qi
                 if (_slideTime)
                 {
                     //refresh time;
-                    var result = GetObj(obj.GetHashCode());
+                    object result = GetObj(obj.GetHashCode());
                 }
                 return obj.GetHashCode();
             }
 
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
             DateTime timeout = now.AddMilliseconds(milliSeconds);
             while (_timeoutPools.ContainsKey(timeout))
             {
@@ -76,7 +78,7 @@ namespace Qi
                     if (!_objectPools.ContainsKey(obj.GetHashCode()))
                     {
                         _timeoutPools.Add(timeout, obj.GetHashCode());
-                        _objectPools.Add(obj.GetHashCode(), new TimeoutItem { MilliSeconds = milliSeconds, Target = obj });
+                        _objectPools.Add(obj.GetHashCode(), new TimeoutItem {MilliSeconds = milliSeconds, Target = obj});
                     }
                 }
             }
@@ -85,7 +87,6 @@ namespace Qi
                 StartPooling();
             }
             return obj.GetHashCode();
-
         }
 
         /// <summary>
@@ -103,22 +104,19 @@ namespace Qi
             {
                 ThreadPool.QueueUserWorkItem(s =>
                                                  {
-
-                                                     var objHasCode = (int)s;
+                                                     var objHasCode = (int) s;
                                                      //更新一下超时的时间。
-                                                     var indexOfTimePool = _timeoutPools.IndexOfValue(objHasCode);
+                                                     int indexOfTimePool = _timeoutPools.IndexOfValue(objHasCode);
                                                      lock (_timeoutPools)
                                                      {
                                                          _timeoutPools.RemoveAt(indexOfTimePool);
-                                                         var time = DateTime.Now.AddMilliseconds(item.MilliSeconds);
+                                                         DateTime time = DateTime.Now.AddMilliseconds(item.MilliSeconds);
                                                          while (_timeoutPools.ContainsKey(time))
                                                          {
                                                              time = time.AddMilliseconds(1);
                                                          }
                                                          _timeoutPools.Add(time, item.Target.GetHashCode());
-
                                                      }
-
                                                  }, hascode);
             }
             return item.Target;
@@ -132,11 +130,11 @@ namespace Qi
                 _thread.Abort();
             }
 
-            _thread = new Thread(new ParameterizedThreadStart(Pooling));
+            _thread = new Thread(Pooling);
             _thread.IsBackground = true;
             _thread.Start();
-
         }
+
         private void Pooling(object state)
         {
             try
@@ -166,6 +164,7 @@ namespace Qi
             {
             }
         }
+
         private int FindIndex(DateTime lessThanDateTime)
         {
             int start = 0;
@@ -173,7 +172,7 @@ namespace Qi
             int middle = 0;
             while (end >= start)
             {
-                middle = (end + start) / 2;
+                middle = (end + start)/2;
                 DateTime val = _timeoutPools.Keys[middle];
                 if (val == lessThanDateTime)
                 {

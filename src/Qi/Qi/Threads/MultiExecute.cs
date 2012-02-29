@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Qi.Threads
 {
@@ -22,6 +24,8 @@ namespace Qi.Threads
             if (threadCount < 0 || threadCount > 9999)
                 throw new ArgumentOutOfRangeException("threadCount", "Should be between 1~9999");
             _threadCount = threadCount;
+            
+            var a = Partitioner.Create(0, 100);
         }
 
         #region exeute handler with return Value

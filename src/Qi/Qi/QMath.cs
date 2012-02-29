@@ -29,7 +29,7 @@ namespace Qi
 
                 decimal vs = Convert.ToDecimal(Math.Pow(10, midPointRouting)); //2)
 
-                decimal res = Math.Ceiling(dec * vs) / vs; //3）
+                decimal res = Math.Ceiling(dec*vs)/vs; //3）
                 return integer + res; //4)
             }
         }
@@ -53,7 +53,7 @@ namespace Qi
             }
             decimal dec = i - integer;
             decimal vs = Convert.ToDecimal(Math.Pow(10, midPointRouting));
-            decimal res = Math.Truncate(dec * vs) / vs;
+            decimal res = Math.Truncate(dec*vs)/vs;
             return integer + res;
         }
     }

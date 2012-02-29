@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -64,6 +63,45 @@ namespace Qi.Secret
         public static byte[] Sha1Utf7(this string content)
         {
             return Encrypt(content, Encoding.UTF7, new SHA1CryptoServiceProvider());
+        }
+
+        #endregion
+
+        #region sha256
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static byte[] Sha256Utf8(this string content)
+        {
+            return Encrypt(content, Encoding.UTF8, new SHA256CryptoServiceProvider());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static byte[] Sha256ASCII(this string content)
+        {
+            return Encrypt(content, Encoding.ASCII, new SHA256CryptoServiceProvider());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static byte[] Sha256Unicode(this string content)
+        {
+            return Encrypt(content, Encoding.Unicode, new SHA256CryptoServiceProvider());
+        }
+
+        public static byte[] Sha256Utf7(this string content)
+        {
+            return Encrypt(content, Encoding.UTF7, new SHA256CryptoServiceProvider());
         }
 
         #endregion
@@ -161,7 +199,5 @@ namespace Qi.Secret
             byte[] iput = getBytesFunc.GetBytes(content);
             return hashAlgorithm.ComputeHash(iput);
         }
-
-      
     }
 }

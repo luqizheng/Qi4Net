@@ -51,14 +51,15 @@ namespace Qi.Web.Mvc.Founders
             {
                 if (context.Request[postName] != null)
                 {
-                    object postDataObj = ConvertStringToObject(postData, PostDataType(sessionManager, postName));
+                    object postDataObj = NHMappingHelper.ConvertStringToObject(postData,
+                                                                               PostDataType(sessionManager, postName));
                     return GetObject(sessionManager, postDataObj, postName, context);
                 }
                 else
                 {
-                    var constructor = this.EntityType
+                    ConstructorInfo constructor = EntityType
                         .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                        null, new Type[0], new ParameterModifier[0]);
+                                        null, new Type[0], new ParameterModifier[0]);
                     return constructor.Invoke(null);
                 }
             }
@@ -69,21 +70,6 @@ namespace Qi.Web.Mvc.Founders
                     sessionManager.CleanUp();
                 }
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="valStrExpress"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        protected static object ConvertStringToObject(string valStrExpress, IType type)
-        {
-            var idType = type as NullableType;
-            if (idType == null)
-                throw new NhConfigurationException(
-                    "Resource's Id only support mapping from NullableType in nhibernate.");
-            return idType.FromStringValue(valStrExpress);
         }
 
         /// <summary>

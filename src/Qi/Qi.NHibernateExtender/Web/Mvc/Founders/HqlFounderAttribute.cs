@@ -55,7 +55,7 @@ namespace Qi.Web.Mvc.Founders
                     throw new NhConfigurationException("Nhibernate do not defined base type named " +
                                                        AnotherParameterType[i]);
 
-                object val = ConvertStringToObject(strValu, paramType);
+                object val = NHMappingHelper.ConvertStringToObject(strValu, paramType);
                 crit.SetParameter(parameterName, val, paramType);
             }
         }

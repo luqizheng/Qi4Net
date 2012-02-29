@@ -12,6 +12,7 @@
     /// </summary>
     public delegate void VoidFunc();
 
+    public delegate void VoidFunc<in TT1, in TT2>(TT1 t1, TT2 t2);
     /// <summary>
     /// 
     /// </summary>

@@ -23,6 +23,9 @@
                 Password
             </th>
             <th>
+                Create Time
+            </th>
+            <th>
             </th>
         </tr>
         @foreach (var item in Model)
@@ -38,8 +41,11 @@
                     @Html.DisplayFor(modelItem => item.Password)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.CreateTime)
+                </td>
+                <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("ChangePassword", "ChangePassword", new { id = item.Id });
+                    @Html.ActionLink("ChangePassword", "ChangePassword", new { id = item.Id }) |
                     @Html.ActionLink("AssignRole", "AssignRole", new { id = item.LoginId }) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 </td>

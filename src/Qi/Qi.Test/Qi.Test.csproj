@@ -53,8 +53,16 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="NHibernate">
+      <HintPath>..\packages\NHibernate.3.2.0.4000\lib\Net35\NHibernate.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -70,6 +78,7 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -83,6 +92,8 @@
     <Compile Include="JsonHelperTest.cs" />
     <Compile Include="MacAddressTest.cs" />
     <Compile Include="NamedFormatterHelperTest.cs" />
+    <Compile Include="NHibernate\NHModelBinderTest.cs" />
+    <Compile Include="NHModelBinderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QCacheTest.cs" />
     <Compile Include="QMathTest.cs" />
@@ -98,6 +109,14 @@
     <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MvcTest\MvcTest.csproj">
+      <Project>{C91C5CCC-4C31-4536-AB22-581604135D67}</Project>
+      <Name>MvcTest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Qi.NHibernateExtender\Qi.NHibernateExtender.csproj">
+      <Project>{310038D7-CC1C-49EC-A560-8CF2370A0DA7}</Project>
+      <Name>Qi.NHibernateExtender</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Qi.Web\Qi.Web.csproj">
       <Project>{D977A1FD-CA69-4A1F-9157-A8D47AF94831}</Project>
       <Name>Qi.Web</Name>
@@ -139,6 +158,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Test References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

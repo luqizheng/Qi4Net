@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using NHibernate.Cfg;
 using NHibernate.Mapping;
 using Qi.Nhibernates;
 using Qi.Web.Mvc.Founders;
@@ -19,6 +21,11 @@ namespace Qi.Web.Mvc
         /// Key is session factory Name, value, ture means handlder by sessionAttribute, false closed by it self.
         /// </summary>
         private readonly IDictionary<string, bool> _sessionHandlerByFilters = new Dictionary<string, bool>();
+
+        /// <summary>
+        /// when binder object is nhibernate entity, it will set to true,
+        /// </summary>
+        private bool _isDto = true;
 
         private void ClearUp()
         {
@@ -45,8 +52,10 @@ namespace Qi.Web.Mvc
 
             if (!IsPersistentType(modelType))
             {
+                _isDto = true;
                 return base.CreateModel(controllerContext, bindingContext, modelType);
             }
+            _isDto = false;
             HttpRequestBase request = controllerContext.RequestContext.HttpContext.Request;
             object result = GeModelFromNH(modelType, request, controllerContext);
             if (result == null)
@@ -60,7 +69,7 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// 
+        /// Find Session Attribute in the Action or Controller.
         /// </summary>
         /// <param name="controllerContext"></param>
         /// <param name="bindingContext"></param>
@@ -90,11 +99,41 @@ namespace Qi.Web.Mvc
             }
         }
 
+        protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext,
+                                             PropertyDescriptor propertyDescriptor)
+        {
+            ModelMetadata propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
+            Type parameterType;
+
+            if (_isDto && CollectionHelper.IsCollectionType(propertyMetadata.ModelType, out parameterType))
+            {
+                //只有dto才能set list，如果是Domainobject，那么会忽略这个list set
+                Configuration cfg = SessionManager.Instance.Config.NHConfiguration;
+                PersistentClass entityTyepMapping = cfg.GetClassMapping(parameterType);
+                object[] aryIds =
+                    NHMappingHelper.ConvertStringToObjects(
+                        controllerContext.HttpContext.Request[propertyDescriptor.Name],
+                        entityTyepMapping.Identifier.Type);
+
+                CollectionOperator setHelper = CollectionHelper.GetSetHelper(propertyMetadata.ModelType);
+                object children = setHelper.Make(propertyMetadata.ModelType, parameterType);
+                foreach (object id in aryIds)
+                {
+                    object entity = SessionManager.Instance.CurrentSession.Load(parameterType, id);
+                    setHelper.Add(children, entity);
+                }
+                base.SetProperty(controllerContext, bindingContext, propertyDescriptor, children);
+            }
+            else
+            {
+                base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
+            }
+        }
+
         protected override void SetProperty(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                             PropertyDescriptor propertyDescriptor, object value)
         {
             ModelMetadata propertyMetadata = bindingContext.PropertyMetadata[propertyDescriptor.Name];
-
             if (!IsPersistentType(propertyMetadata.ModelType))
             {
                 base.SetProperty(controllerContext, bindingContext, propertyDescriptor, value);
@@ -139,10 +178,29 @@ namespace Qi.Web.Mvc
                                               controllerContext.HttpContext);
         }
 
-        private static bool IsPersistentType(Type modelType)
+        public static bool IsPersistentType(Type modelType)
         {
-            return SessionManager.Instance.Config.NHConfiguration.GetClassMapping(modelType) != null;
+            Configuration nhConfig = SessionManager.Instance.Config.NHConfiguration;
+
+            if (modelType.IsArray)
+            {
+                bool result = nhConfig.GetClassMapping(modelType.GetElementType()) != null;
+                if (!result)
+                {
+                    if (modelType.GetGenericArguments().Any(type => nhConfig.GetClassMapping(type) != null))
+                    {
+                        return true;
+                    }
+                }
+                return result;
+            }
+            if (modelType.IsGenericType)
+            {
+                return modelType.GetGenericArguments().Any(type => nhConfig.GetClassMapping(type) != null);
+            }
+            return nhConfig.GetClassMapping(modelType) != null;
         }
+
 
         private static FounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
         {

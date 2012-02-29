@@ -6,6 +6,8 @@
     </id>
     <property name="LoginId" length="100" type="String"></property>
     <property name="Password" length="100" type="String"></property>
+    <property name="CreateTime"></property>
+
 
     <property name="Name" length="100" type="String"></property>
     <set name="Roles" access="nosetter.camelcase-underscore"

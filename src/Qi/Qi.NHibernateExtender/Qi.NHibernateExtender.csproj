@@ -61,9 +61,12 @@
     <Compile Include="Nhibernates\Types\TimeStringType.cs" />
     <Compile Include="Nhibernates\Types\TimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\Mvc\CollectionHelper.cs" />
+    <Compile Include="Web\Mvc\CollectionOperator.cs" />
     <Compile Include="Web\Mvc\Founders\FounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\HqlFounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\IdFounderAttribute.cs" />
+    <Compile Include="Web\Mvc\Founders\NHMappingHelper.cs" />
     <Compile Include="Web\Mvc\Founders\PropertyFounderAttribute.cs" />
     <Compile Include="Web\Mvc\NHModelBinder.cs" />
     <Compile Include="Web\Mvc\SessionAttribute.cs" />

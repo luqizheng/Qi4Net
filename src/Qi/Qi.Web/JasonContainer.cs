@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -12,7 +13,6 @@ namespace Qi.Web
     /// </summary>
     public sealed class JsonContainer
     {
-       
         /// <summary>
         /// </summary>
         private readonly Dictionary<string, object> _content = new Dictionary<string, object>();
@@ -26,9 +26,9 @@ namespace Qi.Web
         /// </param>
         public JsonContainer(Dictionary<string, object> content)
         {
-            this._content = content;
+            _content = content;
         }
-    
+
         public JsonContainer()
         {
         }
@@ -67,10 +67,7 @@ namespace Qi.Web
                 }
                 else
                 {
-                    if (parentKey == null)
-                        result.Add(key);
-                    else
-                        result.Add(string.Format("{0}.{1}", parentKey, key));
+                    result.Add(parentKey == null ? key : string.Format("{0}.{1}", parentKey, key));
                 }
             }
         }
@@ -134,6 +131,68 @@ namespace Qi.Web
             string theKey;
             JsonContainer current = AnaylzTheKey(key, out theKey, this);
             return Convert.ToBoolean(current._content[theKey]);
+        }
+
+        public void SetVal(string key, object val)
+        {
+            bool isJsonContainer = false;
+            bool isArray = false;
+            if (val != null)
+            {
+                isJsonContainer = val is JsonContainer;
+                Type type = val.GetType();
+                if (type.IsArray)
+                {
+                    isJsonContainer = type.GetElementType() == typeof(JsonContainer);
+                    if (!type.GetElementType().IsValueType && type.GetElementType() != typeof(string) &&
+                        isJsonContainer)
+                    {
+                        throw new ArgumentException(
+                            "can not suppport array complex object,please use jsonContainer to instead.");
+                    }
+                    isArray = true;
+                }
+                else if (!(val is ValueType) && !(val is string) && !(val is JsonContainer))
+                {
+                    throw new ArgumentException("can not suppport complex object,please use JsonContainer to instead.");
+                }
+            }
+
+
+            string theKey;
+            JsonContainer current = BuildFromKey(key, out theKey, this);
+            if (!isArray)
+            {
+                if (!current.Contains(theKey))
+                {
+                    current._content.Add(theKey, isJsonContainer ? ((JsonContainer)val)._content : val);
+                }
+                else
+                {
+                    current._content[theKey] = isJsonContainer ? ((JsonContainer)val)._content : val;
+                }
+            }
+            else
+            {
+                if (!current.Contains(theKey))
+                {
+                    current._content.Add(theKey, isJsonContainer ? ToJsoncContainer(val) : val);
+                }
+                else
+                {
+                    current._content[theKey] = isJsonContainer ? ToJsoncContainer(val) : val;
+                }
+            }
+        }
+
+        private Dictionary<string, object>[] ToJsoncContainer(object value)
+        {
+            var result = new List<Dictionary<string, object>>();
+            foreach (JsonContainer item in ((Array)value))
+            {
+                result.Add(item._content);
+            }
+            return result.ToArray();
         }
 
         public Double ToDouble(string key)
@@ -203,7 +262,7 @@ namespace Qi.Web
         {
             string theKey;
             JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return new JsonContainer((Dictionary<string, object>) current._content[theKey]);
+            return new JsonContainer((Dictionary<string, object>)current._content[theKey]);
         }
 
         /// <summary>
@@ -217,7 +276,6 @@ namespace Qi.Web
         {
             string theKey;
             JsonContainer current = AnaylzTheKey(key, out theKey, this);
-
             return Convert.ToString(current._content[theKey]);
         }
 
@@ -241,28 +299,65 @@ namespace Qi.Web
         {
             string theKey;
             JsonContainer lastContainer = AnaylzTheKey(key, out theKey, this);
-            var r = (Array) lastContainer._content[theKey];
-            if (typeof (T) == typeof (JsonContainer))
+            object objArys = lastContainer._content[theKey];
+            var array = objArys as Array;
+            if (array != null)
             {
-                Array result = Array.CreateInstance(typeof (T), r.Length);
-                int index = 0;
-                foreach (var item in r.OfType<Dictionary<string, object>>())
-                {
-                    var jsonContainer = new JsonContainer(item);
-                    result.SetValue(jsonContainer, index);
-                    index++;
-                }
-                r = result;
+                return From<T>(array,array.Length);
             }
+            var a = objArys as IList;
+            if (a != null)
+                return From<T>(a, a.Count);
+            throw new ApplicationException(key + " isn't array or list.");
+        }
 
-            var r1 = new T[r.Length];
+        private T[] From<T>(IEnumerable array, int length)
+        {
+            Array result = new T[length];
+            bool isJsonContainer = typeof(T) == typeof(JsonContainer);
+
             int i = 0;
-            foreach (T item in r)
+            foreach (object item in array)
             {
-                r1[i] = item;
+                try
+                {
+                    if (isJsonContainer)
+                    {
+                        result.SetValue(new JsonContainer((Dictionary<string, object>)item), i);
+                    }
+                    else
+                    {
+                        result.SetValue((T)item, i);
+                    }
+                }
+                catch (InvalidCastException)
+                {
+                    throw new InvalidCastException("can't cast " + item + " to " + typeof(T));
+                }
                 i++;
             }
-            return r1;
+            return (T[])result;
+        }
+
+       
+        private static JsonContainer BuildFromKey(string keyPath, out string lastKey, JsonContainer current)
+        {
+            string[] keys = keyPath.Split('.');
+            if (keys.Length == 1)
+            {
+                lastKey = keys[0];
+                return current;
+            }
+            lastKey = keys[keys.Length - 1];
+            for (int i = 0; i < keys.Length - 1; i++)
+            {
+                if (!current._content.ContainsKey(keys[i]))
+                {
+                    current._content.Add(keys[i], new Dictionary<string, object>());
+                }
+                current = current.ToJsonContainer(keys[i]);
+            }
+            return current;
         }
 
 
@@ -332,7 +427,7 @@ namespace Qi.Web
         public static JsonContainer Create(string jsonData)
         {
             var s = new JavaScriptSerializer();
-            var result = (Dictionary<string, object>) s.DeserializeObject(jsonData);
+            var result = (Dictionary<string, object>)s.DeserializeObject(jsonData);
             return new JsonContainer(result);
         }
 
@@ -348,6 +443,13 @@ namespace Qi.Web
             {
                 return false;
             }
+        }
+
+        public object ToObject(string key)
+        {
+            string theKey;
+            JsonContainer current = AnaylzTheKey(key, out theKey, this);
+            return current._content[theKey];
         }
     }
 }

@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="/Scripts/jquery.json.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#getSubmit").click(function() {
+            var data = {
+                j1: $.toJSON( {
+                    name: $("#j1Name").val(),
+                    value: $("#j1Value").val()
+                }),
+                j2:$.toJSON( {
+                    name: $("#j2Name").val(),
+                    value: $("#j2Value").val()
+                })
+            };
+
+
+            $.getJSON("@Url.Action("Test")", data, function(e) {
+                var result = e.j1.name + "=" + e.j1.value + "," + e.j2.name + "=" + e.j1.value;
+                alert(result);
+            });
+        });
+
+    });
+</script>
+<h2>
+    Index</h2>
+<div>
+    J1Name:<input type="text" value="j1Name" id="j1Name" />
+</div>
+<div>
+    J1:<input type="text" value="11" id="j1Value" />
+</div>
+<div>
+    J2Name:<input type="text" value="j2Name" id="j2Name" />
+</div>
+<div>
+    J2:<input type="text" value="12" id="j2Value" />
+</div>
+<input value="submit" type="button" id="getSubmit" />

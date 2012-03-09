@@ -242,6 +242,19 @@ namespace Qi.Test
         {
             ToArrayTestHelper<GenericParameterHelper>();
         }
+        [TestMethod]
+        public void ToArrayTest_Types()
+        {
+            var json = @"{a:[1,2,3,4,5]}";
+            var a = JsonContainer.Create(json);
+            var actual = a.ToArray<int>("a");
+            var except = new[] { 1, 2, 3, 4, 5 };
+            Assert.AreEqual(actual.Length,except.Length);
+            for (int i = 0; i < actual.Length; i++)
+            {
+                Assert.AreEqual(except[i], actual[i]);
+            }
+        }
 
         [TestMethod]
         public void ToArrayTest_JsonContains()
@@ -268,7 +281,31 @@ namespace Qi.Test
             Assert.AreEqual("a", target[1].ToString("child1"));
             Assert.AreEqual("b", target[1].ToString("child2"));
         }
+        [TestMethod]
+        public void ToArrayTest_JsonContains_ArrayList()
+        {
+            var o = new Dictionary<string, object>();
+            o.Add("child1", "a");
+            o.Add("child2", "b");
 
+            var o2 = new Dictionary<string, object>();
+            o2.Add("child1", "a");
+            o2.Add("child2", "b");
+
+            var s = new List<Dictionary<string, object>> { o, o2 };
+
+            var content = new Dictionary<string, object>();
+            content.Add("key", s);
+            var jsonContainer = new JsonContainer(content);
+
+            JsonContainer[] target = jsonContainer.ToArray<JsonContainer>("key");
+
+            Assert.AreEqual("a", target[0].ToString("child1"));
+            Assert.AreEqual("b", target[0].ToString("child2"));
+
+            Assert.AreEqual("a", target[1].ToString("child1"));
+            Assert.AreEqual("b", target[1].ToString("child2"));
+        }
         /// <summary>
         ///A test for Create
         ///</summary>
@@ -356,7 +393,7 @@ namespace Qi.Test
                               };
 
             var current = new JsonContainer(content);
-            var actual = current.AllSubKeys;
+            string[] actual = current.AllSubKeys;
 
             Assert.AreEqual(("l1.l2.value1"), actual[0]);
         }
@@ -392,6 +429,23 @@ namespace Qi.Test
             Assert.AreEqual(lastKeyExpect, lastKey);
             Assert.AreEqual(Int32.MaxValue, actual.ToInt32(lastKey));
         }
+
+        [TestMethod]
+        public void ArrayJson()
+        {
+            string json = @"
+{
+    a:[
+         {name:""abc1""},
+         {name:""abc2""}         
+      ]
+}";
+            JsonContainer a = JsonContainer.Create(json);
+            JsonContainer[] actual = a.ToArray<JsonContainer>("a");
+            Assert.AreEqual("abc1", actual[0].ToString("name"));
+            Assert.AreEqual("abc2", actual[1].ToString("name"));
+        }
+
 
         /// <summary>
         ///A test for AnaylzTheKey
@@ -477,6 +531,47 @@ namespace Qi.Test
             string keyPath = "notExist";
             string lastKey;
             JsonContainer actual = JsonContainer_Accessor.AnaylzTheKey(keyPath, out lastKey, current);
+        }
+
+        /// <summary>
+        ///A test for SetBoolean
+        ///</summary>
+        [TestMethod]
+        public void SetValueTypeTest()
+        {
+            var set = new object[]
+                          {
+                              1, true, 'a', "string", Int32.MinValue, DateTime.Now, Guid.NewGuid(), null
+                          };
+
+            var target = new JsonContainer();
+            for (int i = 0; i < set.Length; i++)
+            {
+                string key = "test.test" + i;
+                target.SetVal(key, set[i]);
+                Assert.AreEqual(set[i], target.ToObject(key));
+            }
+        }
+
+        /// <summary>
+        ///A test for SetBoolean
+        ///</summary>
+        [TestMethod]
+        public void SetArrayTest()
+        {
+            var set = new[]
+                          {
+                              "a", "b"
+                          };
+
+            var target = new JsonContainer();
+            string key = "test.test";
+            target.SetVal(key, set);
+            string[] actual = target.ToArray<string>(key);
+            for (int i = 0; i < set.Length; i++)
+            {
+                Assert.AreEqual(set[i], actual[i]);
+            }
         }
     }
 }

@@ -23,14 +23,17 @@ namespace Qi.Web
             var serializer = new JavaScriptSerializer();
             return serializer.Serialize(obj);
         }
+
         public static JsonContainer Create(Stream stream)
         {
             return JsonContainer.Create(stream);
         }
+
         public static JsonContainer Create(string json)
         {
             return JsonContainer.Create(json);
         }
+
         /// <summary>
         /// 
         /// </summary>

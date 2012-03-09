@@ -82,6 +82,7 @@
     <Compile Include="JasonContainer.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="Mvc\HtmlExtender.cs" />
+    <Compile Include="Mvc\JsonContainerFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebExtender.cs" />
   </ItemGroup>

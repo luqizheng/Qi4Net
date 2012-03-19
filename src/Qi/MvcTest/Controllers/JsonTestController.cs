@@ -17,25 +17,11 @@ namespace MvcTest.Controllers
         {
             return View();
         }
-        [JsonContainerFilter]
-        public ActionResult Test(JsonContainer j1, JsonContainer j2)
+        [JsonContainerFilter(true)]
+        public ActionResult Test(JsonContainer data)
         {
-            var a = new
-                        {
-                            j1 = new
-                                   {
-                                       value = j1.ToInt32("value"),
-                                       name = j1.ToString("name"),
-                                   },
-                            j2 = new
-                            {
-                                value = j1.ToInt32("value"),
-                                name = j1.ToString("name"),
-                            }
 
-                        };
-            return Json(a,JsonRequestBehavior.AllowGet);
-
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
     }

@@ -242,14 +242,15 @@ namespace Qi.Test
         {
             ToArrayTestHelper<GenericParameterHelper>();
         }
+
         [TestMethod]
         public void ToArrayTest_Types()
         {
-            var json = @"{a:[1,2,3,4,5]}";
-            var a = JsonContainer.Create(json);
-            var actual = a.ToArray<int>("a");
+            string json = @"{a:[1,2,3,4,5]}";
+            JsonContainer a = JsonContainer.Create(json);
+            int[] actual = a.ToArray<int>("a");
             var except = new[] { 1, 2, 3, 4, 5 };
-            Assert.AreEqual(actual.Length,except.Length);
+            Assert.AreEqual(actual.Length, except.Length);
             for (int i = 0; i < actual.Length; i++)
             {
                 Assert.AreEqual(except[i], actual[i]);
@@ -281,6 +282,7 @@ namespace Qi.Test
             Assert.AreEqual("a", target[1].ToString("child1"));
             Assert.AreEqual("b", target[1].ToString("child2"));
         }
+
         [TestMethod]
         public void ToArrayTest_JsonContains_ArrayList()
         {
@@ -306,6 +308,7 @@ namespace Qi.Test
             Assert.AreEqual("a", target[1].ToString("child1"));
             Assert.AreEqual("b", target[1].ToString("child2"));
         }
+
         /// <summary>
         ///A test for Create
         ///</summary>
@@ -398,37 +401,37 @@ namespace Qi.Test
             Assert.AreEqual(("l1.l2.value1"), actual[0]);
         }
 
-        /// <summary>
-        ///A test for AnaylzTheKey
-        ///</summary>
-        [TestMethod]
-        [DeploymentItem("Qi.Web.dll")]
-        public void AnaylzTheKeyTest()
-        {
-            var content = new Dictionary<string, object>
-                              {
-                                  {
-                                      "l1", new Dictionary<string, object>
-                                                {
-                                                    {
-                                                        "l2", new Dictionary<string, object>
-                                                                  {
-                                                                      {"value", Int32.MaxValue}
-                                                                  }
-                                                        }
-                                                }
-                                      }
-                              };
+        ///// <summary>
+        /////A test for AnaylzTheKey
+        /////</summary>
+        //[TestMethod]
+        //[DeploymentItem("Qi.Web.dll")]
+        //public void AnaylzTheKeyTest()
+        //{
+        //    var content = new Dictionary<string, object>
+        //                      {
+        //                          {
+        //                              "l1", new Dictionary<string, object>
+        //                                        {
+        //                                            {
+        //                                                "l2", new Dictionary<string, object>
+        //                                                          {
+        //                                                              {"value", Int32.MaxValue}
+        //                                                          }
+        //                                                }
+        //                                        }
+        //                              }
+        //                      };
 
-            var current = new JsonContainer(content);
-            string keyPath = "l1.l2.value";
-            string lastKey;
-            string lastKeyExpect = "value";
+        //    var current = new JsonContainer(content);
+        //    string keyPath = "l1.l2.value";
+        //    string lastKey;
+        //    string lastKeyExpect = "value";
 
-            JsonContainer actual = JsonContainer_Accessor.AnaylzTheKey(keyPath, out lastKey, current);
-            Assert.AreEqual(lastKeyExpect, lastKey);
-            Assert.AreEqual(Int32.MaxValue, actual.ToInt32(lastKey));
-        }
+        //    JsonContainer actual = JsonContainer_Accessor.AnaylzTheKey(keyPath, out lastKey, current);
+        //    Assert.AreEqual(lastKeyExpect, lastKey);
+        //    Assert.AreEqual(Int32.MaxValue, actual.ToInt32(lastKey));
+        //}
 
         [TestMethod]
         public void ArrayJson()
@@ -437,141 +440,88 @@ namespace Qi.Test
 {
     a:[
          {name:""abc1""},
-         {name:""abc2""}         
+         {number:""11""}         
       ]
 }";
             JsonContainer a = JsonContainer.Create(json);
             JsonContainer[] actual = a.ToArray<JsonContainer>("a");
             Assert.AreEqual("abc1", actual[0].ToString("name"));
-            Assert.AreEqual("abc2", actual[1].ToString("name"));
-        }
-
-
-        /// <summary>
-        ///A test for AnaylzTheKey
-        ///</summary>
-        [TestMethod]
-        [DeploymentItem("Qi.Web.dll")]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), "could not find 'value' which defined in 'l1.l2.value'"
-            )]
-        public void AnaylzTheKeyTest_LastKeyFail()
-        {
-            var content = new Dictionary<string, object>
-                              {
-                                  {
-                                      "l1", new Dictionary<string, object>
-                                                {
-                                                    {
-                                                        "l2", new Dictionary<string, object>
-                                                                  {
-                                                                      {"value1", Int32.MaxValue}
-                                                                  }
-                                                        }
-                                                }
-                                      }
-                              };
-
-            var current = new JsonContainer(content);
-            string keyPath = "l1.l2.value";
-            string lastKey;
-            string lastKeyExpect = "value";
-
-            JsonContainer actual = JsonContainer_Accessor.AnaylzTheKey(keyPath, out lastKey, current);
-            Assert.AreEqual(lastKeyExpect, lastKey);
-            Assert.AreEqual(Int32.MaxValue, actual.ToInt32(lastKey));
+            Assert.AreEqual(11, actual[1].ToInt32("number"));
         }
 
         /// <summary>
-        ///A test for AnaylzTheKey
+        ///A test for SetValue
         ///</summary>
         [TestMethod]
-        [DeploymentItem("Qi.Web.dll")]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), "could not find 'l2' which defined in 'l1.l2.value'")]
-        public void AnaylzTheKeyTest_PathError()
+        public void SetValueTest()
         {
-            var content = new Dictionary<string, object>
-                              {
-                                  {
-                                      "l1", new Dictionary<string, object>
-                                                {
-                                                    {
-                                                        "l1-1", new Dictionary<string, object>
-                                                                    {
-                                                                        {"value", Int32.MaxValue}
-                                                                    }
-                                                        }
-                                                }
-                                      }
-                              };
-
-            var current = new JsonContainer(content);
-            string keyPath = "l1.l2.value";
-            string lastKey;
-            string lastKeyExpect = "value";
-
-            JsonContainer actual = JsonContainer_Accessor.AnaylzTheKey(keyPath, out lastKey, current);
-            Assert.AreEqual(lastKeyExpect, lastKey);
-            Assert.AreEqual(Int32.MaxValue, actual.ToInt32(lastKey));
-        }
-
-        /// <summary>
-        ///A test for AnaylzTheKey
-        ///</summary>
-        [TestMethod]
-        [DeploymentItem("Qi.Web.dll")]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), "could not find noExist")]
-        public void AnaylzTheKeyTest_FirstKeyError()
-        {
-            var content = new Dictionary<string, object>
-                              {
-                                  {"l1", 1}
-                              };
-
-            var current = new JsonContainer(content);
-            string keyPath = "notExist";
-            string lastKey;
-            JsonContainer actual = JsonContainer_Accessor.AnaylzTheKey(keyPath, out lastKey, current);
-        }
-
-        /// <summary>
-        ///A test for SetBoolean
-        ///</summary>
-        [TestMethod]
-        public void SetValueTypeTest()
-        {
-            var set = new object[]
-                          {
-                              1, true, 'a', "string", Int32.MinValue, DateTime.Now, Guid.NewGuid(), null
-                          };
-
             var target = new JsonContainer();
-            for (int i = 0; i < set.Length; i++)
-            {
-                string key = "test.test" + i;
-                target.SetVal(key, set[i]);
-                Assert.AreEqual(set[i], target.ToObject(key));
-            }
+            string key = "a.b";
+            string val = "11";
+            
+            target.SetValue(key, val);
+            
+            Assert.AreEqual(val, target.ToString("a.b"));
+
+            target.SetValue("b","11");
+            Assert.AreEqual("11",target.ToString("b"));
+            
+        }
+
+        
+
+        /// <summary>
+        ///A test for SetValue
+        ///</summary>
+        [TestMethod]
+        public void SetValueTest_set_val_which_is_array()
+        {
+            var target = new JsonContainer();
+            string key = "a.b[]";
+            string val = "11";
+            ;
+            target.SetValue(key, val);
+            target.SetValue("a.b[]", "12");
+
+            string[] actual = target.ToArray<string>("a.b");
+            Assert.AreEqual("11", actual[0]);
+            Assert.AreEqual("12", actual[1]);
         }
 
         /// <summary>
-        ///A test for SetBoolean
+        ///A test for SetValue
         ///</summary>
         [TestMethod]
-        public void SetArrayTest()
+        public void SetValue_set_ary_objects()
         {
-            var set = new[]
-                          {
-                              "a", "b"
-                          };
-
             var target = new JsonContainer();
-            string key = "test.test";
-            target.SetVal(key, set);
-            string[] actual = target.ToArray<string>(key);
-            for (int i = 0; i < set.Length; i++)
-            {
-                Assert.AreEqual(set[i], actual[i]);
-            }
+            string key = "a.b[0].c";
+            string val = "11";
+            ;
+            target.SetValue(key, val);
+            target.SetValue("a.b[1].c", "12");
+
+            JsonContainer[] actual = target.ToArray<JsonContainer>("a.b");
+            Assert.AreEqual("11", actual[0].ToString("c"));
+            Assert.AreEqual("12", actual[1].ToString("c"));
+        }
+
+        /// <summary>
+        ///A test for SetValue
+        ///</summary>
+        [TestMethod]
+        public void SetValue_set_ary_objectValue()
+        {
+            var target = new JsonContainer();
+            string key = "[0].b[0].c";
+            string val = "11";
+            ;
+            target.SetValue(key, val);
+            target.SetValue("a.b[1].c", "12");
+
+            JsonContainer[] actual = target.ToArray<JsonContainer>("a.b");
+            Assert.AreEqual("11", actual[0].ToString("c"));
+            Assert.AreEqual("12", actual[1].ToString("c"));
         }
     }
 }

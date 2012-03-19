@@ -7,18 +7,31 @@
     $(document).ready(function() {
         $("#getSubmit").click(function() {
             var data = {
-                j1: $.toJSON( {
+                j1: {
                     name: $("#j1Name").val(),
                     value: $("#j1Value").val()
-                }),
-                j2:$.toJSON( {
+                },
+                j2:{
                     name: $("#j2Name").val(),
                     value: $("#j2Value").val()
-                })
+                },
+                j3:["0","1","2","3,54"],
+                j4:[
+                    {a:"1","b":["a1","a5"]},
+                    {a:"2","b":["c2","a1"]},
+                    {a:"3","b":["c3","c4"]}
+                ],
+                j5: {
+                    a:11,
+                    b1:[
+                        {a:11,b:["1","b"]},
+                        {a:11,b:["1","b"]},
+                    ]
+                }
             };
 
 
-            $.getJSON("@Url.Action("Test")", data, function(e) {
+            $.getJSON("@Url.Action("Test")", {data:data}, function(e) {
                 var result = e.j1.name + "=" + e.j1.value + "," + e.j2.name + "=" + e.j1.value;
                 alert(result);
             });

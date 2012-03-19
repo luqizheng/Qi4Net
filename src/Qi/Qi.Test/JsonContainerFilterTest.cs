@@ -1,6 +1,7 @@
 ﻿using Qi.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 
 namespace Qi.Test
 {
@@ -64,6 +65,59 @@ namespace Qi.Test
         #endregion
 
 
-      
+
+
+        ///// <summary>
+        /////A test for IsArray
+        /////</summary>
+        //[TestMethod()]
+        //public void IsArrayTest()
+        //{
+        //    JsonContainerFilter target = new JsonContainerFilter();
+        //    string key = "data[]";
+
+        //    bool actual;
+        //    actual = target.IsArray(key);
+        //    Assert.AreEqual(true, actual);
+
+        //    key = "data.cc";
+        //    actual = target.IsArray(key);
+        //    Assert.AreEqual(false, actual);
+
+        //    key = "data[cc]";
+        //    actual = target.IsArray(key);
+        //    Assert.AreEqual(false, actual);
+
+        //    key = "data[0]";
+
+        //    actual = target.IsArray(key);
+        //    Assert.AreEqual(true, actual);
+
+        //    key = "data[aa][0]";
+        //    actual = target.IsArray(key);
+        //    Assert.AreEqual(true, actual);
+
+        //}
+
+
+
+        /// <summary>
+        ///A test for SetTheKeyPath
+        ///</summary>
+        [TestMethod()]
+        public void SetTheKeyPathTest()
+        {
+          
+
+           var actual = "j4[0][b1][]";
+            string expected = "j4[0].b1[]";
+
+            Assert.AreEqual(expected, JsonContainerFilter.JsonKeyPath(actual));
+
+            actual = "j4[0][b1]";
+            expected = "j4[0].b1";
+            Assert.AreEqual(expected, JsonContainerFilter.JsonKeyPath(actual));
+            
+        }
     }
 }

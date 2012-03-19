@@ -79,6 +79,7 @@ namespace Qi
             return bytes.ToStringEx("X2");
         }
 
+
         /// <summary>
         /// 把ary 按照每份拥有多个来分组数据
         /// </summary>

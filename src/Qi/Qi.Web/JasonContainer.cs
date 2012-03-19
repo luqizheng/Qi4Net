@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 
 namespace Qi.Web
@@ -133,57 +134,6 @@ namespace Qi.Web
             return Convert.ToBoolean(current._content[theKey]);
         }
 
-        public void SetVal(string key, object val)
-        {
-            bool isJsonContainer = false;
-            bool isArray = false;
-            if (val != null)
-            {
-                isJsonContainer = val is JsonContainer;
-                Type type = val.GetType();
-                if (type.IsArray)
-                {
-                    isJsonContainer = type.GetElementType() == typeof(JsonContainer);
-                    if (!type.GetElementType().IsValueType && type.GetElementType() != typeof(string) &&
-                        isJsonContainer)
-                    {
-                        throw new ArgumentException(
-                            "can not suppport array complex object,please use jsonContainer to instead.");
-                    }
-                    isArray = true;
-                }
-                else if (!(val is ValueType) && !(val is string) && !(val is JsonContainer))
-                {
-                    throw new ArgumentException("can not suppport complex object,please use JsonContainer to instead.");
-                }
-            }
-
-
-            string theKey;
-            JsonContainer current = BuildFromKey(key, out theKey, this);
-            if (!isArray)
-            {
-                if (!current.Contains(theKey))
-                {
-                    current._content.Add(theKey, isJsonContainer ? ((JsonContainer)val)._content : val);
-                }
-                else
-                {
-                    current._content[theKey] = isJsonContainer ? ((JsonContainer)val)._content : val;
-                }
-            }
-            else
-            {
-                if (!current.Contains(theKey))
-                {
-                    current._content.Add(theKey, isJsonContainer ? ToJsoncContainer(val) : val);
-                }
-                else
-                {
-                    current._content[theKey] = isJsonContainer ? ToJsoncContainer(val) : val;
-                }
-            }
-        }
 
         private Dictionary<string, object>[] ToJsoncContainer(object value)
         {
@@ -303,7 +253,7 @@ namespace Qi.Web
             var array = objArys as Array;
             if (array != null)
             {
-                return From<T>(array,array.Length);
+                return From<T>(array, array.Length);
             }
             var a = objArys as IList;
             if (a != null)
@@ -339,7 +289,7 @@ namespace Qi.Web
             return (T[])result;
         }
 
-       
+
         private static JsonContainer BuildFromKey(string keyPath, out string lastKey, JsonContainer current)
         {
             string[] keys = keyPath.Split('.');
@@ -371,36 +321,13 @@ namespace Qi.Web
         /// </param>
         /// <returns>
         /// </returns>
-        private static JsonContainer AnaylzTheKey(string keyPath, out string lastKey, JsonContainer current)
+        [Obsolete]
+        private JsonContainer AnaylzTheKey(string keyPath, out string lastKey, JsonContainer current)
         {
             string[] keys = keyPath.Split('.');
-            if (keys.Length == 1)
-            {
-                lastKey = keyPath;
-                if (!current._content.ContainsKey(lastKey))
-                    throw new ArgumentOutOfRangeException(
-                        String.Format("could not find {0}", lastKey));
-                return current;
-            }
-
+            Dictionary<string, object> content = GetContextByKeyPath(keys);
             lastKey = keys[keys.Length - 1];
-            for (int i = 0; i < keys.Length - 1; i++)
-            {
-                if (current._content.ContainsKey(keys[i]))
-                {
-                    current = current.ToJsonContainer(keys[i]);
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(
-                        String.Format("could not find '{0}' which defined in '{1}'", keys[i], keyPath));
-                }
-            }
-
-            if (!current._content.ContainsKey(lastKey))
-                throw new ArgumentOutOfRangeException(
-                    String.Format("could not find '{0}' which defined in '{1}'", lastKey, keyPath));
-            return current;
+            return new JsonContainer(content);
         }
 
         /// <summary>
@@ -450,6 +377,122 @@ namespace Qi.Web
             string theKey;
             JsonContainer current = AnaylzTheKey(key, out theKey, this);
             return current._content[theKey];
+        }
+        public void SetValue(string key, string val)
+        {
+            SetValue(key, new[] { key });
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key">key path such as a.b.c or a[0].b.c or a.b.c[] or a.b[1]</param>
+        /// <param name="val"></param>
+        public void SetValue(string key, string[] val)
+        {
+            string[] keySet = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+            string lastKey = keySet[keySet.Length - 1];
+
+            bool isArray = lastKey.EndsWith("]");
+
+            Dictionary<string, object> content = GetContextByKeyPath(keySet);
+            if (isArray)
+            {
+                int aryIndex = GetIndex(lastKey);
+                lastKey = GetKeyName(lastKey);
+                List<string> aryValues = null;
+                if (!content.ContainsKey(lastKey))
+                {
+                    aryValues = new List<string>();
+                    content.Add(lastKey, aryValues);
+                }
+                else
+                {
+                    aryValues = content[lastKey] as List<string>;
+                    ;
+                }
+                if (aryIndex == -1)
+                {
+                    aryIndex = aryValues.Count;
+                }
+                while (aryIndex > aryValues.Count)
+                {
+                    aryValues.Add(null);
+                }
+                aryValues.AddRange(val);
+            }
+            else
+            {
+                if (content.ContainsKey(lastKey))
+                    content[lastKey] = val[0];
+                else
+                    content.Add(lastKey, val[0]);
+            }
+        }
+
+        private Dictionary<string, object> GetContextByKeyPath(string[] keySet)
+        {
+            Dictionary<string, object> content = _content;
+            for (int index = 0; index < keySet.Length - 1; index++)
+            {
+                string keyPath = keySet[index];
+                content = SetKeyPath(content, ref keyPath);
+            }
+            return content;
+        }
+
+        private static Dictionary<string, object> SetKeyPath(Dictionary<string, object> content, ref string keyPath)
+        {
+            bool isArray = keyPath.Contains("[");
+            if (isArray)
+            {
+                int aryIndex = GetIndex(keyPath);
+                keyPath = GetKeyName(keyPath);
+                return GetArrayContext(aryIndex, keyPath, content);
+            }
+            if (!content.ContainsKey(keyPath))
+            {
+                content.Add(keyPath, new Dictionary<string, object>());
+            }
+            return (Dictionary<string, object>)content[keyPath];
+        }
+
+        private static Dictionary<string, object> GetArrayContext(int aryIndex, string key,
+                                                                  Dictionary<string, object> content)
+        {
+            List<Dictionary<string, object>> valResult;
+            if (!content.ContainsKey(key))
+            {
+                content.Add(key, valResult = new List<Dictionary<string, object>>());
+            }
+            else
+            {
+                valResult = (List<Dictionary<string, object>>)content[key];
+            }
+
+            while (aryIndex >= valResult.Count)
+            {
+                valResult.Add(new Dictionary<string, object>());
+            }
+            return valResult[aryIndex];
+        }
+
+        private static string GetKeyName(string key)
+        {
+            return key.Substring(0, key.IndexOf('['));
+        }
+
+        /// <summary>
+        /// get index from json path such as a.b.c or a[0].b.c or a.b.c[] or a.b[1]
+        /// if a.b.c[] means auto increate index.
+        /// </summary>
+        /// <param name="keyPath"></param>
+        /// <returns></returns>
+        private static int GetIndex(string keyPath)
+        {
+            if (keyPath.Contains("[]"))
+                return -1;
+            return Convert.ToInt32(Regex.Match(keyPath, @"\d+").Value);
         }
     }
 }

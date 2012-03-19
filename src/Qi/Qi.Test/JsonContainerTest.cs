@@ -506,6 +506,25 @@ namespace Qi.Test
             Assert.AreEqual("12", actual[1].ToString("c"));
         }
 
+
+        /// <summary>
+        ///A test for SetValue
+        ///</summary>
+        [TestMethod]
+        public void SetValue_set_ary_objects_once()
+        {
+            var target = new JsonContainer();
+            string key = "a.b[]";
+            string[] val =new[]{ "11","12"};
+            ;
+            target.SetValue(key, val);
+            
+
+            var actual = target.ToArray<string>("a.b");
+            Assert.AreEqual("11", actual[0]);
+            Assert.AreEqual("12", actual[1]);
+        }
+
         /// <summary>
         ///A test for SetValue
         ///</summary>

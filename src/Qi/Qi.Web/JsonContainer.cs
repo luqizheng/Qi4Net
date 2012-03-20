@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
+using Qi.Web.JsonContainers;
 
 namespace Qi.Web
 {
@@ -72,7 +73,13 @@ namespace Qi.Web
                 }
             }
         }
-
+        public T To<T>(string key, Func<object, T> convert)
+        {
+            string theKey;
+            bool isAry;
+            var current = FindContext(key, out theKey, out isAry);
+            return convert(current[theKey].ToString());
+        }
         /// <summary>
         /// </summary>
         /// <param name="key">
@@ -82,9 +89,7 @@ namespace Qi.Web
         /// </returns>
         public Int16 ToInt16(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return Convert.ToInt16(current._content[theKey]);
+            return To<Int16>(key, Convert.ToInt16);
         }
 
         /// <summary>
@@ -96,9 +101,7 @@ namespace Qi.Web
         /// </returns>
         public Int32 ToInt32(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return Convert.ToInt32(current._content[theKey]);
+            return To(key, Convert.ToInt32);
         }
 
         /// <summary>
@@ -112,9 +115,7 @@ namespace Qi.Web
         /// </returns>
         public Int64 ToInt64(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return Convert.ToInt64(current._content[theKey]);
+            return To(key, Convert.ToInt64);
         }
 
 
@@ -129,27 +130,12 @@ namespace Qi.Web
         /// </returns>
         public Boolean ToBoolean(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return Convert.ToBoolean(current._content[theKey]);
-        }
-
-
-        private Dictionary<string, object>[] ToJsoncContainer(object value)
-        {
-            var result = new List<Dictionary<string, object>>();
-            foreach (JsonContainer item in ((Array)value))
-            {
-                result.Add(item._content);
-            }
-            return result.ToArray();
+            return To(key, Convert.ToBoolean);
         }
 
         public Double ToDouble(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return Convert.ToDouble(current._content[theKey]);
+            return To(key, Convert.ToDouble);
         }
 
         /// <summary>
@@ -161,9 +147,7 @@ namespace Qi.Web
         /// </returns>
         public UInt16 ToUInt16(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return Convert.ToUInt16(current._content[theKey]);
+            return To(key, Convert.ToUInt16);
         }
 
         /// <summary>
@@ -175,9 +159,7 @@ namespace Qi.Web
         /// </returns>
         public UInt32 ToUInt32(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return Convert.ToUInt32(current._content[theKey]);
+            return To(key, Convert.ToUInt32);
         }
 
         public DateTime ToDateTime(string key)
@@ -210,9 +192,7 @@ namespace Qi.Web
         /// </returns>
         public JsonContainer ToJsonContainer(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return new JsonContainer((Dictionary<string, object>)current._content[theKey]);
+            return To(key, s => new JsonContainer((Dictionary<string, object>)s));
         }
 
         /// <summary>
@@ -224,16 +204,12 @@ namespace Qi.Web
         /// </returns>
         public string ToString(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return Convert.ToString(current._content[theKey]);
+            return To(key, Convert.ToString);
         }
 
         public Guid ToGuid(string key)
         {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return new Guid(current._content[theKey].ToString());
+            return new Guid(ToString(key));
         }
 
         /// <summary>
@@ -241,74 +217,23 @@ namespace Qi.Web
         /// <param name="key">
         /// The key.
         /// </param>
+        /// <param name="convert"> </param>
         /// <typeparam name="T">
         /// </typeparam>
         /// <returns>
         /// </returns>
-        public T[] ToArray<T>(string key)
+        public T[] ToArray<T>(string key, Func<object, T> convert)
         {
             string theKey;
-            JsonContainer lastContainer = AnaylzTheKey(key, out theKey, this);
-            object objArys = lastContainer._content[theKey];
-            var array = objArys as Array;
-            if (array != null)
-            {
-                return From<T>(array, array.Length);
-            }
-            var a = objArys as IList;
-            if (a != null)
-                return From<T>(a, a.Count);
-            throw new ApplicationException(key + " isn't array or list.");
-        }
-
-        private T[] From<T>(IEnumerable array, int length)
-        {
-            Array result = new T[length];
-            bool isJsonContainer = typeof(T) == typeof(JsonContainer);
-
-            int i = 0;
-            foreach (object item in array)
-            {
-                try
-                {
-                    if (isJsonContainer)
-                    {
-                        result.SetValue(new JsonContainer((Dictionary<string, object>)item), i);
-                    }
-                    else
-                    {
-                        result.SetValue((T)item, i);
-                    }
-                }
-                catch (InvalidCastException)
-                {
-                    throw new InvalidCastException("can't cast " + item + " to " + typeof(T));
-                }
-                i++;
-            }
-            return (T[])result;
+            bool isArray;
+            var content = FindContext(key, out theKey, out isArray);
+            if (!isArray)
+                throw new ArgumentException(key + " is not a array.");
+            var keyName = GetKeyName(theKey);
+            return Accesser.Create(content[keyName]).ToArray(convert);
         }
 
 
-        private static JsonContainer BuildFromKey(string keyPath, out string lastKey, JsonContainer current)
-        {
-            string[] keys = keyPath.Split('.');
-            if (keys.Length == 1)
-            {
-                lastKey = keys[0];
-                return current;
-            }
-            lastKey = keys[keys.Length - 1];
-            for (int i = 0; i < keys.Length - 1; i++)
-            {
-                if (!current._content.ContainsKey(keys[i]))
-                {
-                    current._content.Add(keys[i], new Dictionary<string, object>());
-                }
-                current = current.ToJsonContainer(keys[i]);
-            }
-            return current;
-        }
 
 
         /// <summary>
@@ -319,15 +244,15 @@ namespace Qi.Web
         /// <param name="lastKey">
         /// The last key of keyPath.
         /// </param>
+        /// <param name="isArray"> </param>
         /// <returns>
         /// </returns>
-        [Obsolete]
-        private JsonContainer AnaylzTheKey(string keyPath, out string lastKey, JsonContainer current)
+        private Dictionary<string, object> FindContext(string keyPath, out string lastKey, out bool isArray)
         {
             string[] keys = keyPath.Split('.');
-            Dictionary<string, object> content = GetContextByKeyPath(keys);
             lastKey = keys[keys.Length - 1];
-            return new JsonContainer(content);
+            isArray = lastKey.Contains("[");
+            return GetContextByKeyPath(keys);
         }
 
         /// <summary>
@@ -363,8 +288,19 @@ namespace Qi.Web
             try
             {
                 string theKey;
-                JsonContainer lastContainer = AnaylzTheKey(key, out theKey, this);
-                return lastContainer._content.ContainsKey(theKey);
+                bool isArray;
+
+                var content = FindContext(key, out theKey, out isArray);
+                if (isArray)
+                {
+                    var keyName = GetKeyName(theKey);
+                    var aryIndex = GetArrayIndexFromKey(theKey);
+                    if (!content.ContainsKey(keyName))
+                        return false;
+                    return Accesser.Create(content[keyName]).Count >= aryIndex;
+
+                }
+                return content.ContainsKey(theKey);
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -372,16 +308,12 @@ namespace Qi.Web
             }
         }
 
-        public object ToObject(string key)
-        {
-            string theKey;
-            JsonContainer current = AnaylzTheKey(key, out theKey, this);
-            return current._content[theKey];
-        }
         public void SetValue(string key, string val)
         {
-            SetValue(key, new[] { key });
+            if (key == null) throw new ArgumentNullException("key");
+            SetValue(key, new[] { val });
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -389,37 +321,32 @@ namespace Qi.Web
         /// <param name="val"></param>
         public void SetValue(string key, string[] val)
         {
-            string[] keySet = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            string lastKey;
+            bool isArray;
 
-            string lastKey = keySet[keySet.Length - 1];
+            Dictionary<string, object> content = FindContext(key, out lastKey, out isArray);
 
-            bool isArray = lastKey.EndsWith("]");
-
-            Dictionary<string, object> content = GetContextByKeyPath(keySet);
             if (isArray)
             {
-                int aryIndex = GetIndex(lastKey);
+                int aryIndex = GetArrayIndexFromKey(lastKey);
                 lastKey = GetKeyName(lastKey);
-                List<string> aryValues = null;
+                Accesser accesser = null;
                 if (!content.ContainsKey(lastKey))
                 {
-                    aryValues = new List<string>();
+                    var aryValues = new List<string>();
                     content.Add(lastKey, aryValues);
+                    accesser = new ListAccesser(aryValues);
                 }
                 else
                 {
-                    aryValues = content[lastKey] as List<string>;
-                    ;
+                    accesser = Accesser.Create(content[lastKey]);
                 }
                 if (aryIndex == -1)
                 {
-                    aryIndex = aryValues.Count;
+                    aryIndex = accesser.Count;
                 }
-                while (aryIndex > aryValues.Count)
-                {
-                    aryValues.Add(null);
-                }
-                aryValues.AddRange(val);
+
+                accesser.Set(val, aryIndex);
             }
             else
             {
@@ -446,7 +373,7 @@ namespace Qi.Web
             bool isArray = keyPath.Contains("[");
             if (isArray)
             {
-                int aryIndex = GetIndex(keyPath);
+                int aryIndex = GetArrayIndexFromKey(keyPath);
                 keyPath = GetKeyName(keyPath);
                 return GetArrayContext(aryIndex, keyPath, content);
             }
@@ -488,11 +415,16 @@ namespace Qi.Web
         /// </summary>
         /// <param name="keyPath"></param>
         /// <returns></returns>
-        private static int GetIndex(string keyPath)
+        private static int GetArrayIndexFromKey(string keyPath)
         {
             if (keyPath.Contains("[]"))
                 return -1;
             return Convert.ToInt32(Regex.Match(keyPath, @"\d+").Value);
+        }
+
+        public static JsonContainer ConvertToJsonContainer(object arg)
+        {
+            return new JsonContainer((Dictionary<string, object>)arg);
         }
     }
 }

@@ -105,19 +105,23 @@ namespace Qi.Test
         ///A test for SetTheKeyPath
         ///</summary>
         [TestMethod()]
-        public void SetTheKeyPathTest()
+        public void ToJsonContainerExpressTest()
         {
-          
-
-           var actual = "j4[0][b1][]";
+            var actual = "j4[0][b1][]";
             string expected = "j4[0].b1[]";
 
-            Assert.AreEqual(expected, JsonContainerFilter.JsonKeyPath(actual));
+            Assert.AreEqual(expected, JsonContainerFilter.ToJsonContainerExpress(actual));
 
             actual = "j4[0][b1]";
             expected = "j4[0].b1";
-            Assert.AreEqual(expected, JsonContainerFilter.JsonKeyPath(actual));
-            
+            Assert.AreEqual(expected, JsonContainerFilter.ToJsonContainerExpress(actual));
+
+            actual = "Edit4Net[3][bTest]";
+            expected = "Edit4Net[3].bTest";
+            Assert.AreEqual(expected, JsonContainerFilter.ToJsonContainerExpress(actual));
+
         }
+
+
     }
 }

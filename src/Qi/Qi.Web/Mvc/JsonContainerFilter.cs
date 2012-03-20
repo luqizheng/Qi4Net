@@ -83,7 +83,7 @@ namespace Qi.Web.Mvc
                         result.Add(parameterName, new JsonContainer());
                     }
 
-                    string jsonContainerKeyPath = JsonKeyPath(requestKey.TrimStart(parameterName.ToCharArray()));
+                    string jsonContainerKeyPath = ToJsonContainerExpress(requestKey.TrimStart(parameterName.ToCharArray()));
 
                     result[parameterName].SetValue(jsonContainerKeyPath, val);
                 }
@@ -91,7 +91,7 @@ namespace Qi.Web.Mvc
         }
 
 
-        public static string JsonKeyPath(string requestKey)
+        public static string ToJsonContainerExpress(string requestKey)
         {
             return Regex.Replace(requestKey, @"\[[A-z_]+\d*\]", s => "." + s.Value.Substring(1, s.Value.Length - 2));
         }

@@ -79,7 +79,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JasonContainer.cs" />
+    <Compile Include="JsonContainer.cs" />
+    <Compile Include="JsonContainers\Accesser.cs" />
+    <Compile Include="JsonContainers\ArrayAccesser.cs" />
+    <Compile Include="JsonContainers\ListAccesser.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="Mvc\HtmlExtender.cs" />
     <Compile Include="Mvc\JsonContainerFilter.cs" />
@@ -103,6 +106,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

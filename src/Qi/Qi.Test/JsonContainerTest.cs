@@ -218,37 +218,13 @@ namespace Qi.Test
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for ToArray
-        ///</summary>
-        public void ToArrayTestHelper<T>()
-        {
-            string key = "key";
-            var expected = new T[5];
-            var content = new Dictionary<string, object>
-                              {
-                                  {key, expected}
-                              };
-            var target = new JsonContainer(content);
-
-
-            T[] actual;
-            actual = target.ToArray<T>(key);
-            Assert.AreEqual(expected.Length, actual.Length);
-        }
-
-        [TestMethod]
-        public void ToArrayTest()
-        {
-            ToArrayTestHelper<GenericParameterHelper>();
-        }
 
         [TestMethod]
         public void ToArrayTest_Types()
         {
             string json = @"{a:[1,2,3,4,5]}";
             JsonContainer a = JsonContainer.Create(json);
-            int[] actual = a.ToArray<int>("a");
+            int[] actual = a.ToArray<int>("a", Convert.ToInt32);
             var except = new[] { 1, 2, 3, 4, 5 };
             Assert.AreEqual(actual.Length, except.Length);
             for (int i = 0; i < actual.Length; i++)
@@ -274,7 +250,7 @@ namespace Qi.Test
             content.Add("key", s);
             var jsonContainer = new JsonContainer(content);
 
-            JsonContainer[] target = jsonContainer.ToArray<JsonContainer>("key");
+            JsonContainer[] target = jsonContainer.ToArray<JsonContainer>("key", JsonContainer.ConvertToJsonContainer);
 
             Assert.AreEqual("a", target[0].ToString("child1"));
             Assert.AreEqual("b", target[0].ToString("child2"));
@@ -300,7 +276,7 @@ namespace Qi.Test
             content.Add("key", s);
             var jsonContainer = new JsonContainer(content);
 
-            JsonContainer[] target = jsonContainer.ToArray<JsonContainer>("key");
+            JsonContainer[] target = jsonContainer.ToArray<JsonContainer>("key", sa => new JsonContainer((Dictionary<string, object>)sa));
 
             Assert.AreEqual("a", target[0].ToString("child1"));
             Assert.AreEqual("b", target[0].ToString("child2"));
@@ -444,7 +420,7 @@ namespace Qi.Test
       ]
 }";
             JsonContainer a = JsonContainer.Create(json);
-            JsonContainer[] actual = a.ToArray<JsonContainer>("a");
+            JsonContainer[] actual = a.ToArray<JsonContainer>("a", JsonContainer.ConvertToJsonContainer);
             Assert.AreEqual("abc1", actual[0].ToString("name"));
             Assert.AreEqual(11, actual[1].ToInt32("number"));
         }
@@ -458,17 +434,17 @@ namespace Qi.Test
             var target = new JsonContainer();
             string key = "a.b";
             string val = "11";
-            
+
             target.SetValue(key, val);
-            
+
             Assert.AreEqual(val, target.ToString("a.b"));
 
-            target.SetValue("b","11");
-            Assert.AreEqual("11",target.ToString("b"));
-            
+            target.SetValue("b", "11");
+            Assert.AreEqual("11", target.ToString("b"));
+
         }
 
-        
+
 
         /// <summary>
         ///A test for SetValue
@@ -483,7 +459,7 @@ namespace Qi.Test
             target.SetValue(key, val);
             target.SetValue("a.b[]", "12");
 
-            string[] actual = target.ToArray<string>("a.b");
+            string[] actual = target.ToArray<string>("a.b", Convert.ToString);
             Assert.AreEqual("11", actual[0]);
             Assert.AreEqual("12", actual[1]);
         }
@@ -501,7 +477,7 @@ namespace Qi.Test
             target.SetValue(key, val);
             target.SetValue("a.b[1].c", "12");
 
-            JsonContainer[] actual = target.ToArray<JsonContainer>("a.b");
+            JsonContainer[] actual = target.ToArray<JsonContainer>("a.b",JsonContainer.ConvertToJsonContainer);
             Assert.AreEqual("11", actual[0].ToString("c"));
             Assert.AreEqual("12", actual[1].ToString("c"));
         }
@@ -515,12 +491,12 @@ namespace Qi.Test
         {
             var target = new JsonContainer();
             string key = "a.b[]";
-            string[] val =new[]{ "11","12"};
+            string[] val = new[] { "11", "12" };
             ;
             target.SetValue(key, val);
-            
 
-            var actual = target.ToArray<string>("a.b");
+
+            var actual = target.ToArray<string>("a.b", Convert.ToString);
             Assert.AreEqual("11", actual[0]);
             Assert.AreEqual("12", actual[1]);
         }
@@ -532,15 +508,12 @@ namespace Qi.Test
         public void SetValue_set_ary_objectValue()
         {
             var target = new JsonContainer();
-            string key = "[0].b[0].c";
-            string val = "11";
-            ;
+            string key = "a[0].b.c";
+            string val = "11"; ;
             target.SetValue(key, val);
-            target.SetValue("a.b[1].c", "12");
+            var actual = target.ToArray<string>("a[0].b.c", Convert.ToString);
+            Assert.AreEqual("11", actual);
 
-            JsonContainer[] actual = target.ToArray<JsonContainer>("a.b");
-            Assert.AreEqual("11", actual[0].ToString("c"));
-            Assert.AreEqual("12", actual[1].ToString("c"));
         }
     }
 }

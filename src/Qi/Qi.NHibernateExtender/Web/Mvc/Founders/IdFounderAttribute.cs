@@ -9,7 +9,9 @@ namespace Qi.Web.Mvc.Founders
         protected override object GetObject(SessionManager sessionManager, object postData, string postName,
                                             HttpContextBase context)
         {
-            return sessionManager.CurrentSession.Load(EntityType, postData);
+            var a = sessionManager.CurrentSession.Load(EntityType, postData);
+            sessionManager.CurrentSession.Evict(a);
+            return a;
         }
 
         protected override IType PostDataType(SessionManager sessionManager, string postDataName)

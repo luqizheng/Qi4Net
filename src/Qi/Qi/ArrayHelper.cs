@@ -53,6 +53,7 @@ namespace Qi
             }
             return SubArray(array, start, array.Length - start);
         }
+
         /// <summary>
         /// Convert byte to string
         /// </summary>
@@ -61,7 +62,7 @@ namespace Qi
         /// <returns></returns>
         public static string ToStringEx(this byte[] bytes, string format)
         {
-            var stringbuilder = new StringBuilder(bytes.Length * 2);
+            var stringbuilder = new StringBuilder(bytes.Length*2);
             foreach (byte byt in bytes)
             {
                 stringbuilder.Append(byt.ToString(format));
@@ -118,14 +119,14 @@ namespace Qi
                 for (int i = 0; i < arySetLen; i++)
                 {
                     var aryItems = new T[maxLengthOfAry];
-                    Array.Copy(ary, maxLengthOfAry * i, aryItems, 0, maxLengthOfAry);
+                    Array.Copy(ary, maxLengthOfAry*i, aryItems, 0, maxLengthOfAry);
                     arySet.Add(aryItems);
                 }
             }
             if (remainder != 0)
             {
                 var aryItems = new T[remainder];
-                Array.Copy(ary, maxLengthOfAry * arySetLen, aryItems, 0, remainder);
+                Array.Copy(ary, maxLengthOfAry*arySetLen, aryItems, 0, remainder);
                 arySet.Add(aryItems);
             }
             return arySet;

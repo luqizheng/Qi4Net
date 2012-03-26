@@ -110,6 +110,7 @@
     <Compile Include="DataTables\Calculators\Sum.cs" />
     <Compile Include="Domain\DomainObject.cs" />
     <Compile Include="Domain\IDao.cs" />
+    <Compile Include="Domain\IDomainObject.cs" />
     <Compile Include="EnumDescription.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="IO\IoExtender.cs" />

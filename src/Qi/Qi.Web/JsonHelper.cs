@@ -55,8 +55,13 @@ namespace Qi.Web
             if (data == null) throw new ArgumentNullException("data");
             return ToJson(data, false);
         }
-
-        public static string ToJson(this Dictionary<string, object> data, bool format)
+        /// <summary>
+        /// 无法处理双向关联
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static string ToJson(this IDictionary<string, object> data, bool format)
         {
             if (data == null)
                 throw new ArgumentNullException("data");
@@ -69,7 +74,7 @@ namespace Qi.Web
             {
                 buffer.Append("\"").Append(jsonKeyName).Append("\":");
 
-                var obj = data[jsonKeyName] as Dictionary<string, object>;
+                var obj = data[jsonKeyName] as IDictionary<string, object>;
                 buffer.Append(obj != null ? ToJson(obj, format) : ToJson(data[jsonKeyName]));
 
                 if (i != data.Count)

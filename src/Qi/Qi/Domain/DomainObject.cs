@@ -1,29 +1,20 @@
-﻿using System;
-
-namespace Qi.Domain
+﻿namespace Qi.Domain
 {
-    public interface IDomainObject
-    {
-        object Id { get; }
-    }
-
     /// <summary>
     /// For a discussion of this object, see 
     /// http://devlicio.us/blogs/billy_mccafferty/archive/2007/04/25/using-equals-gethashcode-effectively.aspx
+    /// Code from http://ayende.com/blog/2500/generic-entity-equality.
     /// </summary>
-    public abstract class DomainObject<IdT> : IDomainObject
+    public abstract class DomainObject<TId> : IDomainObject
     {
-        protected DomainObject()
-        {
-            Id = default(IdT);
-        }
-
+        private int? _oldHashcode;
+       
         /// <summary>
         /// Id may be of type string, int, custom type, etc.
         /// Setter is protected to allow unit tests to set this property via reflection and to allow 
         /// domain objects more flexibility in setting this for those objects with assigned IDs.
         /// </summary>
-        public virtual IdT Id { get; protected set; }
+        public virtual TId Id { get; protected set; }
 
         #region IDomainObject Members
 
@@ -34,16 +25,33 @@ namespace Qi.Domain
 
         #endregion
 
+        /// <summary>
+        /// Equality operator so we can have == semantics
+        /// </summary>
+        public static bool operator ==(DomainObject<TId> x, DomainObject<TId> y)
+        {
+            return Equals(x, y);
+        }
+
+        /// <summary>
+        /// Inequality operator so we can have != semantics
+        /// </summary>
+        public static bool operator !=(DomainObject<TId> x, DomainObject<TId> y)
+        {
+            return !(x == y);
+        }
+
         public override bool Equals(object obj)
         {
-            var compareTo = obj as DomainObject<IdT>;
-
-            return (compareTo != null) &&
-                   (HasSameNonDefaultIdAs(compareTo) ||
-                    // Since the IDs aren't the same, either of them must be transient to 
-                    // compare business value signatures
-                    (((IsTransient()) || compareTo.IsTransient()) &&
-                     HasSameBusinessSignatureAs(compareTo)));
+            var other = obj as DomainObject<TId>;
+            if (other == null)
+                return false;
+            //to handle the case of comparing two new objects
+            bool otherIsTransient = Equals(other.Id, default(TId));
+            bool thisIsTransient = Equals(Id, default(TId));
+            if (otherIsTransient && thisIsTransient)
+                return ReferenceEquals(other, this);
+            return other.Id.Equals(Id);
         }
 
         /// <summary>
@@ -51,35 +59,24 @@ namespace Qi.Domain
         /// </summary>
         public virtual bool IsTransient()
         {
-            return Id == null || Id.Equals(default(IdT));
+            return Id.Equals(default(TId));
         }
 
         /// <summary>
         /// Must be provided to properly compare two objects
         /// </summary>
-        public abstract override int GetHashCode();
-
-        private bool HasSameBusinessSignatureAs(DomainObject<IdT> compareTo)
+        public override int GetHashCode()
         {
-            if (compareTo == null)
-                throw new ArgumentNullException("compareTo");
-            //Check.Require(compareTo != null, "compareTo may not be null");
+            if (_oldHashcode.HasValue)
+                return _oldHashcode.Value;
 
-            return GetHashCode().Equals(compareTo.GetHashCode());
-        }
+            if (IsTransient())
+            {
+                _oldHashcode = base.GetHashCode();
+                return _oldHashcode.Value;
+            }
 
-        /// <summary>
-        /// Returns true if self and the provided persistent object have the same Id values 
-        /// and the IDs are not of the default Id value
-        /// </summary>
-        private bool HasSameNonDefaultIdAs(DomainObject<IdT> compareTo)
-        {
-            //Check.Require(compareTo != null, "compareTo may not be null");
-            if (compareTo == null)
-                throw new ArgumentNullException("compareTo");
-            return (Id != null && !Id.Equals(default(IdT))) &&
-                   (compareTo.Id != null && !compareTo.Id.Equals(default(IdT))) &&
-                   Id.Equals(compareTo.Id);
+            return Id.GetHashCode();
         }
     }
 }

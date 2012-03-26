@@ -7,7 +7,6 @@ namespace Qi.Web.Mvc
 {
     public class JsonContainerFilter : ActionFilterAttribute
     {
-        private const string formSubmit = "application/x-www-form-urlencoded";
         private readonly bool _submitDirectJquery;
 
         public JsonContainerFilter(bool submitDirectJquery)

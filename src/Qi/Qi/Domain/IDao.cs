@@ -81,7 +81,6 @@ namespace Qi.Domain
 
         void Update(TReturn t);
 
-      
 
         /// <summary>
         /// </summary>

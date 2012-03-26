@@ -1,29 +1,28 @@
 ﻿using System;
-using NHibernate.Type;
 using NHibernate.SqlTypes;
+using NHibernate.Type;
 
 namespace Qi.Nhibernates.Types
 {
     public abstract class AbstractTimeType : PrimitiveType
     {
-        protected AbstractTimeType(SqlType sqlType):base(sqlType)
+        protected AbstractTimeType(SqlType sqlType) : base(sqlType)
         {
-     
         }
 
-        public sealed override object DefaultValue
+        public override sealed object DefaultValue
         {
             get { return new Time(); }
         }
 
-        public sealed override string Name
+        public override sealed string Name
         {
             get { return "Time"; }
         }
 
-        public  sealed override Type ReturnedClass
+        public override sealed Type ReturnedClass
         {
-            get { return typeof(Time); }
+            get { return typeof (Time); }
         }
 
         public override object FromStringValue(string xml)
@@ -36,6 +35,5 @@ namespace Qi.Nhibernates.Types
             string[] aryS = s.Split(':');
             return new Time(Convert.ToInt32(aryS[0]), Convert.ToInt32(aryS[1]), Convert.ToInt32(aryS[2]));
         }
-
     }
 }

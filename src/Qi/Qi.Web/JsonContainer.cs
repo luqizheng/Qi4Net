@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -73,13 +72,15 @@ namespace Qi.Web
                 }
             }
         }
+
         public T To<T>(string key, Func<object, T> convert)
         {
             string theKey;
             bool isAry;
-            var current = FindContext(key, out theKey, out isAry);
-            return convert(current[theKey].ToString());
+            Dictionary<string, object> current = FindContext(key, out theKey, out isAry);
+            return convert(current[theKey]);
         }
+
         /// <summary>
         /// </summary>
         /// <param name="key">
@@ -89,7 +90,7 @@ namespace Qi.Web
         /// </returns>
         public Int16 ToInt16(string key)
         {
-            return To<Int16>(key, Convert.ToInt16);
+            return To(key, Convert.ToInt16);
         }
 
         /// <summary>
@@ -192,7 +193,7 @@ namespace Qi.Web
         /// </returns>
         public JsonContainer ToJsonContainer(string key)
         {
-            return To(key, s => new JsonContainer((Dictionary<string, object>)s));
+            return To(key, s => new JsonContainer((Dictionary<string, object>) s));
         }
 
         /// <summary>
@@ -226,14 +227,12 @@ namespace Qi.Web
         {
             string theKey;
             bool isArray;
-            var content = FindContext(key, out theKey, out isArray);
+            Dictionary<string, object> content = FindContext(key, out theKey, out isArray);
             if (!isArray)
                 throw new ArgumentException(key + " is not a array.");
-            var keyName = GetKeyName(theKey);
+            string keyName = GetKeyName(theKey);
             return Accesser.Create(content[keyName]).ToArray(convert);
         }
-
-
 
 
         /// <summary>
@@ -279,7 +278,7 @@ namespace Qi.Web
         public static JsonContainer Create(string jsonData)
         {
             var s = new JavaScriptSerializer();
-            var result = (Dictionary<string, object>)s.DeserializeObject(jsonData);
+            var result = (Dictionary<string, object>) s.DeserializeObject(jsonData);
             return new JsonContainer(result);
         }
 
@@ -290,15 +289,14 @@ namespace Qi.Web
                 string theKey;
                 bool isArray;
 
-                var content = FindContext(key, out theKey, out isArray);
+                Dictionary<string, object> content = FindContext(key, out theKey, out isArray);
                 if (isArray)
                 {
-                    var keyName = GetKeyName(theKey);
-                    var aryIndex = GetArrayIndexFromKey(theKey);
+                    string keyName = GetKeyName(theKey);
+                    int aryIndex = GetArrayIndexFromKey(theKey);
                     if (!content.ContainsKey(keyName))
                         return false;
                     return Accesser.Create(content[keyName]).Count >= aryIndex;
-
                 }
                 return content.ContainsKey(theKey);
             }
@@ -311,7 +309,7 @@ namespace Qi.Web
         public void SetValue(string key, string val)
         {
             if (key == null) throw new ArgumentNullException("key");
-            SetValue(key, new[] { val });
+            SetValue(key, new[] {val});
         }
 
         /// <summary>
@@ -381,7 +379,7 @@ namespace Qi.Web
             {
                 content.Add(keyPath, new Dictionary<string, object>());
             }
-            return (Dictionary<string, object>)content[keyPath];
+            return (Dictionary<string, object>) content[keyPath];
         }
 
         private static Dictionary<string, object> GetArrayContext(int aryIndex, string key,
@@ -394,7 +392,7 @@ namespace Qi.Web
             }
             else
             {
-                valResult = (List<Dictionary<string, object>>)content[key];
+                valResult = (List<Dictionary<string, object>>) content[key];
             }
 
             while (aryIndex >= valResult.Count)
@@ -424,7 +422,12 @@ namespace Qi.Web
 
         public static JsonContainer ConvertToJsonContainer(object arg)
         {
-            return new JsonContainer((Dictionary<string, object>)arg);
+            return new JsonContainer((Dictionary<string, object>) arg);
+        }
+
+        public string ToJson()
+        {
+            return _content.ToJson(false);
         }
     }
 }

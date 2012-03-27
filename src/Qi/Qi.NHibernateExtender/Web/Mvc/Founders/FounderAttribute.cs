@@ -40,14 +40,12 @@ namespace Qi.Web.Mvc.Founders
         /// <summary>
         /// 获取对象
         /// </summary>
-        /// <param name="sessionManager"></param>
         /// <param name="postData"></param>
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
         public object GetObject(string postData, string postName, HttpContextBase context)
         {
-            bool result = SessionManager.Instance.IniSession();
             ISession session = SessionManager.Instance.GetCurrentSession();
 
             try
@@ -68,10 +66,7 @@ namespace Qi.Web.Mvc.Founders
             }
             finally
             {
-                if (result)
-                {
-                    SessionManager.Instance.CleanUp();
-                }
+                SessionManager.Instance.CleanUp();
             }
         }
 
@@ -92,6 +87,6 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="sessionManager"></param>
         /// <param name="postDataName"></param>
         /// <returns></returns>
-        protected abstract IType PostDataType(ISession session,string postDataName);
+        protected abstract IType PostDataType(ISession session, string postDataName);
     }
 }

@@ -43,14 +43,13 @@ namespace Qi.Nhibernates
 
         public static string CurrentSessionFactoryKey
         {
-            get
-            {
-                return (CallContext.GetData("default_sessionFactoryName") as string) ?? DefaultSessionFactoryKey;
-            }
+            get { return (CallContext.GetData("default_sessionFactoryName") as string) ?? DefaultSessionFactoryKey; }
             set
             {
                 if (!Factories.ContainsKey(value))
-                    throw new ArgumentOutOfRangeException("value", "Can't find the session factory name " + value + " in the setting.");
+                    throw new ArgumentOutOfRangeException("value",
+                                                          "Can't find the session factory name " + value +
+                                                          " in the setting.");
                 CallContext.SetData("default_sessionFactoryName", value);
             }
         }
@@ -98,7 +97,7 @@ namespace Qi.Nhibernates
 
             if (!CurrentSessionContext.HasBind(sf))
             {
-                if (((SessionFactoryImpl)sf).Name.Contains("testdata"))
+                if (((SessionFactoryImpl) sf).Name.Contains("testdata"))
                 {
                     int a = 0;
                 }
@@ -151,15 +150,6 @@ namespace Qi.Nhibernates
         public void CleanUp()
         {
             ClearUp(Factories.Values.ToArray());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>初始化了Session 返回true，如果调用这个方法之前已经初始化，返回false</returns>
-        public bool IniSession()
-        {
-            return true;
         }
     }
 }

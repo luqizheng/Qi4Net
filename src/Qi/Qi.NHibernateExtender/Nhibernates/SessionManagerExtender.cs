@@ -11,8 +11,11 @@ namespace Qi.Nhibernates
             try
             {
                 SessionManager.Add(newKey, templateSessionFactory);
+                var srcKey = SessionManager.CurrentSessionFactoryKey;
+                
                 SessionManager.CurrentSessionFactoryKey = newKey;
                 execute(newKey);
+                SessionManager.CurrentSessionFactoryKey = srcKey;
             }
             finally
             {

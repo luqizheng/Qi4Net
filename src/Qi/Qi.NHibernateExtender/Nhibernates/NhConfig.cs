@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using NHibernate;
-using Configuration = NHibernate.Cfg.Configuration;
+using NHibernate.Cfg;
 
 namespace Qi.Nhibernates
 {

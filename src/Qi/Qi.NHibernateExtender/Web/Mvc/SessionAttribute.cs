@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Threading;
 using System.Web.Mvc;
 using NHibernate;
 using Qi.Nhibernates;
@@ -23,7 +24,7 @@ namespace Qi.Web.Mvc
         {
             Order = 0;
             Enable = enabled;
-            SessionFactoryName = sessionFactoryName ?? SessionManager.Instance.Config.SessionFactoryName;
+            SessionFactoryName = sessionFactoryName;
         }
 
         /// <summary>
@@ -89,16 +90,14 @@ namespace Qi.Web.Mvc
         {
             if (Enable)
             {
-                if (String.IsNullOrEmpty(SessionFactoryName))
-                    SessionManager.Instance.IniSession();
-                else
-                    SessionManager.GetInstance(SessionFactoryName).IniSession();
+                if (!String.IsNullOrEmpty(SessionFactoryName))
+                    SessionManager.CurrentSessionFactoryKey = SessionFactoryName;
             }
             if (Transaction && Enable)
             {
                 _tras = IsolationLevel != null
-                            ? SessionManager.Instance.CurrentSession.BeginTransaction(IsolationLevel.Value)
-                            : SessionManager.Instance.CurrentSession.BeginTransaction();
+                            ? SessionManager.Instance.GetCurrentSession().BeginTransaction(IsolationLevel.Value)
+                            : SessionManager.Instance.GetCurrentSession().BeginTransaction();
             }
         }
 
@@ -108,11 +107,6 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            if (!String.IsNullOrEmpty(SessionFactoryName))
-            {
-                SessionManager.GetInstance(SessionFactoryName).CleanUp();
-                return;
-            }
             SessionManager.Instance.CleanUp();
         }
     }

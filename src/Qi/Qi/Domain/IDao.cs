@@ -9,7 +9,7 @@ namespace Qi.Domain
     /// Id of the TReturn;
     /// </typeparam>
     /// <typeparam name="TReturn">Domain object's typel</typeparam>
-    public interface IDao<TReturn, TId> : IDisposable
+    public interface IDao<TReturn, TId>
     {
         /// <summary>
         /// Get All object 

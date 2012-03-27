@@ -1,4 +1,5 @@
 using System.Web;
+using NHibernate;
 using NHibernate.Type;
 using Qi.Nhibernates;
 
@@ -6,17 +7,18 @@ namespace Qi.Web.Mvc.Founders
 {
     public class IdFounderAttribute : FounderAttribute
     {
-        protected override object GetObject(SessionManager sessionManager, object postData, string postName,
+        protected override object GetObject(ISession sessionManager, object postData, string postName,
                                             HttpContextBase context)
         {
-            var a = sessionManager.CurrentSession.Load(EntityType, postData);
-            sessionManager.CurrentSession.Evict(a);
+            var a = sessionManager.Load(EntityType, postData);
+            sessionManager.Evict(a);
             return a;
         }
 
-        protected override IType PostDataType(SessionManager sessionManager, string postDataName)
+        protected override IType PostDataType(ISession sessionManager, string postDataName)
         {
-            return sessionManager.Config.NHConfiguration.GetClassMapping(EntityType).Identifier.Type;
+            var nh=NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey).NHConfiguration;
+            return nh.GetClassMapping(EntityType).Identifier.Type;
         }
     }
 }

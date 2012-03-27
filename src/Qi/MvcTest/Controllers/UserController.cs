@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Web.Mvc;
+using LibA;
 using MvcTest.Models;
 using NHibernate.Criterion;
 using Qi.Nhibernates;
@@ -8,20 +11,22 @@ using Qi.Web.Mvc;
 
 namespace MvcTest.Controllers
 {
-    [Session]
-    public class UserController : Controller
+    [Session()]
+    public class UserController : AsyncController
     {
-
+        [Session(true, "readonly")]
         public ActionResult Index()
         {
-            IList<User> r = SessionManager.Instance.CurrentSession.CreateCriteria<User>().List<User>();
+            IList<User> r = SessionManager.Instance.GetCurrentSession().CreateCriteria<User>().List<User>();
+            ViewData["view"] = SessionManager.CurrentSessionFactoryKey;
             return View(r);
         }
-
-
+        
+      
         public ActionResult Edit(Guid? id)
         {
-            var r = SessionManager.Instance.CurrentSession.Load<User>(id.Value);
+            var r = SessionManager.Instance.GetCurrentSession().Load<User>(id.Value);
+            ViewData["view"] = SessionManager.CurrentSessionFactoryKey;
             return View(r);
         }
 
@@ -34,8 +39,9 @@ namespace MvcTest.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                SessionManager.Instance.CurrentSession.SaveOrUpdate(user);
-                RedirectToAction("Index");
+                SessionManager.Instance.GetCurrentSession().SaveOrUpdate(user);
+                SessionManager.Instance.GetCurrentSession().Flush();
+                return RedirectToAction("Index");
             }
 
             return View(user);
@@ -45,14 +51,15 @@ namespace MvcTest.Controllers
         [HttpPost]
         public ActionResult Edit([ModelBinder(typeof(NHModelBinder))] User user)
         {
-            SessionManager.Instance.CurrentSession.SaveOrUpdate(user);
+            SessionManager.Instance.GetCurrentSession().SaveOrUpdate(user);
+            SessionManager.Instance.GetCurrentSession().Flush();
             return RedirectToAction("Index");
         }
 
 
         public ActionResult ChangePassword(Guid? id)
         {
-            var r = SessionManager.Instance.CurrentSession.Load<User>(id.Value);
+            var r = SessionManager.Instance.GetCurrentSession().Load<User>(id.Value);
             var v = new ChangeUserPasswordModel
                         {
                             User = r
@@ -68,7 +75,7 @@ namespace MvcTest.Controllers
             if (ModelState.IsValid)
             {
                 changeUserPasswordModel.User.Password = changeUserPasswordModel.NewPassword;
-                SessionManager.Instance.CurrentSession.SaveOrUpdate(changeUserPasswordModel.User);
+                SessionManager.Instance.GetCurrentSession().SaveOrUpdate(changeUserPasswordModel.User);
                 return RedirectToAction("Index");
             }
             return View(changeUserPasswordModel);
@@ -79,15 +86,15 @@ namespace MvcTest.Controllers
         {
             u.User.Roles.Clear();
             u.User.Roles.AddAll(u.Roles);
-            SessionManager.Instance.CurrentSession.SaveOrUpdate(u.User);
+            SessionManager.Instance.GetCurrentSession().SaveOrUpdate(u.User);
             return RedirectToAction("Index");
         }
 
         public ActionResult AssignRole(string id)//user's loginid
         {
-            ViewBag.Roles = SessionManager.Instance.CurrentSession.CreateCriteria<Role>().List<Role>();
+            ViewBag.Roles = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
             var user =
-                SessionManager.Instance.CurrentSession.CreateCriteria<User>().Add(
+                SessionManager.Instance.GetCurrentSession().CreateCriteria<User>().Add(
                     Restrictions.Eq(Projections.Property<User>(s => s.LoginId), id))
                     .UniqueResult<User>();
             return View(new AssignRoleModel()

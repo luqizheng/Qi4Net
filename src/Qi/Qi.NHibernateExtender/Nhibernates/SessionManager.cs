@@ -1,129 +1,156 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using NHibernate;
 using NHibernate.Context;
 using NHibernate.Engine;
+using NHibernate.Impl;
+using NHibernate.Stat;
 
 namespace Qi.Nhibernates
 {
     public class SessionManager : IDisposable
     {
-        private static readonly SortedDictionary<string, SessionManager> SessionManagers =
-            new SortedDictionary<string, SessionManager>();
+        private static readonly SortedDictionary<string, ISessionFactory> Factories =
+            new SortedDictionary<string, ISessionFactory>();
 
+        private static readonly SessionManager _instance = new SessionManager();
 
-        private readonly NhConfig _configInfo;
+        /// <summary>
+        /// default sesison factory key in the config file.
+        /// </summary>
+        private static readonly string DefaultSessionFactoryKey;
+
 
         static SessionManager()
         {
-            NhConfig[] nh = NhConfig.GetNHFileInfos();
-            for (int i = 0; i < nh.Length; i++)
+            //创建配置有的sessionFactory放入这里
+            foreach (string a in NhConfigManager.SessionFactoryNames)
             {
-                Add(nh[i], i == 0 || nh[i].SessionFactoryName == "default");
+                if (CurrentSessionFactoryKey == null || a == "default")
+                    DefaultSessionFactoryKey = a;
+                Factories.Add(a, NhConfigManager.GetNhConfig(a).BuildSessionFactory());
             }
         }
 
-        private SessionManager(NhConfig nhConfig)
+        /// <summary>
+        /// 默认SessionManager
+        /// </summary>
+        private SessionManager()
         {
-            if (nhConfig == null)
-                throw new ArgumentNullException("nhConfig");
-
-            _configInfo = nhConfig;
         }
 
-        public static string DefaultSessionFactoryKey { get; private set; }
+        public static string CurrentSessionFactoryKey
+        {
+            get
+            {
+                return (CallContext.GetData("default_sessionFactoryName") as string) ?? DefaultSessionFactoryKey;
+            }
+            set
+            {
+                if (!Factories.ContainsKey(value))
+                    throw new ArgumentOutOfRangeException("value", "Can't find the session factory name " + value + " in the setting.");
+                CallContext.SetData("default_sessionFactoryName", value);
+            }
+        }
 
         /// <summary>
         /// Gets session manager instance;
         /// </summary>
         public static SessionManager Instance
         {
-            get { return SessionManagers[DefaultSessionFactoryKey]; }
-        }
-
-
-        /// <summary>
-        /// Gets Session after use <see cref="IniSession"/>
-        /// </summary>
-        public ISession CurrentSession
-        {
-            get { return GetSessionFactory().GetCurrentSession(); }
-        }
-
-        /// <summary>
-        /// 需要自己处理 session
-        /// </summary>
-        public ISession NewSession
-        {
-            get { return GetSessionFactory().OpenSession(); }
-        }
-
-        /// <summary>
-        /// Sessionless,需要自行处理close 
-        /// </summary>
-        public IStatelessSession Sessionless
-        {
-            get { return GetSessionFactory().OpenStatelessSession(); }
-        }
-
-        public NhConfig Config
-        {
-            get { return _configInfo; }
+            get { return _instance; }
         }
 
         #region IDisposable Members
 
         public void Dispose()
         {
-            CleanUp();
         }
 
         #endregion
 
-        public static IEnumerable<SessionManager> GetAll()
+        public static void Add(string sessionName, ISessionFactory config)
         {
-            return SessionManagers.Values;
-        }
-
-        public static SessionManager GetInstance(Type entityType)
-        {
-            foreach (string key in SessionManagers.Keys)
+            if (Factories.ContainsKey(sessionName))
             {
-                var sfi = (ISessionFactoryImplementor) SessionManagers[key].GetSessionFactory();
-                if (sfi.GetEntityPersister(entityType.FullName) != null)
-                    return GetInstance(key);
+                throw new ArgumentNullException("session factory name " + sessionName + " has defined.");
             }
-            throw new ArgumentNullException("Can't find the SessionFactory include " + entityType.FullName);
+            Factories.Add(sessionName, config);
         }
 
-        public static SessionManager GetInstance(string sessionFactoryName)
+        public static void Remove(string sessionName)
         {
-            if (!SessionManagers.ContainsKey(sessionFactoryName))
-                throw new NhConfigurationException("Can't find the session-factory named " + sessionFactoryName);
-            return SessionManagers[sessionFactoryName];
+            if (!Factories.ContainsKey(sessionName))
+            {
+                throw new ArgumentNullException("session factory name " + sessionName + " is not defined.");
+            }
+            Factories.Remove(sessionName);
+        }
+
+        /// <summary>
+        /// Gets Session after use <see cref="IniSession"/>
+        /// </summary>
+        public ISession GetCurrentSession()
+        {
+            ISessionFactory sf = GetSessionFactory(CurrentSessionFactoryKey);
+
+            if (!CurrentSessionContext.HasBind(sf))
+            {
+                if (((SessionFactoryImpl)sf).Name.Contains("testdata"))
+                {
+                    int a = 0;
+                }
+                CurrentSessionContext.Bind(sf.OpenSession());
+            }
+            return sf.GetCurrentSession();
+        }
+
+        public ISession GetCurrentSession(string sfName)
+        {
+            ISessionFactory sf = GetSessionFactory(sfName);
+
+            if (!CurrentSessionContext.HasBind(sf))
+            {
+                IStatistics a = sf.Statistics;
+                CurrentSessionContext.Bind(sf.OpenSession());
+            }
+            return sf.GetCurrentSession();
         }
 
 
-        public ISessionFactory GetSessionFactory()
+        public ISessionFactory GetSessionFactory(string sfName)
         {
-            return _configInfo.SessionFactory;
+            return Factories[sfName];
+        }
+
+        public ISessionFactory GetSessionFactory(Type entityType)
+        {
+            foreach (ISessionFactoryImplementor sf in Factories.Values)
+            {
+                if (sf.GetEntityPersister(entityType.FullName) != null)
+                    return sf;
+            }
+            throw new SessionException("can't find the mapping entity with " + entityType);
+        }
+
+        public void ClearUp(params ISessionFactory[] factories)
+        {
+            foreach (ISessionFactory sf in factories)
+            {
+                if (CurrentSessionContext.HasBind(sf))
+                {
+                    sf.GetCurrentSession().Flush();
+                    ISession session = CurrentSessionContext.Unbind(sf);
+                    session.Close();
+                }
+            }
         }
 
         public void CleanUp()
         {
-            if (CurrentSessionContext.HasBind(GetSessionFactory()))
-            {
-                ISession currentSession = GetSessionFactory().GetCurrentSession();
-
-                if (currentSession.Transaction != null && currentSession.Transaction.IsActive)
-                {
-                    currentSession.Transaction.Commit();
-                }
-                currentSession.Flush();
-                currentSession.Close();
-                CurrentSessionContext.Unbind(GetSessionFactory());
-            }
+            ClearUp(Factories.Values.ToArray());
         }
 
         /// <summary>
@@ -132,57 +159,7 @@ namespace Qi.Nhibernates
         /// <returns>初始化了Session 返回true，如果调用这个方法之前已经初始化，返回false</returns>
         public bool IniSession()
         {
-            if (!CurrentSessionContext.HasBind(GetSessionFactory()))
-            {
-                ISession session = GetSessionFactory().OpenSession();
-                CurrentSessionContext.Bind(session);
-                return true;
-            }
-            return false;
-        }
-
-        public static void CleanAll()
-        {
-            foreach (SessionManager a in SessionManagers.Values)
-            {
-                a.CleanUp();
-            }
-        }
-
-        public static void Add(NhConfig info, bool isDefault)
-        {
-            if (SessionManagers.ContainsKey(info.SessionFactoryName))
-            {
-                throw new NhConfigurationException("Can't add exist config file.");
-            }
-
-            SessionManagers.Add(info.SessionFactoryName, new SessionManager(info));
-            if (isDefault)
-            {
-                DefaultSessionFactoryKey = info.SessionFactoryName;
-            }
-        }
-
-        public static void Remove(NhConfig info)
-        {
-            if (info == null)
-                throw new ArgumentNullException("info");
-            if (SessionManagers.Count == 1)
-                throw new ApplicationException("can't move the last sessionManager.");
-            SessionManagers.Remove(info.SessionFactoryName);
-            if (DefaultSessionFactoryKey == info.SessionFactoryName)
-            {
-                DefaultSessionFactoryKey = SessionManagers.Values.First().Config.SessionFactoryName;
-            }
-        }
-
-        public static void SetDefault(string sessionFactoryKey)
-        {
-            if (!SessionManagers.ContainsKey(sessionFactoryKey))
-                throw new ArgumentOutOfRangeException("sessionFactoryKey",
-                                                      string.Format("can't find session key named {0} in the pools.",
-                                                                    sessionFactoryKey));
-            DefaultSessionFactoryKey = SessionManagers[sessionFactoryKey].Config.SessionFactoryName;
+            return true;
         }
     }
 }

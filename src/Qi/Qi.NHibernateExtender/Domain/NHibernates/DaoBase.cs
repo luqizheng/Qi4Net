@@ -12,55 +12,9 @@ namespace Qi.Domain.NHibernates
     /// <typeparam name="TObject"></typeparam>
     public abstract class DaoBase<TId, TObject> : IDao<TObject, TId>
     {
-        private readonly bool _useGlobalSession;
-        private ISession _privateSession;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected DaoBase()
-            : this(true)
-        {
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sessionFactoryName"></param>
-        /// <param name="useGlobalSession"></param>
-        protected DaoBase(string sessionFactoryName, bool useGlobalSession)
-        {
-            SessionFactoryName = sessionFactoryName;
-            _useGlobalSession = useGlobalSession;
-        }
-
-        protected DaoBase(string sessionFactoryName)
-        {
-            SessionFactoryName = sessionFactoryName;
-        }
-
-        protected DaoBase(bool useGlobalSession)
-        {
-            _useGlobalSession = useGlobalSession;
-        }
-
-        public string SessionFactoryName { get; private set; }
-
         protected ISession CurrentSession
         {
-            get
-            {
-                if (_useGlobalSession)
-                {
-                    return GetSessionManager().CurrentSession;
-                }
-                return _privateSession ??
-                       (_privateSession = GetSessionManager().NewSession);
-            }
-        }
-
-        protected IStatelessSession StatelessSession
-        {
-            get { return GetSessionManager().Sessionless; }
+            get { return SessionManager.Instance.GetCurrentSession(); }
         }
 
         #region IDao<TObject,TId> Members
@@ -126,34 +80,7 @@ namespace Qi.Domain.NHibernates
             CurrentSession.Flush();
         }
 
-        public void Dispose()
-        {
-            if (!_useGlobalSession && _privateSession != null)
-            {
-                _privateSession.Close();
-            }
-        }
-
         #endregion
-
-        private SessionManager GetSessionManager()
-        {
-            SessionManager result;
-            if (!string.IsNullOrEmpty(SessionFactoryName))
-            {
-                result = SessionManager.GetInstance(SessionFactoryName);
-            }
-            else if (SessionManager.Instance.Config.NHConfiguration.GetClassMapping(typeof (TObject)) != null)
-            {
-                result = SessionManager.Instance;
-            }
-            else
-            {
-                result = SessionManager.GetInstance(typeof (TObject));
-            }
-            SessionFactoryName = result.Config.SessionFactoryName; // set it and make quick in next time.
-            return result;
-        }
 
         /// <summary>
         /// 

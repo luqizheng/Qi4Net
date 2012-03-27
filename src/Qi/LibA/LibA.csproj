@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{310038D7-CC1C-49EC-A560-8CF2370A0DA7}</ProjectGuid>
+    <ProjectGuid>{1F9EA2FE-963B-48B2-AB4B-17E6BD54186F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Qi</RootNamespace>
-    <AssemblyName>Qi.NHibernateExtender</AssemblyName>
+    <RootNamespace>LibA</RootNamespace>
+    <AssemblyName>LibA</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,20 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.3.2.0.4000\lib\Net35\NHibernate.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies\System.Web.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,29 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\NHibernates\DaoBase.cs" />
-    <Compile Include="Nhibernates\NhConfigManager.cs" />
-    <Compile Include="Nhibernates\NhConfigurationException.cs" />
-    <Compile Include="Nhibernates\NhConfig.cs" />
-    <Compile Include="Nhibernates\SessionManager.cs" />
-    <Compile Include="Nhibernates\SessionManagerExtender.cs" />
-    <Compile Include="Nhibernates\Types\AbstractTimeType.cs" />
-    <Compile Include="Nhibernates\Types\KeyValueCollectionType.cs" />
-    <Compile Include="Nhibernates\Types\TimeStringType.cs" />
-    <Compile Include="Nhibernates\Types\TimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web\Mvc\CollectionHelper.cs" />
-    <Compile Include="Web\Mvc\CollectionOperator.cs" />
-    <Compile Include="Web\Mvc\Founders\FounderAttribute.cs" />
-    <Compile Include="Web\Mvc\Founders\HqlFounderAttribute.cs" />
-    <Compile Include="Web\Mvc\Founders\IdFounderAttribute.cs" />
-    <Compile Include="Web\Mvc\Founders\NHMappingHelper.cs" />
-    <Compile Include="Web\Mvc\Founders\PropertyFounderAttribute.cs" />
-    <Compile Include="Web\Mvc\NHModelBinder.cs" />
-    <Compile Include="Web\Mvc\SessionAttribute.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Qi\Qi.csproj">
@@ -82,7 +49,11 @@
       <Name>Qi</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="User.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

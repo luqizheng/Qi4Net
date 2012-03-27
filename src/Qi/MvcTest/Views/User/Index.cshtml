@@ -4,11 +4,13 @@
 }
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Index</title>
-</head>
+    <head>
+        <title>Index</title>
+    </head>
+    @ViewData["view"] 
 <body>
     <p>
+        @Html.ActionLink("Ansy backup user", "CopyAnsy");
         @Html.ActionLink("Create New", "Create")
     </p>
     <table>

@@ -18,20 +18,20 @@ namespace MvcTest.Controllers
         public ActionResult Index()
         {
 
-            var a = SessionManager.Instance.CurrentSession.CreateCriteria<Role>().List<Role>();
+            var a = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
             return View(a);
         }
 
         public ActionResult Edit(Guid? id)
         {
-            var role = SessionManager.Instance.CurrentSession.Get<Role>(id.Value);
+            var role = SessionManager.Instance.GetCurrentSession().Get<Role>(id.Value);
             return View(role);
         }
 
         [HttpPost]
         public ActionResult Edit([ModelBinder(typeof(NHModelBinder))]Role role)
         {
-            SessionManager.Instance.CurrentSession.SaveOrUpdate(role);
+            SessionManager.Instance.GetCurrentSession().SaveOrUpdate(role);
             return RedirectToAction("Index");
         }
         public ActionResult Create()
@@ -41,7 +41,7 @@ namespace MvcTest.Controllers
         [HttpPost]
         public ActionResult Create([ModelBinder(typeof(NHModelBinder))]Role role)
         {
-            SessionManager.Instance.CurrentSession.SaveOrUpdate(role);
+            SessionManager.Instance.GetCurrentSession().SaveOrUpdate(role);
             return RedirectToAction("Index");
         }
 

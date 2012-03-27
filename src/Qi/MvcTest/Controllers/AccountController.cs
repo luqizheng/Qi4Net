@@ -37,7 +37,7 @@ namespace MvcTest.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = SessionManager.Instance.CurrentSession.CreateCriteria<User>().Add(
+                var user = SessionManager.Instance.GetCurrentSession().CreateCriteria<User>().Add(
                     Restrictions.Eq("LoginId", model.UserName).IgnoreCase())
                     .UniqueResult<User>();
 
@@ -93,7 +93,7 @@ namespace MvcTest.Controllers
                 // Attempt to register the user
                 //MembershipCreateStatus createStatus;
                 //Membership.CreateUser(model.UserName, model.Password, model.Email, null, null, true, null, out createStatus);
-                var a = SessionManager.Instance.CurrentSession.CreateCriteria<User>().Add(Restrictions.Eq("LoginId",
+                var a = SessionManager.Instance.GetCurrentSession().CreateCriteria<User>().Add(Restrictions.Eq("LoginId",
                                                                                                   model.UserName)).List
                     <User>();
                 if (a.Count != 0)
@@ -106,7 +106,7 @@ namespace MvcTest.Controllers
                                   LoginId = model.UserName,
                                   Password = model.Password,
                               };
-                SessionManager.Instance.CurrentSession.SaveOrUpdate(use);
+                SessionManager.Instance.GetCurrentSession().SaveOrUpdate(use);
 
 
                 FormsAuthentication.SetAuthCookie(model.UserName, false /* createPersistentCookie */);
@@ -140,7 +140,7 @@ namespace MvcTest.Controllers
                 bool changePasswordSucceeded = true;
                 try
                 {
-                    var user = SessionManager.Instance.CurrentSession.CreateCriteria(typeof(User))
+                    var user = SessionManager.Instance.GetCurrentSession().CreateCriteria(typeof(User))
                         .Add(Restrictions.Eq("LoginId", User.Identity.Name))
                         .UniqueResult<User>();
                     user.Password = model.NewPassword;

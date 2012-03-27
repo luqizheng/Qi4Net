@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -10,8 +9,6 @@ namespace Qi.Nhibernates
 {
     public class NhConfig
     {
-        private readonly object _lockTable = 1;
-        private ISessionFactory _factory;
         private Configuration _nhConfiguration;
         private string _sessionFactoryName;
 
@@ -39,48 +36,21 @@ namespace Qi.Nhibernates
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public ISessionFactory SessionFactory
-        {
-            get
-            {
-                if (_factory == null || IsChanged)
-                {
-                    lock (_lockTable)
-                    {
-                        if (_factory == null)
-                        {
-                            _factory = NHConfiguration.BuildSessionFactory();
-                        }
-                        else if (IsChanged)
-                        {
-                            if (!_factory.IsClosed)
-                            {
-                                _factory.Close();
-                            }
-                            _factory = NHConfiguration.BuildSessionFactory();
-                        }
-                    }
-                }
-                return _factory;
-            }
-        }
-
-        /// <summary>
         /// Gets the Nhibernate Configuration from this setting file.
         /// </summary>
         public Configuration NHConfiguration
         {
             get
             {
-                if (_nhConfiguration == null)
+                if (_nhConfiguration == null || IsChanged)
                 {
                     lock (this)
                     {
-                        if (_nhConfiguration == null)
+                        if (_nhConfiguration == null || IsChanged)
+                        {
                             _nhConfiguration = new Configuration();
-                        _nhConfiguration.Configure(CfgFile);
+                            _nhConfiguration.Configure(CfgFile);
+                        }
                     }
                 }
                 return _nhConfiguration;
@@ -120,52 +90,21 @@ namespace Qi.Nhibernates
         /// <summary>
         /// 
         /// </summary>
+        public ISessionFactory BuildSessionFactory()
+        {
+            return NHConfiguration.BuildSessionFactory();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void Refresh()
         {
             if (IsChanged)
             {
+                _nhConfiguration = null;
                 _sessionFactoryName = GetSessionFactoryName(CfgFile);
-                lock (_lockTable)
-                {
-                    _factory = null;
-                }
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static NhConfig[] GetNHFileInfos()
-        {
-            string[] files = GetConfigurationFile();
-            var result = new NhConfig[files.Length];
-            for (int i = 0; i < files.Length; i++)
-            {
-                result[i] = new NhConfig(files[i]);
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static string[] GetConfigurationFile()
-        {
-            string filePath = ConfigurationManager.AppSettings["nhConfig"];
-            if (String.IsNullOrEmpty(filePath))
-            {
-                filePath = "~/Config/hibernate.cfg.config";
-            }
-            string[] ary = filePath.Split(',');
-            var result = new string[ary.Length];
-
-            for (int i = 0; i < ary.Length; i++)
-            {
-                result[i] = ApplicationHelper.MapPath(ary[i]);
-            }
-            return result;
         }
 
         /// <summary>

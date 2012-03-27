@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Web;
+using NHibernate;
 using NHibernate.Type;
 using Qi.Nhibernates;
 
@@ -44,16 +45,18 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public object GetObject(SessionManager sessionManager, string postData, string postName, HttpContextBase context)
+        public object GetObject(string postData, string postName, HttpContextBase context)
         {
-            bool result = sessionManager.IniSession();
+            bool result = SessionManager.Instance.IniSession();
+            ISession session = SessionManager.Instance.GetCurrentSession();
+
             try
             {
                 if (context.Request[postName] != null)
                 {
                     object postDataObj = NHMappingHelper.ConvertStringToObject(postData,
-                                                                               PostDataType(sessionManager, postName));
-                    return GetObject(sessionManager, postDataObj, postName, context);
+                                                                               PostDataType(session, postName));
+                    return GetObject(SessionManager.Instance.GetCurrentSession(), postDataObj, postName, context);
                 }
                 else
                 {
@@ -67,7 +70,7 @@ namespace Qi.Web.Mvc.Founders
             {
                 if (result)
                 {
-                    sessionManager.CleanUp();
+                    SessionManager.Instance.CleanUp();
                 }
             }
         }
@@ -80,7 +83,7 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected abstract object GetObject(SessionManager sessionManager, object postData, string postName,
+        protected abstract object GetObject(ISession session, object postData, string postName,
                                             HttpContextBase context);
 
         /// <summary>
@@ -89,6 +92,6 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="sessionManager"></param>
         /// <param name="postDataName"></param>
         /// <returns></returns>
-        protected abstract IType PostDataType(SessionManager sessionManager, string postDataName);
+        protected abstract IType PostDataType(ISession session,string postDataName);
     }
 }

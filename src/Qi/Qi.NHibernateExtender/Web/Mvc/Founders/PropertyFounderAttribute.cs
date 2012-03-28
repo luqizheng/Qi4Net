@@ -26,13 +26,13 @@ namespace Qi.Web.Mvc.Founders
             _propertyName = propertyName;
         }
 
-        protected override object GetObject(ISession sessionManager, object postData, string postName,
+        protected override object GetObject(ISession session, object postData, string postName,
                                             HttpContextBase context)
         {
             DetachedCriteria cri = DetachedCriteria.For(EntityType).Add(Restrictions.Eq(_propertyName, postData));
             if (!Unique)
                 cri.SetFirstResult(0).SetMaxResults(1);
-            return cri.GetExecutableCriteria(sessionManager);
+            return cri.GetExecutableCriteria(session);
         }
 
         protected override IType PostDataType(ISession session, string postDataName)

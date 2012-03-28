@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
 using System.Web.Mvc;
-using LibA;
 using MvcTest.Models;
 using NHibernate.Criterion;
 using Qi.Nhibernates;
@@ -11,7 +8,7 @@ using Qi.Web.Mvc;
 
 namespace MvcTest.Controllers
 {
-    [Session()]
+    [Session]
     public class UserController : AsyncController
     {
         [Session(true, "readonly")]
@@ -21,8 +18,8 @@ namespace MvcTest.Controllers
             ViewData["view"] = SessionManager.CurrentSessionFactoryKey;
             return View(r);
         }
-        
-      
+
+
         public ActionResult Edit(Guid? id)
         {
             var r = SessionManager.Instance.GetCurrentSession().Load<User>(id.Value);
@@ -34,10 +31,11 @@ namespace MvcTest.Controllers
         {
             return View();
         }
+
         [HttpPost]
-        public ActionResult Create([ModelBinder(typeof(NHModelBinder))] User user)
+        public ActionResult Create([ModelBinder(typeof (NHModelBinder))] User user)
         {
-            if (this.ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 SessionManager.Instance.GetCurrentSession().SaveOrUpdate(user);
                 SessionManager.Instance.GetCurrentSession().Flush();
@@ -49,7 +47,7 @@ namespace MvcTest.Controllers
 
 
         [HttpPost]
-        public ActionResult Edit([ModelBinder(typeof(NHModelBinder))] User user)
+        public ActionResult Edit([ModelBinder(typeof (NHModelBinder))] User user)
         {
             SessionManager.Instance.GetCurrentSession().SaveOrUpdate(user);
             SessionManager.Instance.GetCurrentSession().Flush();
@@ -70,7 +68,7 @@ namespace MvcTest.Controllers
 
         [HttpPost]
         public ActionResult ChangePassword(
-            [ModelBinder(typeof(NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
+            [ModelBinder(typeof (NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
         {
             if (ModelState.IsValid)
             {
@@ -82,7 +80,7 @@ namespace MvcTest.Controllers
         }
 
         [HttpPost]
-        public ActionResult AssignRole([ModelBinder(typeof(NHModelBinder))]AssignRoleModel u)
+        public ActionResult AssignRole([ModelBinder(typeof (NHModelBinder))] AssignRoleModel u)
         {
             u.User.Roles.Clear();
             u.User.Roles.AddAll(u.Roles);
@@ -90,14 +88,14 @@ namespace MvcTest.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult AssignRole(string id)//user's loginid
+        public ActionResult AssignRole(string id) //user's loginid
         {
             ViewBag.Roles = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
             var user =
                 SessionManager.Instance.GetCurrentSession().CreateCriteria<User>().Add(
                     Restrictions.Eq(Projections.Property<User>(s => s.LoginId), id))
                     .UniqueResult<User>();
-            return View(new AssignRoleModel()
+            return View(new AssignRoleModel
                             {
                                 User = user,
                                 Roles = new List<Role>(user.Roles)
@@ -105,4 +103,3 @@ namespace MvcTest.Controllers
         }
     }
 }
-

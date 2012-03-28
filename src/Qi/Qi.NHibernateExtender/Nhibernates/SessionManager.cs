@@ -5,13 +5,14 @@ using System.Runtime.Remoting.Messaging;
 using NHibernate;
 using NHibernate.Context;
 using NHibernate.Engine;
-using NHibernate.Impl;
 using NHibernate.Stat;
 
 namespace Qi.Nhibernates
 {
     public class SessionManager : IDisposable
     {
+        private const string CurrentSessionFactoryName = "session.factory.name.qi.";
+
         private static readonly SortedDictionary<string, ISessionFactory> Factories =
             new SortedDictionary<string, ISessionFactory>();
 
@@ -26,11 +27,11 @@ namespace Qi.Nhibernates
         static SessionManager()
         {
             //创建配置有的sessionFactory放入这里
-            foreach (string a in NhConfigManager.SessionFactoryNames)
+            foreach (string sessionFactoryKey in NhConfigManager.SessionFactoryNames)
             {
-                if (CurrentSessionFactoryKey == null || a == "default")
-                    DefaultSessionFactoryKey = a;
-                Factories.Add(a, NhConfigManager.GetNhConfig(a).BuildSessionFactory());
+                if (CurrentSessionFactoryKey == null || sessionFactoryKey == "default")
+                    DefaultSessionFactoryKey = sessionFactoryKey;
+                Factories.Add(sessionFactoryKey, NhConfigManager.GetNhConfig(sessionFactoryKey).BuildSessionFactory());
             }
         }
 
@@ -43,14 +44,15 @@ namespace Qi.Nhibernates
 
         public static string CurrentSessionFactoryKey
         {
-            get { return (CallContext.GetData("default_sessionFactoryName") as string) ?? DefaultSessionFactoryKey; }
+            get { return (CallContext.GetData(CurrentSessionFactoryName) as string) ?? DefaultSessionFactoryKey; }
             set
             {
                 if (!Factories.ContainsKey(value))
                     throw new ArgumentOutOfRangeException("value",
-                                                          "Can't find the session factory name " + value +
-                                                          " in the setting.");
-                CallContext.SetData("default_sessionFactoryName", value);
+                                                          string.Format(
+                                                              "Can't find the session factory name {0} in the setting.",
+                                                              value));
+                CallContext.SetData(CurrentSessionFactoryName, value);
             }
         }
 
@@ -66,6 +68,13 @@ namespace Qi.Nhibernates
 
         public void Dispose()
         {
+            //it only happend in the application shut down
+            foreach (ISessionFactory a in Factories.Values)
+            {
+                a.Close();
+                a.Dispose();
+            }
+            Factories.Clear();
         }
 
         #endregion
@@ -73,34 +82,28 @@ namespace Qi.Nhibernates
         public static void Add(string sessionName, ISessionFactory config)
         {
             if (Factories.ContainsKey(sessionName))
-            {
-                throw new ArgumentNullException("session factory name " + sessionName + " has defined.");
-            }
+                throw new ArgumentNullException(string.Format("session factory name {0} has defined.", sessionName));
+
             Factories.Add(sessionName, config);
         }
 
         public static void Remove(string sessionName)
         {
             if (!Factories.ContainsKey(sessionName))
-            {
                 throw new ArgumentNullException("session factory name " + sessionName + " is not defined.");
-            }
             Factories.Remove(sessionName);
         }
 
         /// <summary>
-        /// Gets Session after use <see cref="IniSession"/>
+        /// 
         /// </summary>
+        /// <returns></returns>
         public ISession GetCurrentSession()
         {
             ISessionFactory sf = GetSessionFactory(CurrentSessionFactoryKey);
 
             if (!CurrentSessionContext.HasBind(sf))
             {
-                if (((SessionFactoryImpl) sf).Name.Contains("testdata"))
-                {
-                    int a = 0;
-                }
                 CurrentSessionContext.Bind(sf.OpenSession());
             }
             return sf.GetCurrentSession();
@@ -118,10 +121,19 @@ namespace Qi.Nhibernates
             return sf.GetCurrentSession();
         }
 
-
-        public ISessionFactory GetSessionFactory(string sfName)
+        /// <summary>
+        /// gets the session factory by session factory name defined in the config file.
+        /// </summary>
+        /// <param name="sessionFactoryName"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"><see cref="sessionFactoryName"/> is not exist in session manager</exception>
+        public ISessionFactory GetSessionFactory(string sessionFactoryName)
         {
-            return Factories[sfName];
+            if (!Factories.ContainsKey(sessionFactoryName))
+                throw new ArgumentOutOfRangeException("sessionFactoryName",
+                                                      string.Format("can't find the{0}session factory.",
+                                                                    sessionFactoryName));
+            return Factories[sessionFactoryName];
         }
 
         public ISessionFactory GetSessionFactory(Type entityType)
@@ -131,7 +143,7 @@ namespace Qi.Nhibernates
                 if (sf.GetEntityPersister(entityType.FullName) != null)
                     return sf;
             }
-            throw new SessionException("can't find the mapping entity with " + entityType);
+            throw new SessionException(string.Format("can't find the mapping entity with {0}", entityType));
         }
 
         public void ClearUp(params ISessionFactory[] factories)

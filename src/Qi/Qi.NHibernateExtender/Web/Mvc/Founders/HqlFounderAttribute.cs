@@ -28,10 +28,10 @@ namespace Qi.Web.Mvc.Founders
         public string[] AnotherParameterName { get; set; }
 
 
-        protected override object GetObject(ISession sessionManager, object postData, string postName,
+        protected override object GetObject(ISession session, object postData, string postName,
                                             HttpContextBase context)
         {
-            IQuery crit = sessionManager.CreateQuery(_hql);
+            IQuery crit = session.CreateQuery(_hql);
 
             IType hqlType = TypeFactory.Basic(_postDataType);
             crit.SetParameter(postName, postData, hqlType);

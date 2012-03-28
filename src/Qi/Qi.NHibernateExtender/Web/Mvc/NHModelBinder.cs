@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -62,22 +61,23 @@ namespace Qi.Web.Mvc
             ActionDescriptor action = reflectedControllerDescriptor.FindAction(controllerContext, actionname);
 
             //Find session attribute on the action.
-            object[] customAttributes = action.GetCustomAttributes(typeof(SessionAttribute), true);
+            object[] customAttributes = action.GetCustomAttributes(typeof (SessionAttribute), true);
             if (customAttributes.Cast<SessionAttribute>().Any(s => s.Enable))
             {
                 return;
             }
 
             //try to find attribute on Controller.
-            customAttributes = controllerContext.Controller.GetType().GetCustomAttributes(typeof(SessionAttribute), true);
+            customAttributes = controllerContext.Controller.GetType().GetCustomAttributes(typeof (SessionAttribute),
+                                                                                          true);
             if (customAttributes.Cast<SessionAttribute>().Any(s => s.Enable))
             {
                 return;
             }
 
             if (customAttributes.Length == 0)
-                throw new NHModelBinderException("can't find any enabled SessionAttribute on controller or action ,please special session attribute and make sure it's enabled.");
-
+                throw new NHModelBinderException(
+                    "can't find any enabled SessionAttribute on controller or action ,please special session attribute and make sure it's enabled.");
         }
 
         protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext,
@@ -89,10 +89,11 @@ namespace Qi.Web.Mvc
             if (_isDto && CollectionHelper.IsCollectionType(propertyMetadata.ModelType, out parameterType))
             {
                 //只有dto才能set list，如果是Domainobject，那么会忽略这个list set
-                var cfg = NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey).NHConfiguration;
+                Configuration cfg = NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey).NHConfiguration;
                 PersistentClass entityTyepMapping = cfg.GetClassMapping(parameterType);
-                if(entityTyepMapping==null)
-                    throw new ArgumentException("can't find the mapping type "+parameterType.FullName+ " in "+ SessionManager.CurrentSessionFactoryKey);
+                if (entityTyepMapping == null)
+                    throw new ArgumentException("can't find the mapping type " + parameterType.FullName + " in " +
+                                                SessionManager.CurrentSessionFactoryKey);
                 object[] aryIds =
                     NHMappingHelper.ConvertStringToObjects(
                         controllerContext.HttpContext.Request[propertyDescriptor.Name],
@@ -162,7 +163,6 @@ namespace Qi.Web.Mvc
 
         public static bool IsPersistentType(Type modelType)
         {
-
             Configuration nhConfig =
                 NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey).NHConfiguration;
 
@@ -189,13 +189,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute),
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute),
                                                                                    true);
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute)customAttributes[0];
+            return (FounderAttribute) customAttributes[0];
         }
 
         /// <summary>
@@ -206,8 +206,7 @@ namespace Qi.Web.Mvc
         /// <returns></returns>
         protected virtual Object GeModelFromNH(Type modelType, HttpRequestBase request, ControllerContext context)
         {
-
-            var nhConfig = NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey);
+            NhConfig nhConfig = NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey);
             PersistentClass mappingInfo = nhConfig.NHConfiguration.GetClassMapping(modelType);
             string idValue = request[mappingInfo.IdentifierProperty.Name];
             var s = new IdFounderAttribute
@@ -241,7 +240,6 @@ namespace Qi.Web.Mvc
         public NHModelBinderException(string message)
             : base(message)
         {
-
         }
     }
 }

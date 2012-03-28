@@ -48,32 +48,22 @@ namespace Qi.Web.Mvc.Founders
         {
             ISession session = SessionManager.Instance.GetCurrentSession();
 
-            try
+            if (context.Request[postName] != null)
             {
-                if (context.Request[postName] != null)
-                {
-                    object postDataObj = NHMappingHelper.ConvertStringToObject(postData,
-                                                                               PostDataType(session, postName));
-                    return GetObject(SessionManager.Instance.GetCurrentSession(), postDataObj, postName, context);
-                }
-                else
-                {
-                    ConstructorInfo constructor = EntityType
-                        .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                                        null, new Type[0], new ParameterModifier[0]);
-                    return constructor.Invoke(null);
-                }
+                object postDataObj = NHMappingHelper.ConvertStringToObject(postData,
+                                                                           PostDataType(session, postName));
+                return GetObject(SessionManager.Instance.GetCurrentSession(), postDataObj, postName, context);
             }
-            finally
-            {
-                SessionManager.Instance.CleanUp();
-            }
+            ConstructorInfo constructor = EntityType
+                .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                                null, new Type[0], new ParameterModifier[0]);
+            return constructor.Invoke(null);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="sessionManager"></param>
+        /// <param name="session"></param>
         /// <param name="postData"></param>
         /// <param name="postName"></param>
         /// <param name="context"></param>
@@ -82,9 +72,9 @@ namespace Qi.Web.Mvc.Founders
                                             HttpContextBase context);
 
         /// <summary>
-        /// 把Post的string类型的data，转换为ValueType类型，用于nhibernate的插叙
+        /// 把Post的string类型的data，转换为IType类型,用于NHibernate获取对象的时候使用。
         /// </summary>
-        /// <param name="sessionManager"></param>
+        /// <param name="session"></param>
         /// <param name="postDataName"></param>
         /// <returns></returns>
         protected abstract IType PostDataType(ISession session, string postDataName);

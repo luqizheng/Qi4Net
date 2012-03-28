@@ -122,6 +122,17 @@ namespace Qi.Test
 
         }
 
+        /// <summary>
+        ///A test for SetTheKeyPath
+        ///</summary>
+        [TestMethod()]
+        public void ToJsonContainerExpressTest_single_property()
+        {
+            var a = "data[Email]";
+            Assert.AreEqual("Email", JsonContainerFilter.ToJsonContainerExpress(a));
+
+        }
+
 
     }
 }

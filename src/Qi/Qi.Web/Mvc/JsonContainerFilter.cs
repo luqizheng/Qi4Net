@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -26,54 +27,57 @@ namespace Qi.Web.Mvc
 
             if (!_submitDirectJquery)
             {
-                foreach (ParameterDescriptor parameterName in parameterNames)
+                NameValueCollection requestKeySet = request.HttpMethod.ToLower() == "post"
+                                                        ? request.Form
+                                                        : request.QueryString;
+                if (requestKeySet.Keys[0] != null)
                 {
-                    if (parameterName.ParameterType == typeof(JsonContainer))
+                    foreach (ParameterDescriptor parameterName in parameterNames)
                     {
-                        filterContext.ActionParameters[parameterName.ParameterName] =
-                            JsonContainer.Create(request[parameterName.ParameterName]);
+                        if (parameterName.ParameterType == typeof (JsonContainer))
+                        {
+                            filterContext.ActionParameters[parameterName.ParameterName] =
+                                JsonContainer.Create(requestKeySet[parameterName.ParameterName]);
+                        }
                     }
+                }
+                else
+                {
+                    filterContext.ActionParameters[parameterNames[0].ParameterName] =
+                        JsonContainer.Create(requestKeySet[0]);
                 }
             }
             else
             {
-                IList<string> actionParameterName = new List<string>();
-
+                var jquerySet = new Dictionary<string, JsonContainer>();
                 foreach (ParameterDescriptor parameterName in parameterNames)
                 {
-                    if (parameterName.ParameterType == typeof(JsonContainer))
+                    if (parameterName.ParameterType == typeof (JsonContainer))
                     {
-                        actionParameterName.Add(parameterName.ParameterName);
+                        var json = new JsonContainer();
+                        jquerySet.Add(parameterName.ParameterName, json);
+                        filterContext.ActionParameters[parameterName.ParameterName] = json;
                     }
                 }
-                Dictionary<string, JsonContainer> jquerySet = MakeJsonContainer(request, actionParameterName);
-                foreach (string key in jquerySet.Keys)
-                {
-                    filterContext.ActionParameters[key] = jquerySet[key];
-                }
+                MakeJsonContainer(request, jquerySet);
             }
         }
 
-        public Dictionary<string, JsonContainer> MakeJsonContainer(HttpRequestBase request,
-                                                                  IEnumerable<string> parameterName)
+        public void MakeJsonContainer(HttpRequestBase request, Dictionary<string, JsonContainer> jquerySet)
         {
-            var result = new Dictionary<string, JsonContainer>();
-            bool isPost = request.HttpMethod.ToLower() == "post";
-            foreach (string requestKey in isPost ? request.Form.AllKeys : request.QueryString.AllKeys)
+            NameValueCollection requestKeySet = request.HttpMethod.ToLower() == "post"
+                                                    ? request.Form
+                                                    : request.QueryString;
+            foreach (string requestKey in requestKeySet.AllKeys)
             {
-                var val = isPost ? request.Form.GetValues(requestKey) : request.QueryString.GetValues(requestKey);
-                RebuildRequestKey(parameterName, result, val, requestKey);
+                string[] val = requestKeySet.GetValues(requestKey);
+                RebuildRequestKey(jquerySet, val, requestKey);
             }
-
-
-
-            return result;
         }
 
-        private void RebuildRequestKey(IEnumerable<string> actionParameterNames,
-                                       Dictionary<string, JsonContainer> result, string[] val, string requestKey)
+        private void RebuildRequestKey(Dictionary<string, JsonContainer> result, string[] val, string requestKey)
         {
-            foreach (string parameterName in actionParameterNames)
+            foreach (string parameterName in result.Keys)
             {
                 if (requestKey.StartsWith(parameterName + "["))
                 {
@@ -81,10 +85,10 @@ namespace Qi.Web.Mvc
                     {
                         result.Add(parameterName, new JsonContainer());
                     }
+                    string keyPath = requestKey.TrimStart(parameterName.ToCharArray());
+                    string jsonContainerKeyPath = ToJsonContainerExpress(keyPath);
 
-                    string jsonContainerKeyPath = ToJsonContainerExpress(requestKey.TrimStart(parameterName.ToCharArray()));
-
-                    result[parameterName].SetValue(jsonContainerKeyPath, val);
+                    result[parameterName].SetValue(jsonContainerKeyPath.TrimStart('.'), val);
                 }
             }
         }

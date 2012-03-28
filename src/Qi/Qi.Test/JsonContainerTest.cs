@@ -377,37 +377,6 @@ namespace Qi.Test
             Assert.AreEqual(("l1.l2.value1"), actual[0]);
         }
 
-        ///// <summary>
-        /////A test for AnaylzTheKey
-        /////</summary>
-        //[TestMethod]
-        //[DeploymentItem("Qi.Web.dll")]
-        //public void AnaylzTheKeyTest()
-        //{
-        //    var content = new Dictionary<string, object>
-        //                      {
-        //                          {
-        //                              "l1", new Dictionary<string, object>
-        //                                        {
-        //                                            {
-        //                                                "l2", new Dictionary<string, object>
-        //                                                          {
-        //                                                              {"value", Int32.MaxValue}
-        //                                                          }
-        //                                                }
-        //                                        }
-        //                              }
-        //                      };
-
-        //    var current = new JsonContainer(content);
-        //    string keyPath = "l1.l2.value";
-        //    string lastKey;
-        //    string lastKeyExpect = "value";
-
-        //    JsonContainer actual = JsonContainer_Accessor.AnaylzTheKey(keyPath, out lastKey, current);
-        //    Assert.AreEqual(lastKeyExpect, lastKey);
-        //    Assert.AreEqual(Int32.MaxValue, actual.ToInt32(lastKey));
-        //}
 
         [TestMethod]
         public void ArrayJson()
@@ -513,7 +482,6 @@ namespace Qi.Test
             target.SetValue(key, val);
             var actual = target.ToArray<string>("a[0].b.c", Convert.ToString);
             Assert.AreEqual("11", actual);
-
         }
     }
 }

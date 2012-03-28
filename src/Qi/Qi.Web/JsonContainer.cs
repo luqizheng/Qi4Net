@@ -32,6 +32,7 @@ namespace Qi.Web
 
         public JsonContainer()
         {
+            _content=new Dictionary<string, object>();
         }
 
         public string[] Keys

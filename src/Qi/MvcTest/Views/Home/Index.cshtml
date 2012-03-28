@@ -1,16 +1,18 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-
 <h2>@ViewBag.Message</h2>
 <p>
-    To learn more about ASP.NET MVC visit <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
+    To learn more about ASP.NET MVC visit <a href="http://asp.net/mvc" title="ASP.NET MVC Website">
+        http://asp.net/mvc</a>.
 </p>
-
 <p>
     @Html.ActionLink("User list", "Index", "User")
 </p>
-
 <p>
     @Html.ActionLink("Role list", "Index", "Role")
+</p>
+<p>
+    JsonContainer demo:
+    @Html.ActionLink("JsonContaienr demo", "Index", "JsonTest")
 </p>

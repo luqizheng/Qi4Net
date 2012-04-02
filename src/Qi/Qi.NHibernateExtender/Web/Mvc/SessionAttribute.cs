@@ -1,6 +1,5 @@
 using System;
 using System.Data;
-using System.Threading;
 using System.Web.Mvc;
 using NHibernate;
 using Qi.Nhibernates;

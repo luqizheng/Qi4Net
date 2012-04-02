@@ -50,7 +50,7 @@ namespace Qi.Nhibernates
                 object obj = CallContext.GetData(InitKeyName);
                 if (obj == null)
                     return false;
-                return (bool) obj;
+                return (bool)obj;
             }
             private set { CallContext.SetData(InitKeyName, value); }
         }
@@ -123,17 +123,20 @@ namespace Qi.Nhibernates
         /// <returns></returns>
         public ISession GetCurrentSession()
         {
-            ISessionFactory sf = GetSessionFactory(CurrentSessionFactoryKey);
-
-            if (!CurrentSessionContext.HasBind(sf))
-            {
-                CurrentSessionContext.Bind(sf.OpenSession());
-            }
-            return sf.GetCurrentSession();
+            return GetCurrentSession(CurrentSessionFactoryKey);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityType"></param>
+        /// <returns></returns>
+        /// <exception cref="SessionManagerException">Init session first</exception>
         public ISession GetCurrentSession(Type entityType)
         {
+            if (!IsInitiated)
+            {
+                throw new SessionManagerException("Please use InitSession() before use GetCurrentSession()");
+            }
             ISessionFactory sf = GetSessionFactory(entityType);
             if (!CurrentSessionContext.HasBind(sf))
             {
@@ -144,6 +147,10 @@ namespace Qi.Nhibernates
 
         public ISession GetCurrentSession(string sfName)
         {
+            if (!IsInitiated)
+            {
+                throw new SessionManagerException("Please use InitSession() before use GetCurrentSession()");
+            }
             ISessionFactory sf = GetSessionFactory(sfName);
 
             if (!CurrentSessionContext.HasBind(sf))
@@ -195,6 +202,7 @@ namespace Qi.Nhibernates
         public void CleanUp()
         {
             ClearUp(Factories.Values.ToArray());
+            this.IsInitiated = false;
         }
     }
 }

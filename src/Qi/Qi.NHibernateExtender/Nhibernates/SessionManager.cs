@@ -12,6 +12,7 @@ namespace Qi.Nhibernates
     public class SessionManager : IDisposable
     {
         private const string CurrentSessionFactoryName = "session.factory.name.qi.";
+        private const string InitKeyName = "session.is.Initiated";
 
         private static readonly SortedDictionary<string, ISessionFactory> Factories =
             new SortedDictionary<string, ISessionFactory>();
@@ -40,6 +41,18 @@ namespace Qi.Nhibernates
         /// </summary>
         private SessionManager()
         {
+        }
+
+        public bool IsInitiated
+        {
+            get
+            {
+                object obj = CallContext.GetData(InitKeyName);
+                if (obj == null)
+                    return false;
+                return (bool) obj;
+            }
+            private set { CallContext.SetData(InitKeyName, value); }
         }
 
         public static string CurrentSessionFactoryKey
@@ -79,6 +92,16 @@ namespace Qi.Nhibernates
 
         #endregion
 
+        public bool InitSession()
+        {
+            if (!IsInitiated)
+            {
+                IsInitiated = true;
+                return true;
+            }
+            return false;
+        }
+
         public static void Add(string sessionName, ISessionFactory config)
         {
             if (Factories.ContainsKey(sessionName))
@@ -90,7 +113,7 @@ namespace Qi.Nhibernates
         public static void Remove(string sessionName)
         {
             if (!Factories.ContainsKey(sessionName))
-                throw new ArgumentNullException("session factory name " + sessionName + " is not defined.");
+                throw new ArgumentNullException(string.Format("session factory name {0} is not defined.", sessionName));
             Factories.Remove(sessionName);
         }
 

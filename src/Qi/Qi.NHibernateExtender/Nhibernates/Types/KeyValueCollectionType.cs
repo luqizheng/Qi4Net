@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using Qi.Web;
 
 namespace Qi.Nhibernates.Types
 {
@@ -14,7 +15,7 @@ namespace Qi.Nhibernates.Types
         }
         public override object DefaultValue
         {
-            get { return new Dictionary<string, string>(); }
+            get { return new Dictionary<string, object>(); }
         }
 
         public override string ObjectToSQLString(object value, NHibernate.Dialect.Dialect dialect)
@@ -29,14 +30,7 @@ namespace Qi.Nhibernates.Types
 
         public override object FromStringValue(string xml)
         {
-            var result = new Dictionary<string, string>();
-            XmlDocument dom = new XmlDocument();
-            dom.LoadXml(xml);
-            foreach (XmlNode node in dom.SelectNodes("i"))
-            {
-                result.Add(node.Attributes["k"].Value, node.InnerText);
-            }
-            return result;
+            return JsonContainer.Create(xml).Content;
         }
 
         public override object Get(System.Data.IDataReader rs, string name)
@@ -48,30 +42,19 @@ namespace Qi.Nhibernates.Types
                     return Get(rs, i);
                 }
             }
-            return new Dictionary<string, string>();
+            return new Dictionary<string, object>();
         }
 
         public override object Get(System.Data.IDataReader rs, int index)
         {
-            var butes = (byte[])rs[index];
-            return FromStringValue(BitConverter.ToString(butes));
+            return FromStringValue(rs[index].ToString());
         }
 
         public override void Set(System.Data.IDbCommand cmd, object value, int index)
         {
             var param = (System.Data.IDbDataParameter)cmd.Parameters[index];
-            var val = (Dictionary<string, string>)value;
-            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?><keyValue>");
-
-            foreach (var item in val)
-            {
-                sb.Append("<i k=\"").Append(item.Key)
-                    .Append("\">").Append(item.Value)
-                    .Append("</i>");
-            }
-            sb.Append("</keyValue>");
-
-            param.Value = sb.ToString();
+            var val = (Dictionary<string, object>)value;
+            param.Value = val.ToJson();
         }
 
         public override string Name
@@ -83,7 +66,7 @@ namespace Qi.Nhibernates.Types
         {
             get
             {
-                return typeof(Dictionary<string, string>);
+                return typeof(Dictionary<string, object>);
             }
         }
     }

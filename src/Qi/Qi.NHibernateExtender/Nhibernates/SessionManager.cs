@@ -109,6 +109,16 @@ namespace Qi.Nhibernates
             return sf.GetCurrentSession();
         }
 
+        public ISession GetCurrentSession(Type entityType)
+        {
+            ISessionFactory sf = GetSessionFactory(entityType);
+            if (!CurrentSessionContext.HasBind(sf))
+            {
+                CurrentSessionContext.Bind(sf.OpenSession());
+            }
+            return sf.GetCurrentSession();
+        }
+
         public ISession GetCurrentSession(string sfName)
         {
             ISessionFactory sf = GetSessionFactory(sfName);

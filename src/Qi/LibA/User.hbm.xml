@@ -9,5 +9,11 @@
     <property name="Name" length="100" type="String"></property>
 
   </class>
-
+  <class name="KeyValueMapping" table="nh_testMapping" lazy="true">
+    <id name="Id">
+      <generator class="guid"></generator>
+    </id>
+    <property name="Mapping" type="Qi.Nhibernates.Types.KeyValueCollectionType,Qi.NHibernateExtender">     
+    </property>
+  </class>
 </hibernate-mapping>

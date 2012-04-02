@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using NHibernate.Tool.hbm2ddl;
 using Qi.Nhibernates;
+using log4net.Config;
 
 namespace MvcTest
 {
@@ -29,6 +30,7 @@ namespace MvcTest
 
         protected void Application_Start()
         {
+            XmlConfigurator.Configure();
             AreaRegistration.RegisterAllAreas();
 
             RegisterGlobalFilters(GlobalFilters.Filters);
@@ -37,8 +39,10 @@ namespace MvcTest
             {
                 var nhConfiguration =
                     NhConfigManager.GetNhConfig(config).NHConfiguration;
-                var update = new SchemaUpdate(nhConfiguration);
-                update.Execute(false, true);
+                var create = new SchemaExport(nhConfiguration);
+                create.Drop(true, true);
+
+                create.Create(true, true);
             }
         }
     }

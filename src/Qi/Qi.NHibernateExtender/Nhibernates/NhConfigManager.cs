@@ -39,9 +39,6 @@ namespace Qi.Nhibernates
             return result;
         }
 
-#if DEBUG
-        private static bool setNhfileSet;
-#endif
 
         public static NhConfig GetNhConfig(string sessionFactory)
         {
@@ -49,21 +46,16 @@ namespace Qi.Nhibernates
             {
                 lock (typeof (NhConfig))
                 {
-#if DEBUG
-                    if (setNhfileSet)
-                        throw new ApplicationException("here has init th ecache of nhconfig twitch.");
-#endif
                     foreach (NhConfig a in GetNHFileInfos())
                     {
                         Cache.Add(a.SessionFactoryName, a);
                     }
-#if DEBUG
-                    setNhfileSet = true;
-#endif
+
                 }
             }
             if (!Cache.ContainsKey(sessionFactory))
-                throw new NhConfigurationException("Can not find the session config whihc name is " + sessionFactory);
+                return null;
+            
 
             return Cache[sessionFactory];
         }

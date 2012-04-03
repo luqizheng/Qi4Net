@@ -48,8 +48,15 @@ namespace Qi.Nhibernates
                     {
                         if (_nhConfiguration == null || IsChanged)
                         {
-                            _nhConfiguration = new Configuration();
-                            _nhConfiguration.Configure(CfgFile);
+                            try
+                            {
+                                _nhConfiguration = new Configuration();
+                                _nhConfiguration.Configure(CfgFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new NhConfigurationException(CfgFile + " found error.", ex);
+                            }
                         }
                     }
                 }
@@ -92,7 +99,16 @@ namespace Qi.Nhibernates
         /// </summary>
         public ISessionFactory BuildSessionFactory()
         {
-            return NHConfiguration.BuildSessionFactory();
+            try
+            {
+                return NHConfiguration.BuildSessionFactory();
+            }
+            catch (Exception ex)
+            {
+                var msg = this.SessionFactoryName + " throw exception.";
+                throw new NhConfigurationException(msg, ex);
+            }
+
         }
 
         /// <summary>

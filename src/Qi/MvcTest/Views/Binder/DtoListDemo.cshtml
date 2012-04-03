@@ -1,0 +1,35 @@
+﻿@using MvcTest.Models
+@model MvcTest.Models.AssignRoleModel
+@{
+    ViewBag.Title = "title";
+    var roles = (ViewData["roles"]) as IList<Role>;
+    var users = (ViewData["users"]) as IList<User>;
+}
+<form method="POST">
+<select name="User">
+    @foreach (var user in users)
+    {
+        <option value="@user.LoginId">@user.LoginId</option>
+    }
+</select>
+<table>
+    @foreach (var role in roles)
+    {
+        <tr>
+            <td>
+                <input type="checkbox" name="Roles" value="@role.Id"/>
+            </td>
+            <td>
+                @role.Name
+            </td>
+        </tr>
+    }
+</table>
+@if (this.Model != null)
+{
+    <h4>
+        You are selected:</h4>
+    @this.Model.ToString();
+}
+<input value="submt" type="submit" />
+</form>

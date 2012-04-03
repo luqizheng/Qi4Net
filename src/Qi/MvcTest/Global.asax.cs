@@ -39,10 +39,10 @@ namespace MvcTest
             {
                 var nhConfiguration =
                     NhConfigManager.GetNhConfig(config).NHConfiguration;
-                var create = new SchemaExport(nhConfiguration);
-                create.Drop(true, true);
+                var create = new SchemaUpdate(nhConfiguration);
 
-                create.Create(true, true);
+
+                create.Execute(true, true);
             }
         }
     }

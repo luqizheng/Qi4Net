@@ -173,6 +173,9 @@ namespace Qi.Nhibernates
                 throw new ArgumentOutOfRangeException("sessionFactoryName",
                                                       string.Format("can't find the{0}session factory.",
                                                                     sessionFactoryName));
+            var nh = NhConfigManager.GetNhConfig(sessionFactoryName);
+            if (nh != null && nh.IsChanged)
+                Factories[sessionFactoryName] = nh.BuildSessionFactory();
             return Factories[sessionFactoryName];
         }
 

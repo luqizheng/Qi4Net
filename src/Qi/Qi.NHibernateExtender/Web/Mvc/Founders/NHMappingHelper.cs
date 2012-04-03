@@ -23,13 +23,17 @@ namespace Qi.Web.Mvc.Founders
 
         public static object[] ConvertStringToObjects(string valStrJoinByComma, IType type)
         {
-            string[] aryStr = valStrJoinByComma.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            var result = new object[aryStr.Length];
-            for (int i = 0; i < aryStr.Length; i++)
+            if (valStrJoinByComma != null)
             {
-                result[i] = ConvertStringToObject(aryStr[i], type);
+                string[] aryStr = valStrJoinByComma.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                var result = new object[aryStr.Length];
+                for (int i = 0; i < aryStr.Length; i++)
+                {
+                    result[i] = ConvertStringToObject(aryStr[i], type);
+                }
+                return result;
             }
-            return result;
+            return new object[0];
         }
     }
 }

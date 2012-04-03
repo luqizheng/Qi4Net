@@ -116,7 +116,7 @@
     <Compile Include="IO\IoExtender.cs" />
     <Compile Include="IO\Serialization\SerializationHelper.cs" />
     <Compile Include="NotFoundCacheObjectException.cs" />
-    <Compile Include="ObjectPools.cs" />
+    <Compile Include="ObjectInitialize.cs" />
     <Compile Include="Net\MacAddress.cs" />
     <Compile Include="Net\NetworkException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

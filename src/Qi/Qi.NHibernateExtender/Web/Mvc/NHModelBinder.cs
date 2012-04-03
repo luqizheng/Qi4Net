@@ -18,6 +18,11 @@ namespace Qi.Web.Mvc
     /// </summary>
     public class NHModelBinder : DefaultModelBinder
     {
+        public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        {
+            SessionManager.Instance.InitSession();
+            return base.BindModel(controllerContext, bindingContext);
+        }
         /// <summary>
         /// when binder object is nhibernate entity, it will set to true,
         /// </summary>
@@ -61,14 +66,14 @@ namespace Qi.Web.Mvc
             ActionDescriptor action = reflectedControllerDescriptor.FindAction(controllerContext, actionname);
 
             //Find session attribute on the action.
-            object[] customAttributes = action.GetCustomAttributes(typeof (SessionAttribute), true);
+            object[] customAttributes = action.GetCustomAttributes(typeof(SessionAttribute), true);
             if (customAttributes.Cast<SessionAttribute>().Any(s => s.Enable))
             {
                 return;
             }
 
             //try to find attribute on Controller.
-            customAttributes = controllerContext.Controller.GetType().GetCustomAttributes(typeof (SessionAttribute),
+            customAttributes = controllerContext.Controller.GetType().GetCustomAttributes(typeof(SessionAttribute),
                                                                                           true);
             if (customAttributes.Cast<SessionAttribute>().Any(s => s.Enable))
             {
@@ -189,13 +194,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounder(PropertyDescriptor propertyDescriptor, Type modelType)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute),
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute),
                                                                                    true);
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
         }
 
         /// <summary>

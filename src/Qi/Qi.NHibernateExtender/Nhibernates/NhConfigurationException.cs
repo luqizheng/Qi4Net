@@ -5,11 +5,19 @@ using System.Text;
 
 namespace Qi.Nhibernates
 {
-    public class NhConfigurationException:ApplicationException
+    [Serializable]
+    public class NhConfigurationException : ApplicationException
     {
-        public NhConfigurationException(string msg):base(msg)
+        public NhConfigurationException(string msg)
+            : base(msg)
         {
-            
+
+        }
+
+        public NhConfigurationException(string msg, Exception innerexception)
+            : base(msg, innerexception)
+        {
+
         }
     }
 }

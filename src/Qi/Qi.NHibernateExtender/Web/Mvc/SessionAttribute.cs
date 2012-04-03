@@ -89,14 +89,16 @@ namespace Qi.Web.Mvc
         {
             if (Enable)
             {
+                SessionManager.Instance.InitSession();
                 if (!String.IsNullOrEmpty(SessionFactoryName))
                     SessionManager.CurrentSessionFactoryKey = SessionFactoryName;
-            }
-            if (Transaction && Enable)
-            {
-                _tras = IsolationLevel != null
-                            ? SessionManager.Instance.GetCurrentSession().BeginTransaction(IsolationLevel.Value)
-                            : SessionManager.Instance.GetCurrentSession().BeginTransaction();
+
+                if (Transaction)
+                {
+                    _tras = IsolationLevel != null
+                                ? SessionManager.Instance.GetCurrentSession().BeginTransaction(IsolationLevel.Value)
+                                : SessionManager.Instance.GetCurrentSession().BeginTransaction();
+                }
             }
         }
 

@@ -72,6 +72,8 @@
     <Compile Include="Web\Mvc\Founders\NHMappingHelper.cs" />
     <Compile Include="Web\Mvc\Founders\PropertyFounderAttribute.cs" />
     <Compile Include="Web\Mvc\NHModelBinder.cs" />
+    <Compile Include="Web\Mvc\NHModelBinderBase.cs" />
+    <Compile Include="Web\Mvc\NHModelBinderException.cs" />
     <Compile Include="Web\Mvc\SessionAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

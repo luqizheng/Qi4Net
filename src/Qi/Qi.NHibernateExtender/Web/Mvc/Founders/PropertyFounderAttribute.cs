@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Specialized;
 using System.Web;
 using NHibernate;
 using NHibernate.Cfg;
@@ -43,7 +44,7 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected override IList GetObject(ISession session, object[] searchConditionValue, string postName, HttpContextBase context)
+        protected override IList GetObject(ISession session, object[] searchConditionValue, string postName, NameValueCollection context)
         {
             DetachedCriteria cri =
                 DetachedCriteria.For(EntityType);

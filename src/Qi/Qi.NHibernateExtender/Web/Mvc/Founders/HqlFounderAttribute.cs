@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Web;
 using NHibernate;
 using NHibernate.Mapping;
@@ -32,7 +33,7 @@ namespace Qi.Web.Mvc.Founders
         public string[] AnotherParameterName { get; set; }
 
 
-        protected override IList GetObject(ISession session, object[] id, string postName, HttpContextBase context)
+        protected override IList GetObject(ISession session, object[] id, string postName, NameValueCollection context)
         {
             var result = new List<object>();
             IQuery crit = session.CreateQuery(_hql);
@@ -49,12 +50,12 @@ namespace Qi.Web.Mvc.Founders
             return result;
         }
 
-        private void CreateParameter(HttpContextBase context, IQuery crit)
+        private void CreateParameter(NameValueCollection context, IQuery crit)
         {
             int i = 0;
             foreach (string parameterName in AnotherParameterName)
             {
-                string strValu = context.Request[parameterName];
+                string strValu = context[parameterName];
                 IType paramType = TypeFactory.Basic(AnotherParameterType[i]);
                 if (paramType == null)
                     throw new NhConfigurationException("Nhibernate do not defined base type named " +

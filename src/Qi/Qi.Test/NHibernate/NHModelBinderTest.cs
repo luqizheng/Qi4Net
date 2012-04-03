@@ -58,19 +58,20 @@ namespace Qi.Test.NHibernate
         [TestMethod]
         public void IsPersistentTypeTest()
         {
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (User)));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (User[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (IList<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (List<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (Iesi.Collections.Generic.ISet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (HashedSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (ImmutableSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (DictionarySet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (OrderedSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (Set<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (Iesi.Collections.Generic.SortedSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (SynchronizedSet<User>[])));
-            Assert.IsTrue(NHModelBinder.IsPersistentType(typeof (System.Collections.Generic.ISet<User>[])));
+            NHModelBinder binder=new NHModelBinder();
+            Assert.IsTrue(binder.IsPersistentType(typeof (User)));
+            Assert.IsTrue(binder.IsPersistentType(typeof (User[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (IList<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (List<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (Iesi.Collections.Generic.ISet<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (HashedSet<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (ImmutableSet<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (DictionarySet<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (OrderedSet<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (Set<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (Iesi.Collections.Generic.SortedSet<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (SynchronizedSet<User>[])));
+            Assert.IsTrue(binder.IsPersistentType(typeof (System.Collections.Generic.ISet<User>[])));
         }
 
         [TestMethod]

@@ -66,10 +66,14 @@ namespace Qi.Collections
                 setMethod = (t1, t2, t3) => ((ISet)t1).Add(t2);
                 countMethod = t1 => ((ISet)t1).Count;
             }
-            else
+            else if (target.GetType().IsArray)
             {
                 setMethod = (t1, t2, t3) => ((Array)t1).SetValue(t2, t3);
                 countMethod = t1 => ((Array)t1).Length;
+            }
+            else
+            {
+                throw new ApplicationException("SetAccessor only support IList,Iesi.Collection.ISet and array.");
             }
 
             return new SetAccessor(target)

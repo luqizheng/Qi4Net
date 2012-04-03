@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Specialized;
 using System.Reflection;
-using System.Web;
 using NHibernate;
 using NHibernate.Type;
-using Qi.Nhibernates;
 
 namespace Qi.Web.Mvc.Founders
 {
@@ -44,31 +43,42 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <param name="isSet"> </param>
-        /// <param name="postData"></param>
+        /// <param name="session"> </param>
         /// <returns></returns>
-        public IList GetObject(string postName, HttpContextBase context, bool isSet)
+        public IList GetObject(string postName, NameValueCollection context, bool isSet, ISession session)
         {
-            ISession session = SessionManager.Instance.GetCurrentSession();
-            string requestValues = context.Request[postName];
+            string requestValues = context[postName];
 
             IType mappingType = GetMappingType(session, postName);
 
 
-            if (context.Request[postName] != null)
+            if (context[postName] != null)
             {
-                object[] searchConditionValues = isSet
-                                                     ? NHMappingHelper.ConvertStringToObjects(requestValues, mappingType)
-                                                     : new[]
-                                                           {
-                                                               NHMappingHelper.ConvertStringToObject(requestValues, mappingType)
-                                                           };
+                try
+                {
+                    object[] searchConditionValues = isSet
+                                                         ? NHMappingHelper.ConvertStringToObjects(requestValues,
+                                                                                                  mappingType)
+                                                         : new[]
+                                                               {
+                                                                   NHMappingHelper.ConvertStringToObject(requestValues,
+                                                                                                         mappingType)
+                                                               };
 
-                return GetObject(SessionManager.Instance.GetCurrentSession(), searchConditionValues, postName, context);
+
+                    return GetObject(session, searchConditionValues, postName,
+                                     context);
+                }
+                catch (FormatException ex)
+                {
+                    throw new NHModelBinderException(
+                        "Translate submit data from client to target type (" + mappingType.Name + ") fail.", ex);
+                }
             }
             ConstructorInfo constructor = EntityType
                 .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
                                 null, new Type[0], new ParameterModifier[0]);
-            return new ArrayList(){constructor.Invoke(null)};
+            return new ArrayList {constructor.Invoke(null)};
         }
 
         /// <summary>
@@ -79,7 +89,7 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected abstract IList GetObject(ISession session, object[] id, string postName, HttpContextBase context);
+        protected abstract IList GetObject(ISession session, object[] id, string postName, NameValueCollection context);
 
         /// <summary>
         /// 把Post的string类型的data，转换为IType类型,用于NHibernate获取对象的时候使用。

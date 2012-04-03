@@ -14,26 +14,35 @@ namespace MvcTest.Models
         [IdFounder]
         public IList<Role> RolesByDeclareIdFounder { get; set; }
 
-       
-        public ISet<Role> RolesBySet { get; set; }
+
+        public Iesi.Collections.Generic.ISet<Role> RolesBySet { get; set; }
 
         public override string ToString()
         {
             var result = new StringBuilder();
-
+            if (UsersById != null)
+            {
+                result.Append("select UserById:")
+                    .AppendLine(string.Join(",", new List<User>(UsersById)));
+            }
             if (UsersByLoginId != null)
             {
-                result.Append("Select users:");
-                result.Append(string.Join(",", new List<User>(UsersByLoginId)));
+                result.Append("Select UsersByLoginId:");
+                result.AppendLine(string.Join(",", new List<User>(UsersByLoginId)));
             }
             if (RolesByDeclareIdFounder != null)
             {
-                result.Append("select roles: " + string.Join(",", RolesByDeclareIdFounder));
+                result.AppendLine("select IList roles: " + string.Join(",", RolesByDeclareIdFounder));
+            }
+            if (RolesBySet != null)
+            {
+                result.AppendLine("select Iesi.Collection.ISet " + string.Join(",", RolesBySet));
             }
             if (result.Length == 0)
             {
-                result.Append("Select nothing.");
+                result.AppendLine("Select nothing.");
             }
+
             return result.ToString();
 
 

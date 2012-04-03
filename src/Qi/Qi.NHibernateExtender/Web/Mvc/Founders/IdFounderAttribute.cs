@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Specialized;
 using System.Web;
 using NHibernate;
 using NHibernate.Cfg;
@@ -15,7 +16,7 @@ namespace Qi.Web.Mvc.Founders
             Unique = false;
         }
 
-        protected override IList GetObject(ISession session, object[] id, string postName, HttpContextBase context)
+        protected override IList GetObject(ISession session, object[] id, string postName, NameValueCollection context)
         {
             var disJun = new Disjunction();
             foreach (var ids in id)

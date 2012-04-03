@@ -9,6 +9,7 @@ namespace Qi.Collections
     {
         private static readonly Dictionary<Type, Type> DefaultSetType = new Dictionary<Type, Type>
                                                                             {
+                                                                                {typeof(Iesi.Collections.Generic.ISet<>),typeof(Iesi.Collections.Generic.HashedSet<>)},
                                                                                 {typeof (ISet<>), typeof (HashSet<>)},
                                                                                 {typeof (IList<>), typeof (List<>)},
                                                                                 {typeof (IList), typeof (ArrayList)},

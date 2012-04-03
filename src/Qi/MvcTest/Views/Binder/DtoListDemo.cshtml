@@ -24,23 +24,21 @@
 <h2>
     Array UsersById: use default founder(IdFounder) to find users.</h2>
 <form method="POST">
-    <table>
-        @foreach (var user in users)
-        {
-            <tr>
-                <td>
-                    <input type="checkbox" name="UsersById" value="@user.LoginId">@user.LoginId</input>
-                </td>
-                <td>
-                    @user.Name
-                </td>
-            </tr>
-        }
-    </table>
-    
-
-    <h2>
-    Roles:</h2>
+<table>
+    @foreach (var user in users)
+    {
+        <tr>
+            <td>
+                <input type="checkbox" name="UsersById" value="@user.Id">@user.LoginId</input>
+            </td>
+            <td>
+                @user.Name
+            </td>
+        </tr>
+    }
+</table>
+<h2>
+    IList Roles:</h2>
 <table>
     @foreach (var role in roles)
     {
@@ -54,11 +52,26 @@
         </tr>
     }
 </table>
+<h2>
+    ISet Roles:</h2>
+<table>
+    @foreach (var role in roles)
+    {
+        <tr>
+            <td>
+                <input type="checkbox" name="RolesBySet" value="@role.Id"/>
+            </td>
+            <td>
+                @role.Name
+            </td>
+        </tr>
+    }
+</table>
 @if (this.Model != null)
 {
     <h4>
         You selected:</h4>
-    @this.Model.ToString();
+    @Html.Raw(this.Model.ToString().Replace("\r\n", "<br>"));
 }
 <input value="submt" type="submit" />
 </form>

@@ -6,14 +6,14 @@
     var users = (ViewData["users"]) as IList<User>;
 }
 <h2>
-    Users:</h2>
+    Array UsersByLoginId: use PropertyFounder to find the users by loginId</h2>
 <form method="POST">
 <table>
     @foreach (var user in users)
     {
         <tr>
             <td>
-                <input type="checkbox" name="Users" value="@user.LoginId">@user.LoginId</input>
+                <input type="checkbox" name="UsersByLoginId" value="@user.LoginId">@user.LoginId</input>
             </td>
             <td>
                 @user.Name
@@ -22,6 +22,24 @@
     }
 </table>
 <h2>
+    Array UsersById: use default founder(IdFounder) to find users.</h2>
+<form method="POST">
+    <table>
+        @foreach (var user in users)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" name="UsersById" value="@user.LoginId">@user.LoginId</input>
+                </td>
+                <td>
+                    @user.Name
+                </td>
+            </tr>
+        }
+    </table>
+    
+
+    <h2>
     Roles:</h2>
 <table>
     @foreach (var role in roles)
@@ -39,7 +57,7 @@
 @if (this.Model != null)
 {
     <h4>
-        You are selected:</h4>
+        You selected:</h4>
     @this.Model.ToString();
 }
 <input value="submt" type="submit" />

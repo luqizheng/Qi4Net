@@ -7,23 +7,28 @@ namespace MvcTest.Models
     public class ListDemo
     {
         [PropertyFounder("LoginId")]
-        public User[] Users { get; set; }
+        public User[] UsersByLoginId { get; set; }
+
+        public User[] UsersById { get; set; }
 
         [IdFounder]
-        public IList<Role> Roles { get; set; }
+        public IList<Role> RolesByDeclareIdFounder { get; set; }
+
+       
+        public ISet<Role> RolesBySet { get; set; }
 
         public override string ToString()
         {
             var result = new StringBuilder();
 
-            if (Users != null)
+            if (UsersByLoginId != null)
             {
                 result.Append("Select users:");
-                result.Append(string.Join(",", new List<User>(Users)));
+                result.Append(string.Join(",", new List<User>(UsersByLoginId)));
             }
-            if (Roles != null)
+            if (RolesByDeclareIdFounder != null)
             {
-                result.Append("select roles: " + string.Join(",", Roles));
+                result.Append("select roles: " + string.Join(",", RolesByDeclareIdFounder));
             }
             if (result.Length == 0)
             {

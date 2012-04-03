@@ -15,6 +15,7 @@ namespace Qi.Web.JsonContainers
         {
             get { return _target.Count; }
         }
+
         /// <summary>
         /// 
         /// </summary>

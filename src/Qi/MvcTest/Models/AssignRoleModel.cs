@@ -5,7 +5,6 @@ namespace MvcTest.Models
 {
     public class AssignRoleModel
     {
-        [PropertyFounder("LoginId")]
         public User User { get; set; }
 
         [IdFounder]

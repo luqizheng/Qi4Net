@@ -21,11 +21,18 @@ namespace Qi.Web.Mvc.Founders
             return idType.FromStringValue(valStrExpress);
         }
 
+        public static string[] ConvertToArray(string valStrJoinByComma)
+        {
+            if (valStrJoinByComma != null)
+                return valStrJoinByComma.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            return new string[0];
+        }
+
         public static object[] ConvertStringToObjects(string valStrJoinByComma, IType type)
         {
             if (valStrJoinByComma != null)
             {
-                string[] aryStr = valStrJoinByComma.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                string[] aryStr = valStrJoinByComma.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 var result = new object[aryStr.Length];
                 for (int i = 0; i < aryStr.Length; i++)
                 {

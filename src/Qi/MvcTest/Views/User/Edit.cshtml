@@ -37,7 +37,6 @@
         <div class="editor-label">
             @Html.LabelFor(model => model.CreateTime)
             @Html.TextBoxFor(model => model.CreateTime, new { @readonly = "readonly" })
-            @Html.Hidden("CreateTime", DateTime.Now)
         </div>
         @Html.HiddenFor(model => model.Id)
         <p>

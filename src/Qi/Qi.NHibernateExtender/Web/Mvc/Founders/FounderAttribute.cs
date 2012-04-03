@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Reflection;
 using System.Web;
 using NHibernate;
@@ -20,7 +21,7 @@ namespace Qi.Web.Mvc.Founders
         /// <summary>
         /// 标记查询结果集合是否为唯一，如果不是唯一，那么会拿第一个
         /// </summary>
-        public bool Unique { get; set; }
+        public bool Unique { get; protected set; }
 
         /// <summary>
         /// 获取或设置Entity的类型
@@ -40,43 +41,52 @@ namespace Qi.Web.Mvc.Founders
         /// <summary>
         /// 获取对象
         /// </summary>
-        /// <param name="postData"></param>
         /// <param name="postName"></param>
         /// <param name="context"></param>
+        /// <param name="isSet"> </param>
+        /// <param name="postData"></param>
         /// <returns></returns>
-        public object GetObject(string postData, string postName, HttpContextBase context)
+        public IList GetObject(string postName, HttpContextBase context, bool isSet)
         {
             ISession session = SessionManager.Instance.GetCurrentSession();
+            string requestValues = context.Request[postName];
+
+            IType mappingType = GetMappingType(session, postName);
+
 
             if (context.Request[postName] != null)
             {
-                object postDataObj = NHMappingHelper.ConvertStringToObject(postData,
-                                                                           PostDataType(session, postName));
-                return GetObject(SessionManager.Instance.GetCurrentSession(), postDataObj, postName, context);
+                object[] searchConditionValues = isSet
+                                                     ? NHMappingHelper.ConvertStringToObjects(requestValues, mappingType)
+                                                     : new[]
+                                                           {
+                                                               NHMappingHelper.ConvertStringToObject(requestValues, mappingType)
+                                                           };
+
+                return GetObject(SessionManager.Instance.GetCurrentSession(), searchConditionValues, postName, context);
             }
             ConstructorInfo constructor = EntityType
                 .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
                                 null, new Type[0], new ParameterModifier[0]);
-            return constructor.Invoke(null);
+            return new ArrayList(){constructor.Invoke(null)};
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="session"></param>
-        /// <param name="postData"></param>
+        /// <param name="id"></param>
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected abstract object GetObject(ISession session, object postData, string postName,
-                                            HttpContextBase context);
+        protected abstract IList GetObject(ISession session, object[] id, string postName, HttpContextBase context);
 
         /// <summary>
         /// 把Post的string类型的data，转换为IType类型,用于NHibernate获取对象的时候使用。
         /// </summary>
         /// <param name="session"></param>
-        /// <param name="postDataName"></param>
+        /// <param name="requestKey"></param>
         /// <returns></returns>
-        protected abstract IType PostDataType(ISession session, string postDataName);
+        public abstract IType GetMappingType(ISession session, string requestKey);
     }
 }

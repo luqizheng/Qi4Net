@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Web;
 using NHibernate;
 using NHibernate.Cfg;
@@ -9,17 +10,27 @@ namespace Qi.Web.Mvc.Founders
 {
     public class IdFounderAttribute : FounderAttribute
     {
-        protected override object GetObject(ISession session, object postData, string postName,
-                                            HttpContextBase context)
+        public IdFounderAttribute()
         {
-            return DetachedCriteria.For(EntityType).Add(Restrictions.Eq(Projections.Id(), postData)).GetExecutableCriteria(session).UniqueResult();
-
+            Unique = false;
         }
 
-        protected override IType PostDataType(ISession sessionManager, string postDataName)
+        protected override IList GetObject(ISession session, object[] id, string postName, HttpContextBase context)
         {
-            Configuration nh = NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey).NHConfiguration;
-            return nh.GetClassMapping(EntityType).Identifier.Type;
+            var disJun = new Disjunction();
+            foreach (var ids in id)
+            {
+                disJun.Add(Restrictions.Eq(Projections.Id(), ids));
+            }
+            return (ArrayList)DetachedCriteria.For(EntityType).Add(disJun).GetExecutableCriteria(session).List();
+        }
+
+        public override IType GetMappingType(ISession sessionManager, string requestKey)
+        {
+            var type =
+                SessionManager.Instance.GetSessionFactory(this.EntityType).GetClassMetadata(this.EntityType).
+                    IdentifierType;
+            return type;
         }
     }
 }

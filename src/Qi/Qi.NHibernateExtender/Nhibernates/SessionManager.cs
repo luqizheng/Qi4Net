@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using NHibernate;
 using NHibernate.Context;
-using NHibernate.Engine;
 using NHibernate.Stat;
 
 namespace Qi.Nhibernates
@@ -125,6 +124,7 @@ namespace Qi.Nhibernates
         {
             return GetCurrentSession(CurrentSessionFactoryKey);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -173,20 +173,45 @@ namespace Qi.Nhibernates
                 throw new ArgumentOutOfRangeException("sessionFactoryName",
                                                       string.Format("can't find the{0}session factory.",
                                                                     sessionFactoryName));
-            var nh = NhConfigManager.GetNhConfig(sessionFactoryName);
+            NhConfig nh = NhConfigManager.GetNhConfig(sessionFactoryName);
             if (nh != null && nh.IsChanged)
                 Factories[sessionFactoryName] = nh.BuildSessionFactory();
             return Factories[sessionFactoryName];
         }
+        public bool TryGetSessionFactory(Type entityType, out ISessionFactory sessionFactory)
+        {
+            //First to find default sessionFactoryKey.
+            string entityName = entityType.UnderlyingSystemType.FullName;
+            sessionFactory = null;
+            bool result = GetSessionFactory(CurrentSessionFactoryKey).Statistics.EntityNames.Contains(
+                entityName);
+            if (result)
+            {
+                sessionFactory = GetSessionFactory(CurrentSessionFactoryKey);
+                return true;
+            }
 
+            foreach (string key in Factories.Keys)
+            {
+                if (key == CurrentSessionFactoryKey)
+                    continue; //skip the default 
+                if (Factories[key].Statistics.EntityNames.Contains(entityName))
+                {
+                    sessionFactory = Factories[key];
+                    return true;
+                }
+
+            }
+            return false;
+        }
         public ISessionFactory GetSessionFactory(Type entityType)
         {
-            foreach (ISessionFactoryImplementor sf in Factories.Values)
+            ISessionFactory factory;
+            if (!TryGetSessionFactory(entityType, out factory))
             {
-                if (sf.GetEntityPersister(entityType.FullName) != null)
-                    return sf;
+                throw new SessionException(string.Format("can't find the mapping entity with {0}", entityType));
             }
-            throw new SessionException(string.Format("can't find the mapping entity with {0}", entityType));
+            return factory;
         }
 
         public void ClearUp(params ISessionFactory[] factories)
@@ -205,7 +230,7 @@ namespace Qi.Nhibernates
         public void CleanUp()
         {
             ClearUp(Factories.Values.ToArray());
-            this.IsInitiated = false;
+            IsInitiated = false;
         }
     }
 }

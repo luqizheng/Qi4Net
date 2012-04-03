@@ -27,13 +27,20 @@ namespace MvcTest.Controllers
             return View(r);
         }
 
+        public ActionResult Delete(Guid? id)
+        {
+            var session = SessionManager.Instance.GetCurrentSession(typeof(User));
+            session.Delete(session.Load<User>(id));
+            return RedirectToAction("Index");
+        }
+
         public ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create([ModelBinder(typeof (NHModelBinder))] User user)
+        public ActionResult Create([ModelBinder(typeof(NHModelBinder))] User user)
         {
             if (ModelState.IsValid)
             {
@@ -47,7 +54,7 @@ namespace MvcTest.Controllers
 
 
         [HttpPost]
-        public ActionResult Edit([ModelBinder(typeof (NHModelBinder))] User user)
+        public ActionResult Edit([ModelBinder(typeof(NHModelBinder))] User user)
         {
             SessionManager.Instance.GetCurrentSession().SaveOrUpdate(user);
             SessionManager.Instance.GetCurrentSession().Flush();
@@ -68,7 +75,7 @@ namespace MvcTest.Controllers
 
         [HttpPost]
         public ActionResult ChangePassword(
-            [ModelBinder(typeof (NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
+            [ModelBinder(typeof(NHModelBinder))] ChangeUserPasswordModel changeUserPasswordModel)
         {
             if (ModelState.IsValid)
             {
@@ -80,10 +87,13 @@ namespace MvcTest.Controllers
         }
 
         [HttpPost]
-        public ActionResult AssignRole([ModelBinder(typeof (NHModelBinder))] AssignRoleModel u)
+        public ActionResult AssignRole([ModelBinder(typeof(NHModelBinder))] AssignRoleModel u)
         {
             u.User.Roles.Clear();
-            u.User.Roles.AddAll(u.Roles);
+            if (u.Roles != null)
+            {
+                u.User.Roles.AddAll(u.Roles);
+            }
             SessionManager.Instance.GetCurrentSession().SaveOrUpdate(u.User);
             return RedirectToAction("Index");
         }

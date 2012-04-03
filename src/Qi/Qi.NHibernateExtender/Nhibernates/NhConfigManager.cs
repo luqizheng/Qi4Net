@@ -23,7 +23,10 @@ namespace Qi.Nhibernates
                 return Cache.Keys;
             }
         }
-
+        public static bool Contains(string sessionFactoryName)
+        {
+            return Cache.ContainsKey(sessionFactoryName);
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -44,7 +47,7 @@ namespace Qi.Nhibernates
         {
             if (Cache.Count == 0)
             {
-                lock (typeof (NhConfig))
+                lock (typeof(NhConfig))
                 {
                     foreach (NhConfig a in GetNHFileInfos())
                     {
@@ -55,7 +58,7 @@ namespace Qi.Nhibernates
             }
             if (!Cache.ContainsKey(sessionFactory))
                 return null;
-            
+
 
             return Cache[sessionFactory];
         }
@@ -71,7 +74,7 @@ namespace Qi.Nhibernates
             {
                 filePath = "~/Config/hibernate.cfg.config";
             }
-            string[] ary = Regex.Split(filePath,"[,; ]");
+            string[] ary = Regex.Split(filePath, "[,; ]");
             var result = new string[ary.Length];
 
             for (int i = 0; i < ary.Length; i++)

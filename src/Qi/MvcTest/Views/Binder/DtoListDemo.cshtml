@@ -1,17 +1,28 @@
 ﻿@using MvcTest.Models
-@model MvcTest.Models.AssignRoleModel
+@model MvcTest.Models.ListDemo
 @{
     ViewBag.Title = "title";
     var roles = (ViewData["roles"]) as IList<Role>;
     var users = (ViewData["users"]) as IList<User>;
 }
+<h2>
+    Users:</h2>
 <form method="POST">
-<select name="User">
+<table>
     @foreach (var user in users)
     {
-        <option value="@user.LoginId">@user.LoginId</option>
+        <tr>
+            <td>
+                <input type="checkbox" name="Users" value="@user.LoginId">@user.LoginId</input>
+            </td>
+            <td>
+                @user.Name
+            </td>
+        </tr>
     }
-</select>
+</table>
+<h2>
+    Roles:</h2>
 <table>
     @foreach (var role in roles)
     {

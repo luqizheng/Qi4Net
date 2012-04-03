@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Web;
 using NHibernate;
 using NHibernate.Cfg;
@@ -19,6 +20,7 @@ namespace Qi.Web.Mvc.Founders
         /// </summary>
         public PropertyFounderAttribute()
         {
+            this.Unique = false;
         }
 
         /// <summary>
@@ -26,6 +28,7 @@ namespace Qi.Web.Mvc.Founders
         /// </summary>
         /// <param name="propertyName"></param>
         public PropertyFounderAttribute(string propertyName)
+            : this()
         {
             if (propertyName == null)
                 throw new ArgumentNullException("propertyName");
@@ -36,18 +39,23 @@ namespace Qi.Web.Mvc.Founders
         /// 
         /// </summary>
         /// <param name="session"></param>
-        /// <param name="postData"></param>
+        /// <param name="searchConditionValue"></param>
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected override object GetObject(ISession session, object postData, string postName,
-                                            HttpContextBase context)
+        protected override IList GetObject(ISession session, object[] searchConditionValue, string postName, HttpContextBase context)
         {
-            DetachedCriteria cri = DetachedCriteria.For(EntityType).Add(Restrictions.Eq(_propertyName, postData));
+            DetachedCriteria cri =
+                DetachedCriteria.For(EntityType);
+            var disjunction = new Disjunction();
+            foreach (object condition in searchConditionValue)
+            {
+                disjunction.Add(Restrictions.Eq(_propertyName, condition));
+            }
+            cri.Add(disjunction);
             if (Unique)
             {
-                var result = cri.SetFirstResult(0).SetMaxResults(1).GetExecutableCriteria(session).List();
-                return result.Count > 0 ? result[0] : null;
+                cri.SetFirstResult(0).SetMaxResults(1);
             }
             return cri.GetExecutableCriteria(session).List();
         }
@@ -56,12 +64,12 @@ namespace Qi.Web.Mvc.Founders
         /// 
         /// </summary>
         /// <param name="session"></param>
-        /// <param name="postDataName"></param>
+        /// <param name="requestKey"></param>
         /// <returns></returns>
         /// <exception cref="NhConfigurationException">can found the property in class.</exception>
-        protected override IType PostDataType(ISession session, string postDataName)
+        public override IType GetMappingType(ISession session, string requestKey)
         {
-            string propertyName = postDataName;
+            string propertyName = requestKey;
             if (!string.IsNullOrEmpty(_propertyName))
                 propertyName = _propertyName;
             Configuration nh = NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey).NHConfiguration;

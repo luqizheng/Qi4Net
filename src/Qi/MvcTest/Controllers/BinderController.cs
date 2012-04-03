@@ -21,7 +21,7 @@ namespace MvcTest.Controllers
         }
 
         [HttpPost]
-        public ActionResult DtoListDemo([ModelBinder(typeof(NHModelBinder))]AssignRoleModel model)
+        public ActionResult DtoListDemo([ModelBinder(typeof(NHModelBinder))]ListDemo model)
         {
             ViewData["roles"] = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
             ViewData["users"] = SessionManager.Instance.GetCurrentSession().CreateCriteria<User>().List<User>();

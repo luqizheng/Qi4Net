@@ -17,10 +17,8 @@ namespace MvcTest.Models
         }
         public string Name { get; set; }
 
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
+        
+        
 
         public override string ToString()
         {

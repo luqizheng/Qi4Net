@@ -30,5 +30,10 @@ namespace MvcTest.Models
         {
             return (Name + Password).GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

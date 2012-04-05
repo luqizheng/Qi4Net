@@ -1,31 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+using System.Data;
+using NHibernate;
+using NHibernate.Dialect;
+using NHibernate.SqlTypes;
+using NHibernate.Type;
 using Qi.Web;
 
 namespace Qi.Nhibernates.Types
 {
-    public class KeyValueCollectionType : NHibernate.Type.PrimitiveType
+    public class KeyValueCollectionType : PrimitiveType
     {
         public KeyValueCollectionType()
-            : base(new NHibernate.SqlTypes.StringClobSqlType())
+            : base(new StringClobSqlType())
         {
-
         }
+
         public override object DefaultValue
         {
             get { return new Dictionary<string, object>(); }
         }
 
-        public override string ObjectToSQLString(object value, NHibernate.Dialect.Dialect dialect)
-        {
-            throw new NotImplementedException("KeyValueCollectionType Not Implemented ObjectToSQLString");
-        }
-
         public override Type PrimitiveClass
         {
-            get { return typeof(Dictionary<string, string>); }
+            get { return typeof (Dictionary<string, string>); }
+        }
+
+        public override string Name
+        {
+            get { return "KeyValueCollection"; }
+        }
+
+        public override Type ReturnedClass
+        {
+            get { return typeof (Dictionary<string, object>); }
+        }
+
+        public override string ObjectToSQLString(object value, Dialect dialect)
+        {
+            var content = (IDictionary<string, object>) value;
+            return content.ToString();
         }
 
         public override object FromStringValue(string xml)
@@ -33,7 +47,7 @@ namespace Qi.Nhibernates.Types
             return JsonContainer.Create(xml).Content;
         }
 
-        public override object Get(System.Data.IDataReader rs, string name)
+        public override object Get(IDataReader rs, string name)
         {
             for (int i = 0; i < rs.FieldCount; i++)
             {
@@ -45,29 +59,27 @@ namespace Qi.Nhibernates.Types
             return new Dictionary<string, object>();
         }
 
-        public override object Get(System.Data.IDataReader rs, int index)
+        public override object Get(IDataReader rs, int index)
         {
             return FromStringValue(rs[index].ToString());
         }
 
-        public override void Set(System.Data.IDbCommand cmd, object value, int index)
+        public override void Set(IDbCommand cmd, object value, int index)
         {
-            var param = (System.Data.IDbDataParameter)cmd.Parameters[index];
-            var val = (Dictionary<string, object>)value;
+            var param = (IDbDataParameter) cmd.Parameters[index];
+            var val = (Dictionary<string, object>) value;
             param.Value = val.ToJson();
         }
 
-        public override string Name
+        public override int Compare(object x, object y, EntityMode? entityMode)
         {
-            get { return "KeyValueCollection"; }
-        }
-
-        public override Type ReturnedClass
-        {
-            get
-            {
-                return typeof(Dictionary<string, object>);
-            }
+            var a = (IDictionary<string, object>) x;
+            var b = (IDictionary<string, object>) y;
+            if (a.Count == b.Count)
+                return 0;
+            string aJson = a.ToJson(false);
+            string bJson = b.ToJson(false);
+            return String.CompareOrdinal(aJson, bJson);
         }
     }
 }

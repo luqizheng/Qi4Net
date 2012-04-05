@@ -8,17 +8,16 @@ namespace Qi.Nhibernates
         public static void ExecuteBy(this SessionManager instance, ISessionFactory templateSessionFactory, VoidFunc<string> execute)
         {
             string newKey = Guid.NewGuid().ToString();
+            var srcKey = SessionManager.CurrentSessionFactoryKey;
             try
             {
                 SessionManager.Add(newKey, templateSessionFactory);
-                var srcKey = SessionManager.CurrentSessionFactoryKey;
-                
                 SessionManager.CurrentSessionFactoryKey = newKey;
                 execute(newKey);
-                SessionManager.CurrentSessionFactoryKey = srcKey;
             }
             finally
             {
+                SessionManager.CurrentSessionFactoryKey = srcKey;
                 templateSessionFactory.Close();
                 SessionManager.Remove(newKey);
             }
@@ -27,9 +26,9 @@ namespace Qi.Nhibernates
         public static void TemplateSwitch(this SessionManager instance, string sessionFactory, VoidFunc<string> execute)
         {
             string srcKey = null;
+            srcKey = SessionManager.CurrentSessionFactoryKey;
             try
             {
-                srcKey = SessionManager.CurrentSessionFactoryKey;
                 execute(srcKey);
             }
             finally

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using NHibernate;
 using NHibernate.Dialect;
+using NHibernate.Engine;
 using NHibernate.SqlTypes;
 using NHibernate.Type;
 using Qi.Web;
@@ -23,7 +24,7 @@ namespace Qi.Nhibernates.Types
 
         public override Type PrimitiveClass
         {
-            get { return typeof (Dictionary<string, string>); }
+            get { return typeof(Dictionary<string, string>); }
         }
 
         public override string Name
@@ -33,12 +34,12 @@ namespace Qi.Nhibernates.Types
 
         public override Type ReturnedClass
         {
-            get { return typeof (Dictionary<string, object>); }
+            get { return typeof(Dictionary<string, object>); }
         }
 
         public override string ObjectToSQLString(object value, Dialect dialect)
         {
-            var content = (IDictionary<string, object>) value;
+            var content = (IDictionary<string, object>)value;
             return content.ToString();
         }
 
@@ -66,20 +67,42 @@ namespace Qi.Nhibernates.Types
 
         public override void Set(IDbCommand cmd, object value, int index)
         {
-            var param = (IDbDataParameter) cmd.Parameters[index];
-            var val = (Dictionary<string, object>) value;
-            param.Value = val.ToJson();
+            var param = (IDbDataParameter)cmd.Parameters[index];
+            var dict = value as IDictionary<string, object>;
+            param.Value = dict == null ? value : dict.ToJson(false);
+        }
+
+        public override object DeepCopy(object value, EntityMode entityMode, ISessionFactoryImplementor factory)
+        {
+            return ((IDictionary<string, object>)value).ToJson(false);
+        }
+
+        public override bool IsEqual(object x, object y, EntityMode entityMode)
+        {
+            var yDict = y as Dictionary<string, object>;
+            var xDict = JsonContainer.Create(x.ToString()).Content;
+            if (xDict.Count != yDict.Count)
+                return false;
+            foreach (var xKey in xDict.Keys)
+            {
+                if (!yDict.ContainsKey(xKey) || yDict[xKey].Equals(xDict[xKey]))
+                    return false;
+            }
+            return true;
         }
 
         public override int Compare(object x, object y, EntityMode? entityMode)
         {
-            var a = (IDictionary<string, object>) x;
-            var b = (IDictionary<string, object>) y;
-            if (a.Count == b.Count)
-                return 0;
-            string aJson = a.ToJson(false);
-            string bJson = b.ToJson(false);
-            return String.CompareOrdinal(aJson, bJson);
+            var dict = y as Dictionary<string, object>;
+            if (dict != null)
+            {
+                return dict.ToJson(false).CompareTo(x.ToString());
+            }
+            else
+            {
+                dict = x as Dictionary<string, object>;
+                return dict.ToJson(false).CompareTo(y.ToString());
+            }
         }
     }
 }

@@ -214,8 +214,9 @@ namespace Qi.Nhibernates
             return factory;
         }
 
-        public void ClearUp(params ISessionFactory[] factories)
+        public void CleanUp(params ISessionFactory[] factories)
         {
+            if (factories == null) throw new ArgumentNullException("factories");
             foreach (ISessionFactory sf in factories)
             {
                 if (CurrentSessionContext.HasBind(sf))
@@ -227,9 +228,12 @@ namespace Qi.Nhibernates
             }
         }
 
+        /// <summary>
+        /// flush and close all session.
+        /// </summary>
         public void CleanUp()
         {
-            ClearUp(Factories.Values.ToArray());
+            CleanUp(Factories.Values.ToArray());
             IsInitiated = false;
         }
     }

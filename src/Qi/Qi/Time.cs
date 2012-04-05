@@ -7,7 +7,7 @@ namespace Qi
     /// </summary>
     public struct Time
     {
-        private TimeSpan _ticks;
+        private readonly TimeSpan _ticks;
 
         public Time(int hour, int mins, int second)
         {

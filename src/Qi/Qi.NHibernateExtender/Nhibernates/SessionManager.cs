@@ -214,7 +214,7 @@ namespace Qi.Nhibernates
             return factory;
         }
 
-        public void CleanUp(params ISessionFactory[] factories)
+        public void CleanUp(ISessionFactory[] factories)
         {
             if (factories == null) throw new ArgumentNullException("factories");
             foreach (ISessionFactory sf in factories)

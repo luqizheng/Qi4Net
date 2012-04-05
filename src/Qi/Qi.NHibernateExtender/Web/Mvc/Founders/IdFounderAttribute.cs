@@ -23,15 +23,12 @@ namespace Qi.Web.Mvc.Founders
             {
                 disJun.Add(Restrictions.Eq(Projections.Id(), ids));
             }
-            return (ArrayList)DetachedCriteria.For(EntityType).Add(disJun).GetExecutableCriteria(session).List();
+            return DetachedCriteria.For(EntityType).Add(disJun).GetExecutableCriteria(session).List();
         }
 
-        public override IType GetMappingType(ISession sessionManager, string requestKey)
+        public override IType GetMappingType(ISession session, string requestKey)
         {
-            var type =
-                SessionManager.Instance.GetSessionFactory(this.EntityType).GetClassMetadata(this.EntityType).
-                    IdentifierType;
-            return type;
+            return session.SessionFactory.GetClassMetadata(this.EntityType).IdentifierType;
         }
     }
 }

@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Web;
 using NHibernate;
-using NHibernate.Mapping;
 using NHibernate.Type;
 using Qi.Nhibernates;
 
@@ -14,9 +12,10 @@ namespace Qi.Web.Mvc.Founders
         private readonly string _hql;
         private readonly string _postDataType;
 
-
         public HqlFounderAttribute(string hql, string postDataType)
         {
+            Unique = false;
+
             _hql = hql;
             _postDataType = postDataType;
         }
@@ -29,6 +28,12 @@ namespace Qi.Web.Mvc.Founders
             AnotherParameterType = anotherParameterType;
         }
 
+        public new bool Unique
+        {
+            get { return base.Unique; }
+            set { base.Unique = value; }
+        }
+
         public string[] AnotherParameterType { get; set; }
         public string[] AnotherParameterName { get; set; }
 
@@ -37,16 +42,21 @@ namespace Qi.Web.Mvc.Founders
         {
             var result = new List<object>();
             IQuery crit = session.CreateQuery(_hql);
+            if (Unique)
+            {
+                crit.SetMaxResults(1).SetFirstResult(1);
+            }
             IType hqlType = TypeFactory.Basic(_postDataType);
             if (AnotherParameterName != null)
             {
                 CreateParameter(context, crit);
             }
-            foreach (var condition in id)
+            foreach (object condition in id)
             {
                 crit.SetParameter(postName, condition, hqlType);
                 result.AddRange(crit.List<object>());
             }
+
             return result;
         }
 

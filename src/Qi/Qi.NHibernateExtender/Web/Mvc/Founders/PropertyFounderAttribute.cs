@@ -1,14 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-using System.Web;
 using NHibernate;
-using NHibernate.Cfg;
 using NHibernate.Criterion;
-using NHibernate.Mapping;
+using NHibernate.Metadata;
 using NHibernate.Type;
 using Qi.Nhibernates;
-using Property = NHibernate.Mapping.Property;
 
 namespace Qi.Web.Mvc.Founders
 {
@@ -21,7 +18,7 @@ namespace Qi.Web.Mvc.Founders
         /// </summary>
         public PropertyFounderAttribute()
         {
-            this.Unique = false;
+            Unique = false;
         }
 
         /// <summary>
@@ -44,7 +41,8 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected override IList GetObject(ISession session, object[] searchConditionValue, string postName, NameValueCollection context)
+        protected override IList GetObject(ISession session, object[] searchConditionValue, string postName,
+                                           NameValueCollection context)
         {
             DetachedCriteria cri =
                 DetachedCriteria.For(EntityType);
@@ -70,16 +68,14 @@ namespace Qi.Web.Mvc.Founders
         /// <exception cref="NhConfigurationException">can found the property in class.</exception>
         public override IType GetMappingType(ISession session, string requestKey)
         {
-            string propertyName = requestKey;
-            if (!string.IsNullOrEmpty(_propertyName))
-                propertyName = _propertyName;
-            Configuration nh = NhConfigManager.GetNhConfig(SessionManager.CurrentSessionFactoryKey).NHConfiguration;
-            PersistentClass mappingInfo = nh.GetClassMapping(EntityType);
-            Property property = mappingInfo.GetProperty(propertyName);
-            if (property == null)
+            string propertyName = string.IsNullOrEmpty(_propertyName) ? requestKey : _propertyName;
+            IClassMetadata mappingInfo = session.SessionFactory.GetClassMetadata(EntityType);
+            IType propertyType = mappingInfo.GetPropertyType(propertyName);
+
+            if (propertyType == null)
                 throw new NhConfigurationException(string.Format("cannot find property {0} in class {1} ", propertyName,
-                                                                 mappingInfo.ClassName));
-            return property.Type;
+                                                                 mappingInfo.EntityName));
+            return propertyType;
         }
     }
 }

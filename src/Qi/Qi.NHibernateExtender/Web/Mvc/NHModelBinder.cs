@@ -38,7 +38,7 @@ namespace Qi.Web.Mvc
             ActionDescriptor action = reflectedControllerDescriptor.FindAction(controllerContext, actionname);
 
             //Find session attribute on the action.
-            object[] customAttributes = action.GetCustomAttributes(typeof(SessionAttribute), true);
+            object[] customAttributes = action.GetCustomAttributes(typeof (SessionAttribute), true);
             if (customAttributes.Cast<SessionAttribute>().Any(s => s.Enable))
             {
                 SessionManager.Instance.InitSession();
@@ -46,7 +46,7 @@ namespace Qi.Web.Mvc
             }
 
             //try to find attribute on Controller.
-            customAttributes = controllerContext.Controller.GetType().GetCustomAttributes(typeof(SessionAttribute),
+            customAttributes = controllerContext.Controller.GetType().GetCustomAttributes(typeof (SessionAttribute),
                                                                                           true);
             if (customAttributes.Cast<SessionAttribute>().Any(s => s.Enable))
             {

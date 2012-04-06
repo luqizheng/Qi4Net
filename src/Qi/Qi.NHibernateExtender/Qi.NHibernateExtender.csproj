@@ -58,7 +58,6 @@
     <Compile Include="Nhibernates\NhConfig.cs" />
     <Compile Include="Nhibernates\SessionManager.cs" />
     <Compile Include="Nhibernates\SessionManagerException.cs" />
-    <Compile Include="Nhibernates\SessionManagerExtender.cs" />
     <Compile Include="Nhibernates\Types\AbstractTimeType.cs" />
     <Compile Include="Nhibernates\Types\KeyValueCollectionType.cs" />
     <Compile Include="Nhibernates\Types\TimeStringType.cs" />

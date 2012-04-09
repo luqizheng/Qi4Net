@@ -74,13 +74,25 @@ namespace Qi.Nhibernates.Types
 
         public override object DeepCopy(object value, EntityMode entityMode, ISessionFactoryImplementor factory)
         {
-            return ((IDictionary<string, object>)value).ToJson(false);
+            var dict = value as IDictionary<string, object>;
+            if (dict != null)
+                return dict.ToJson(false);
+            return value.ToString();
         }
 
         public override bool IsEqual(object x, object y, EntityMode entityMode)
         {
             var yDict = y as Dictionary<string, object>;
-            var xDict = JsonContainer.Create(x.ToString()).Content;
+            if (yDict == null)
+            {
+                yDict = JsonContainer.Create(y.ToString()).Content;
+            }
+
+            var xDict = x as Dictionary<string, object>;
+            if (xDict == null)
+            {
+                xDict = JsonContainer.Create(x.ToString()).Content;
+            }
             if (xDict.Count != yDict.Count)
                 return false;
             foreach (var xKey in xDict.Keys)

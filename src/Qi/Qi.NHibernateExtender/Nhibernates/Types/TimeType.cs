@@ -6,6 +6,9 @@ using NHibernate.SqlTypes;
 
 namespace Qi.Nhibernates.Types
 {
+    /// <summary>
+    /// Use Int64 to store Time 
+    /// </summary>
     public class TimeType : AbstractTimeType
     {
         public TimeType()

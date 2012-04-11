@@ -1,14 +1,17 @@
-﻿namespace Qi.Domain
+﻿using System;
+
+namespace Qi.Domain
 {
     /// <summary>
     /// For a discussion of this object, see 
     /// http://devlicio.us/blogs/billy_mccafferty/archive/2007/04/25/using-equals-gethashcode-effectively.aspx
     /// Code from http://ayende.com/blog/2500/generic-entity-equality.
     /// </summary>
+    [Serializable]
     public abstract class DomainObject<TId> : IDomainObject
     {
         private int? _oldHashcode;
-       
+
         /// <summary>
         /// Id may be of type string, int, custom type, etc.
         /// Setter is protected to allow unit tests to set this property via reflection and to allow 

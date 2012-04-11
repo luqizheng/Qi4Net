@@ -1,25 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Xml;
+using System;
 using NHibernate;
 using NHibernate.Cfg;
 
 namespace Qi.Nhibernates
 {
-    public class NhConfig
+    public abstract class NhConfig : INhConfig
     {
         private Configuration _nhConfiguration;
         private string _sessionFactoryName;
 
-        public NhConfig(string file)
+        protected NhConfig()
         {
-            if (!File.Exists(file))
-                throw new FileNotFoundException("Can't find the nhibernate config file.", file);
-            CfgFile = file;
         }
 
-        public NhConfig(string sessionFactoryName, Configuration cfg)
+        protected NhConfig(string sessionFactoryName, Configuration cfg)
         {
             if (sessionFactoryName == null) throw new ArgumentNullException("sessionFactoryName");
             if (cfg == null) throw new ArgumentNullException("cfg");
@@ -27,12 +21,27 @@ namespace Qi.Nhibernates
             _nhConfiguration = cfg;
         }
 
+        #region INhConfig Members
+
         /// <summary>
         /// Gets the SessionFactoryName 
         /// </summary>
         public string SessionFactoryName
         {
-            get { return _sessionFactoryName ?? (_sessionFactoryName = GetSessionFactoryName(CfgFile)); }
+            get
+            {
+                if (IsChanged || String.IsNullOrEmpty(_sessionFactoryName))
+                {
+                    lock (this)
+                    {
+                        if (IsChanged || String.IsNullOrEmpty(_sessionFactoryName))
+                        {
+                            Refresh();
+                        }
+                    }
+                }
+                return _sessionFactoryName;
+            }
         }
 
         /// <summary>
@@ -42,21 +51,13 @@ namespace Qi.Nhibernates
         {
             get
             {
-                if (_nhConfiguration == null || IsChanged)
+                if (IsChanged || _nhConfiguration == null)
                 {
                     lock (this)
                     {
-                        if (_nhConfiguration == null || IsChanged)
+                        if (IsChanged || _nhConfiguration == null)
                         {
-                            try
-                            {
-                                _nhConfiguration = new Configuration();
-                                _nhConfiguration.Configure(CfgFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw new NhConfigurationException(CfgFile + " found error.", ex);
-                            }
+                            Refresh();
                         }
                     }
                 }
@@ -65,34 +66,9 @@ namespace Qi.Nhibernates
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public string CfgFile { get; private set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public DateTime? ModifyTime { get; private set; }
-
-        /// <summary>
         /// Get the value indecate file is changed or not.
         /// </summary>
-        public bool IsChanged
-        {
-            get
-            {
-                if (CfgFile == null)
-                    return false;
-
-                DateTime time = File.GetLastWriteTime(CfgFile);
-                if (ModifyTime != time)
-                {
-                    ModifyTime = time;
-                    return true;
-                }
-                return false;
-            }
-        }
+        public abstract bool IsChanged { get; }
 
         /// <summary>
         /// 
@@ -105,72 +81,41 @@ namespace Qi.Nhibernates
             }
             catch (Exception ex)
             {
-                var msg = this.SessionFactoryName + " throw exception.";
-                throw new NhConfigurationException(msg, ex);
+                string msg =string.Format("session factory config [name={0}] throw exception:{1}", SessionFactoryName, ex.Message);
+                throw new NhConfigurationException(msg ,ex);
             }
-
         }
 
         /// <summary>
-        /// 
+        /// Refresh config target,it may be a file. and re-build the session name and configuration.
         /// </summary>
-        public void Refresh()
+        public virtual void Refresh()
         {
-            if (IsChanged)
+            lock (this)
             {
-                _nhConfiguration = null;
-                _sessionFactoryName = GetSessionFactoryName(CfgFile);
+                _sessionFactoryName = GetSessionFactoryName();
+                _nhConfiguration = BuildConfiguration();
+                ResetToUnChanged();
             }
         }
 
+        #endregion
+
         /// <summary>
-        /// 
+        /// if apply changed, it will call this function to reset changed state to un-changed.
         /// </summary>
-        /// <param name="filePath"></param>
+        protected abstract void ResetToUnChanged();
+
+        /// <summary>
+        /// get the sessionFacotry name
+        /// </summary>
         /// <returns></returns>
-        private string GetSessionFactoryName(string filePath)
-        {
-            using (XmlReader dom = XmlReader.Create(new StreamReader(filePath)))
-            {
-                while (dom.Read())
-                {
-                    //<session - factory name = "Main"
-                    if (dom.IsStartElement("session-factory"))
-                    {
-                        return dom.GetAttribute("name") ?? "default";
-                    }
-                }
-            }
-            return "default";
-        }
+        protected abstract string GetSessionFactoryName();
 
         /// <summary>
-        /// It only set the property
+        /// Build Configuration 
         /// </summary>
-        /// <param name="file"></param>
-        public void Save(string file)
-        {
-            const string fixcontent =
-                @"<?xml version=""1.0"" encoding=""utf-8""?>
-<hibernate-configuration xmlns=""urn:nhibernate-configuration-2.2"">
-  <session-factory name=""{0}"">
-      {1}
-  </session-factory>
-</hibernate-configuration>";
-            var fileContent = new StringBuilder();
-
-            foreach (var a in NHConfiguration.Properties)
-            {
-                fileContent.Append(String.Format(@"<property name=""{0}"">{1}</property>", a.Key, a.Value));
-            }
-            using (var writer = new StreamWriter(file, false))
-            {
-                writer.Write(String.Format(fixcontent, SessionFactoryName, fileContent));
-                writer.Flush();
-                writer.Close();
-            }
-            CfgFile = file;
-            Refresh();
-        }
+        /// <returns></returns>
+        protected abstract Configuration BuildConfiguration();
     }
 }

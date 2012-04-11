@@ -79,7 +79,7 @@ namespace Qi.Web
 
                 if (i != data.Count)
                 {
-                    buffer.AppendFormat(",{0}", formatSymbol);
+                    buffer.Append(",").Append(formatSymbol); 
                 }
                 i++;
             }

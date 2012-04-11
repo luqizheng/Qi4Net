@@ -32,10 +32,8 @@ namespace Qi.Collections
             {
                 if (AddMethod == null)
                     throw new ArgumentOutOfRangeException("index", "index is larget unbound of target");
-                AddMethod(this.Target, item);
+                AddMethod(Target, item);
             }
-
-
         }
 
         public void Add(object item)
@@ -56,20 +54,20 @@ namespace Qi.Collections
             VoidFunc<object, object, int> setMethod = null;
             if (target is IList)
             {
-                addMethod = (t1, t2) => ((IList)t1).Add(t2);
-                setMethod = (t1, t2, t3) => ((IList)t1)[t3] = t2;
-                countMethod = t1 => ((IList)t1).Count;
+                addMethod = (t1, t2) => ((IList) t1).Add(t2);
+                setMethod = (t1, t2, t3) => ((IList) t1)[t3] = t2;
+                countMethod = t1 => ((IList) t1).Count;
             }
             else if (target is ISet)
             {
-                addMethod = (t1, t2) => ((ISet)t1).Add(t2);
-                setMethod = (t1, t2, t3) => ((ISet)t1).Add(t2);
-                countMethod = t1 => ((ISet)t1).Count;
+                addMethod = (t1, t2) => ((ISet) t1).Add(t2);
+                setMethod = (t1, t2, t3) => ((ISet) t1).Add(t2);
+                countMethod = t1 => ((ISet) t1).Count;
             }
             else if (target.GetType().IsArray)
             {
-                setMethod = (t1, t2, t3) => ((Array)t1).SetValue(t2, t3);
-                countMethod = t1 => ((Array)t1).Length;
+                setMethod = (t1, t2, t3) => ((Array) t1).SetValue(t2, t3);
+                countMethod = t1 => ((Array) t1).Length;
             }
             else
             {

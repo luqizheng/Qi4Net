@@ -53,9 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\NHibernates\DaoBase.cs" />
+    <Compile Include="Nhibernates\INhConfig.cs" />
+    <Compile Include="Nhibernates\NhConfig.cs" />
     <Compile Include="Nhibernates\NhConfigManager.cs" />
     <Compile Include="Nhibernates\NhConfigurationException.cs" />
-    <Compile Include="Nhibernates\NhConfig.cs" />
+    <Compile Include="Nhibernates\NhFileConfig.cs" />
     <Compile Include="Nhibernates\SessionManager.cs" />
     <Compile Include="Nhibernates\SessionManagerException.cs" />
     <Compile Include="Nhibernates\SessionManagerExtender.cs" />

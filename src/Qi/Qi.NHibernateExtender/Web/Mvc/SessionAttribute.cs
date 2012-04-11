@@ -108,11 +108,7 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            if (_tras != null)
-            {
-                _tras.Commit();
-            }
-            SessionManager.Instance.CleanUp();
+            SessionManager.Instance.CleanUp(true);
         }
     }
 }

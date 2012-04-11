@@ -59,7 +59,10 @@ namespace Qi.Web
             get { return _content.Count; }
         }
 
-        public Dictionary<string, object> Content { get { return _content; } }
+        public Dictionary<string, object> Content
+        {
+            get { return _content; }
+        }
 
         private static void JoinKey(Dictionary<string, object> collection, string parentKey, List<string> result)
         {
@@ -197,7 +200,7 @@ namespace Qi.Web
         /// </returns>
         public JsonContainer ToJsonContainer(string key)
         {
-            return To(key, s => new JsonContainer((Dictionary<string, object>)s));
+            return To(key, s => new JsonContainer((Dictionary<string, object>) s));
         }
 
         /// <summary>
@@ -282,7 +285,7 @@ namespace Qi.Web
         public static JsonContainer Create(string jsonData)
         {
             var s = new JavaScriptSerializer();
-            var result = (Dictionary<string, object>)s.DeserializeObject(jsonData);
+            var result = (Dictionary<string, object>) s.DeserializeObject(jsonData);
             return new JsonContainer(result);
         }
 
@@ -313,7 +316,7 @@ namespace Qi.Web
         public void SetValue(string key, string val)
         {
             if (key == null) throw new ArgumentNullException("key");
-            SetValue(key, new[] { val });
+            SetValue(key, new[] {val});
         }
 
         /// <summary>
@@ -383,7 +386,7 @@ namespace Qi.Web
             {
                 content.Add(keyPath, new Dictionary<string, object>());
             }
-            return (Dictionary<string, object>)content[keyPath];
+            return (Dictionary<string, object>) content[keyPath];
         }
 
         private static Dictionary<string, object> GetArrayContext(int aryIndex, string key,
@@ -396,7 +399,7 @@ namespace Qi.Web
             }
             else
             {
-                valResult = (List<Dictionary<string, object>>)content[key];
+                valResult = (List<Dictionary<string, object>>) content[key];
             }
 
             while (aryIndex >= valResult.Count)
@@ -426,7 +429,7 @@ namespace Qi.Web
 
         public static JsonContainer ConvertToJsonContainer(object arg)
         {
-            return new JsonContainer((Dictionary<string, object>)arg);
+            return new JsonContainer((Dictionary<string, object>) arg);
         }
 
         public string ToJson()

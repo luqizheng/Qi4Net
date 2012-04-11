@@ -191,6 +191,9 @@ namespace Qi.Secret
         /// <param name="getBytesFunc">把content转换为byte的方法</param>
         /// <param name="hashAlgorithm">加密的方式</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Content is null</exception>
+        ///  <exception cref="ArgumentNullException">getBytesFunc is null</exception>
+        ///  <exception cref="ArgumentNullException">hashAlgorithm is null</exception>
         public static byte[] Encrypt(string content, Encoding getBytesFunc, HashAlgorithm hashAlgorithm)
         {
             if (content == null) throw new ArgumentNullException("content");

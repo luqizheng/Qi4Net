@@ -1,26 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Qi.Nhibernates
 {
     public class NhConfigManager
     {
-        private static readonly IDictionary<string, NhConfig> Cache = new Dictionary<string, NhConfig>();
+        private static readonly IDictionary<string, INhConfig> Cache = new Dictionary<string, INhConfig>();
 
-        public static IEnumerable<string> SessionFactoryNames
+        public static string[] SessionFactoryNames
         {
             get
             {
                 if (Cache.Count == 0)
                 {
-                    foreach (NhConfig a in GetNHFileInfos())
+                    foreach (NhFileConfig a in GetNHFileInfos())
                     {
                         Cache.Add(a.SessionFactoryName, a);
                     }
                 }
-                return Cache.Keys;
+                return Cache.Keys.ToArray();
             }
         }
         public static bool Contains(string sessionFactoryName)
@@ -31,25 +32,29 @@ namespace Qi.Nhibernates
         /// 
         /// </summary>
         /// <returns></returns>
-        private static IEnumerable<NhConfig> GetNHFileInfos()
+        private static IEnumerable<NhFileConfig> GetNHFileInfos()
         {
             string[] files = GetConfigurationFile();
-            var result = new NhConfig[files.Length];
+            var result = new NhFileConfig[files.Length];
             for (int i = 0; i < files.Length; i++)
             {
-                result[i] = new NhConfig(files[i]);
+                result[i] = new NhFileConfig(files[i]);
             }
             return result;
         }
 
-
-        public static NhConfig GetNhConfig(string sessionFactory)
+        /// <summary>
+        /// if can't found the NHConfig return false.
+        /// </summary>
+        /// <param name="sessionFactory"></param>
+        /// <returns></returns>
+        public static INhConfig GetNhConfig(string sessionFactory)
         {
             if (Cache.Count == 0)
             {
-                lock (typeof(NhConfig))
+                lock (typeof(NhFileConfig))
                 {
-                    foreach (NhConfig a in GetNHFileInfos())
+                    foreach (NhFileConfig a in GetNHFileInfos())
                     {
                         Cache.Add(a.SessionFactoryName, a);
                     }

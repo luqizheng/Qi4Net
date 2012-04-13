@@ -67,7 +67,6 @@
     <Compile Include="Nhibernates\Types\TimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\Mvc\CollectionHelper.cs" />
-    <Compile Include="Web\Mvc\CollectionOperator.cs" />
     <Compile Include="Web\Mvc\Founders\FounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\HqlFounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\IdFounderAttribute.cs" />

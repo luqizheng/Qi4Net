@@ -141,9 +141,12 @@ namespace Qi.Web.Mvc
                 base.SetProperty(controllerContext, bindingContext, propertyDescriptor, value);
                 return;
             }
-
+            if (bindingContext.ModelState[propertyDescriptor.Name].Errors.Count != 0)
+            {
+                return;
+            }
             // property is  persistent object,
-            bindingContext.ModelState[propertyDescriptor.Name].Errors.Clear();
+            //bindingContext.ModelState[propertyDescriptor.Name].Errors.Clear();
             string modelStateKey = CreateSubPropertyName(bindingContext.ModelName, propertyMetadata.PropertyName);
 
 
@@ -217,13 +220,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
         }
 
         /// <summary>

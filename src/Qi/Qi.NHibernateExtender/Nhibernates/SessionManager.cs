@@ -16,24 +16,11 @@ namespace Qi.Nhibernates
         private static readonly SortedDictionary<string, ISessionFactory> Factories =
             new SortedDictionary<string, ISessionFactory>();
 
+        // ReSharper disable InconsistentNaming
         private static readonly SessionManager _instance = new SessionManager();
+        // ReSharper restore InconsistentNaming
 
-        /// <summary>
-        /// default sesison factory key in the config file.
-        /// </summary>
-        private static readonly string DefaultSessionFactoryKey;
-
-
-        static SessionManager()
-        {
-            //创建配置有的sessionFactory放入这里
-            foreach (string sessionFactoryKey in NhConfigManager.SessionFactoryNames)
-            {
-                if (CurrentSessionFactoryKey == null || sessionFactoryKey == "default")
-                    DefaultSessionFactoryKey = sessionFactoryKey;
-                Factories.Add(sessionFactoryKey, NhConfigManager.GetNhConfig(sessionFactoryKey).BuildSessionFactory());
-            }
-        }
+        private static string _defaultSessionFactoryKey = String.Empty;
 
         /// <summary>
         /// 默认SessionManager
@@ -42,6 +29,39 @@ namespace Qi.Nhibernates
         {
         }
 
+        /// <summary>
+        /// default sesison factory key in the sessionFactory file.
+        /// </summary>
+        private static string DefaultSessionFactoryKey
+        {
+            get
+            {
+                if (_defaultSessionFactoryKey == String.Empty)
+                {
+                    lock (_defaultSessionFactoryKey)
+                    {
+                        if (_defaultSessionFactoryKey == String.Empty)
+                        {
+                            //Found the default Key
+                            string[] names = NhConfigManager.SessionFactoryNames;
+                            _defaultSessionFactoryKey = names[0];
+                            for (int i = 1; i < names.Length; i++)
+                            {
+                                if (names[i] == "default")
+                                {
+                                    _defaultSessionFactoryKey = names[i];
+                                }
+                            }
+                        }
+                    }
+                }
+                return _defaultSessionFactoryKey;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsInitiated
         {
             get
@@ -54,18 +74,13 @@ namespace Qi.Nhibernates
             private set { CallContext.SetData(InitKeyName, value); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static string CurrentSessionFactoryKey
         {
             get { return (CallContext.GetData(CurrentSessionFactoryName) as string) ?? DefaultSessionFactoryKey; }
-            set
-            {
-                if (!Factories.ContainsKey(value))
-                    throw new ArgumentOutOfRangeException("value",
-                                                          string.Format(
-                                                              "Can't find the session factory name {0} in the setting.",
-                                                              value));
-                CallContext.SetData(CurrentSessionFactoryName, value);
-            }
+            set { CallContext.SetData(CurrentSessionFactoryName, value); }
         }
 
         /// <summary>
@@ -78,6 +93,9 @@ namespace Qi.Nhibernates
 
         #region IDisposable Members
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             //it only happend in the application shut down
@@ -91,6 +109,10 @@ namespace Qi.Nhibernates
 
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool InitSession()
         {
             if (!IsInitiated)
@@ -100,20 +122,29 @@ namespace Qi.Nhibernates
             }
             return false;
         }
-
-        public static void Add(string sessionName, ISessionFactory config)
+        /// <summary>
+        /// add session facotry in SessionManager.
+        /// </summary>
+        /// <param name="sessionFacotryName"></param>
+        /// <param name="sessionFactory"></param>
+        /// <exception cref="ArgumentNullException">sessionFacotryName or sessionFactory is null</exception>
+        /// <exception cref="SessionManagerException">SessionManager has this sessionFacotryName</exception>
+        public static void Add(string sessionFacotryName, ISessionFactory sessionFactory)
         {
-            if (Factories.ContainsKey(sessionName))
-                throw new ArgumentNullException(string.Format("session factory name {0} has defined.", sessionName));
+            if (String.IsNullOrEmpty(sessionFacotryName)) throw new ArgumentNullException("sessionFacotryName");
+            if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
+            if (Factories.ContainsKey(sessionFacotryName))
+                throw new SessionManagerException(string.Format("session factory name {0} has defined.", sessionFacotryName));
 
-            Factories.Add(sessionName, config);
+            Factories.Add(sessionFacotryName, sessionFactory);
         }
 
-        public static void Remove(string sessionName)
+        public static void Remove(string sessionFactoryName)
         {
-            if (!Factories.ContainsKey(sessionName))
-                throw new ArgumentNullException(string.Format("session factory name {0} is not defined.", sessionName));
-            Factories.Remove(sessionName);
+            if (String.IsNullOrEmpty(sessionFactoryName)) throw new ArgumentNullException("sessionFactoryName");
+            if (!Factories.ContainsKey(sessionFactoryName))
+                throw new ArgumentNullException(string.Format("session factory name {0} is not defined.", sessionFactoryName));
+            Factories.Remove(sessionFactoryName);
         }
 
         /// <summary>
@@ -162,25 +193,46 @@ namespace Qi.Nhibernates
         }
 
         /// <summary>
-        /// gets the session factory by session factory name defined in the config file.
+        /// gets the session factory by session factory name defined in the sessionFactory file.
         /// </summary>
         /// <param name="sessionFactoryName"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"><see cref="sessionFactoryName"/> is not exist in session manager</exception>
         public ISessionFactory GetSessionFactory(string sessionFactoryName)
         {
+            // In order to lazy init the session.
+            INhConfig nhFileConfig;
             if (!Factories.ContainsKey(sessionFactoryName))
-                throw new ArgumentOutOfRangeException("sessionFactoryName",
-                                                      string.Format("can't find the{0}session factory.",
-                                                                    sessionFactoryName));
-            NhConfig nh = NhConfigManager.GetNhConfig(sessionFactoryName);
-            if (nh != null && nh.IsChanged)
-                Factories[sessionFactoryName] = nh.BuildSessionFactory();
+            {
+                nhFileConfig = NhConfigManager.GetNhConfig(sessionFactoryName);
+                if (nhFileConfig == null)
+                {
+                    throw new ArgumentOutOfRangeException("sessionFactoryName",
+                                                          string.Format("can't find the{0}session factory.",
+                                                                        sessionFactoryName));
+                }
+                lock (this)
+                {
+                    if (!Factories.ContainsKey(sessionFactoryName)) //double check, it may use in multi-thread.
+                    {
+                        Add(nhFileConfig.SessionFactoryName, nhFileConfig.BuildSessionFactory());
+                    }
+                }
+            }
+            else
+            {
+                nhFileConfig = NhConfigManager.GetNhConfig(sessionFactoryName);
+            }
+            if (nhFileConfig != null && nhFileConfig.IsChanged)
+            {
+                Factories[sessionFactoryName] = nhFileConfig.BuildSessionFactory();
+            }
             return Factories[sessionFactoryName];
         }
+
         public bool TryGetSessionFactory(Type entityType, out ISessionFactory sessionFactory)
         {
-            //First to find default sessionFactoryKey.
+            //1st step to find default sessionFactoryKey.
             string entityName = entityType.UnderlyingSystemType.FullName;
             sessionFactory = null;
             bool result = GetSessionFactory(CurrentSessionFactoryKey).Statistics.EntityNames.Contains(
@@ -200,10 +252,16 @@ namespace Qi.Nhibernates
                     sessionFactory = Factories[key];
                     return true;
                 }
-
             }
             return false;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityType"></param>
+        /// <returns></returns>
+        /// <exception cref="SessionException">Can't find entity type in nhibernate setting.</exception>
         public ISessionFactory GetSessionFactory(Type entityType)
         {
             ISessionFactory factory;
@@ -214,26 +272,64 @@ namespace Qi.Nhibernates
             return factory;
         }
 
-        public void CleanUp(ISessionFactory[] factories)
+        /// <summary>
+        ///  Close session. if submitData Specials, it will
+        /// </summary>
+        /// <param name="factories"></param>
+        /// <param name="submitData"> </param>
+        public void CleanUp(ISessionFactory[] factories, bool submitData)
         {
             if (factories == null) throw new ArgumentNullException("factories");
             foreach (ISessionFactory sf in factories)
             {
                 if (CurrentSessionContext.HasBind(sf))
                 {
-                    sf.GetCurrentSession().Flush();
                     ISession session = CurrentSessionContext.Unbind(sf);
+                    HandleUnsaveData(submitData, session);
                     session.Close();
                 }
             }
         }
 
+        private static void HandleUnsaveData(bool submitData, ISession session)
+        {
+            if (submitData)
+            {
+                session.Flush();
+            }
+            else
+            {
+                session.Clear();
+            }
+
+            if (session.Transaction != null && session.Transaction.IsActive)
+            {
+                if (submitData && !session.Transaction.WasCommitted)
+                {
+                    session.Transaction.Commit();
+                }
+                else if (!session.Transaction.WasRolledBack)
+                {
+                    session.Transaction.Rollback();
+                }
+            }
+        }
         /// <summary>
-        /// flush and close all session.
+        /// close all session, if submitData is true, it will submit data to .
+        /// </summary>
+        /// <param name="submitData"></param>
+        public void CleanUp(bool submitData)
+        {
+            CleanUp(Factories.Values.ToArray(), submitData);
+            IsInitiated = false;
+        }
+
+        /// <summary>
+        ///  Close session after rollback transaction if it actived and clear first-level cache.
         /// </summary>
         public void CleanUp()
         {
-            CleanUp(Factories.Values.ToArray());
+            CleanUp(Factories.Values.ToArray(), false);
             IsInitiated = false;
         }
     }

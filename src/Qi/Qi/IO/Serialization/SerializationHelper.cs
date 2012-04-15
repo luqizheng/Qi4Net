@@ -13,7 +13,11 @@ namespace Qi.IO.Serialization
             IFormatter formatter = new BinaryFormatter();
             formatter.Serialize(outputSteam, obj);
         }
-
+        /// <summary>
+        /// SerializeBinary to binary.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="filePath"></param>
         public static void SerializeBinary(this object obj, string filePath)
         {
             using (FileStream stream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write))

@@ -7,7 +7,7 @@ using NHibernate.SqlTypes;
 namespace Qi.Nhibernates.Types
 {
     /// <summary>
-    /// 
+    /// Use string like "00:00:00" to store time.
     /// </summary>
     public class TimeStringType : AbstractTimeType
     {
@@ -15,13 +15,15 @@ namespace Qi.Nhibernates.Types
             : base(SqlTypeFactory.GetAnsiString(8))
         {
         }
+
         public override Type PrimitiveClass
         {
-            get { return typeof(string); }
+            get { return typeof (string); }
         }
+
         public override string ObjectToSQLString(object value, Dialect dialect)
         {
-            var val = (Time)value;
+            var val = (Time) value;
             return val.ToString();
         }
 
@@ -37,16 +39,15 @@ namespace Qi.Nhibernates.Types
 
         public override object Get(IDataReader rs, int index)
         {
-            var result = rs[index] != null ? ToTime(rs.GetString(index)) : ToTime("00:00:00");
-            return (object)result;
+            Time result = rs[index] != null ? ToTime(rs.GetString(index)) : ToTime("00:00:00");
+            return result;
         }
 
         public override void Set(IDbCommand cmd, object value, int index)
         {
-            var type = (Time)value;
-            var param = (DbParameter)cmd.Parameters[index];
+            var type = (Time) value;
+            var param = (DbParameter) cmd.Parameters[index];
             param.Value = type.ToString();
         }
-
     }
 }

@@ -9,7 +9,7 @@ using Qi.Web.Mvc;
 
 namespace MvcTest.Controllers
 {
-    [Session]
+    [Session(Transaction = true)]
     public class RoleController : Controller
     {
         //

@@ -4,7 +4,7 @@ using Qi.Domain;
 
 namespace MvcTest.Models
 {
-    public class User : DomainObject<Guid>
+    public class User : DomainObject<User,Guid>
     {
         public User()
         {

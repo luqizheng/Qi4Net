@@ -8,7 +8,7 @@ namespace Qi.Domain
     /// Code from http://ayende.com/blog/2500/generic-entity-equality.
     /// </summary>
     [Serializable]
-    public abstract class DomainObject<TId> : IDomainObject
+    public abstract class DomainObject<T, TId> : IDomainObject where T : DomainObject<T, TId>
     {
         private int? _oldHashcode;
 
@@ -31,7 +31,7 @@ namespace Qi.Domain
         /// <summary>
         /// Equality operator so we can have == semantics
         /// </summary>
-        public static bool operator ==(DomainObject<TId> x, DomainObject<TId> y)
+        public static bool operator ==(DomainObject<T, TId> x, DomainObject<T, TId> y)
         {
             return Equals(x, y);
         }
@@ -39,14 +39,14 @@ namespace Qi.Domain
         /// <summary>
         /// Inequality operator so we can have != semantics
         /// </summary>
-        public static bool operator !=(DomainObject<TId> x, DomainObject<TId> y)
+        public static bool operator !=(DomainObject<T, TId> x, DomainObject<T,TId> y)
         {
             return !(x == y);
         }
 
         public override bool Equals(object obj)
         {
-            var other = obj as DomainObject<TId>;
+            var other = obj as DomainObject<T,TId>;
             if (other == null)
                 return false;
             //to handle the case of comparing two new objects

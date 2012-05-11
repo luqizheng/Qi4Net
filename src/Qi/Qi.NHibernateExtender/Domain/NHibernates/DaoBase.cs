@@ -10,7 +10,7 @@ namespace Qi.Domain.NHibernates
     /// </summary>
     /// <typeparam name="TId"></typeparam>
     /// <typeparam name="TObject"></typeparam>
-    public abstract class DaoBase<TId, TObject> : IDao<TObject, TId>
+    public abstract class DaoBase<TId, TObject> : IDao<TId,TObject> where TObject : DomainObject<TObject, TId>
     {
         protected ISession CurrentSession
         {

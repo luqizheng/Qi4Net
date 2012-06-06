@@ -17,3 +17,11 @@
 /src/Qi/TestResults
 /src/Qi/MvcTest/obj
 /src/Qi/MvcTest/bin
+src/Publish
+src/Qi/LibA/bin/
+src/Qi/LibA/obj/
+src/Qi/MvcTest/log/
+src/Qi/packages/
+src/Qi/Qi.sln.DotSettings.user
+src/Qi/Qi.suo
+src/Qi/Qi/Qi.csproj.user

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using NHibernate;
 using NHibernate.Context;
 using NHibernate.Stat;
@@ -331,6 +333,39 @@ namespace Qi.Nhibernates
         {
             CleanUp(Factories.Values.ToArray(), false);
             IsInitiated = false;
+        }
+
+        private interface SaveContext
+        {
+            void SetData(string key, object data);
+            object GetData(string key);
+        }
+        private class CallSaveContext : SaveContext
+        {
+            public void SetData(string key, object data)
+            {
+                CallContext.SetData(key, data);
+            }
+
+            public object GetData(string key)
+            {
+                return CallContext.GetData(key);
+            }
+        }
+
+        private class StaticThreadSaveCotnext : SaveContext
+        {
+            [ThreadStatic]
+            static Hashtable table = new Hashtable();
+            public void SetData(string key, object data)
+            {
+                table[key] = data;
+            }
+
+            public object GetData(string key)
+            {
+                return table[key];
+            }
         }
     }
 }

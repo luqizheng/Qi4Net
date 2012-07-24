@@ -46,7 +46,7 @@ namespace Qi.Net
             int j = 0;
             for (int i = 0; i < mac.Length; i = i + 2)
             {
-                var str = new string(new[] { mac[i], mac[i + 1] });
+                var str = new string(new[] {mac[i], mac[i + 1]});
                 taken[j] = Convert.ToByte(StringToByteArray(str));
                 j++;
             }
@@ -58,7 +58,7 @@ namespace Qi.Net
             int numberChars = hex.Length;
             var bytes = new byte[1];
             for (int i = 0; i < numberChars; i += 2)
-                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+                bytes[i/2] = Convert.ToByte(hex.Substring(i, 2), 16);
             return bytes[0];
         }
 
@@ -80,9 +80,9 @@ namespace Qi.Net
             if (result)
                 return true;
 
-            if (obj.GetType() != typeof(MacAddress))
+            if (obj.GetType() != typeof (MacAddress))
                 return false;
-            var iObj = (MacAddress)obj;
+            var iObj = (MacAddress) obj;
             return !_taken.Where((t, i) => iObj._taken[i] != t).Any();
         }
 

@@ -27,17 +27,30 @@ namespace Qi
             }
             return result;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumValue"></param>
+        /// <returns></returns>
         public static string ToDescription(this Enum enumValue)
         {
             return ToDescription(enumValue, Thread.CurrentThread.CurrentUICulture);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumValue"></param>
+        /// <returns></returns>
         public static List<string> ToDescriptionAry(this Enum enumValue)
         {
             return ToDescriptionAry(enumValue, Thread.CurrentThread.CurrentUICulture);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumValue"></param>
+        /// <param name="cultureInfo"></param>
+        /// <returns></returns>
         public static List<string> ToDescriptionAry(Enum enumValue, CultureInfo cultureInfo)
         {
             Type enuType = enumValue.GetType();
@@ -74,7 +87,12 @@ namespace Qi
             }
             return enumValue.ToString();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldinfo"></param>
+        /// <param name="cultureInfo"></param>
+        /// <returns></returns>
         public static string GetStringFromAttr(FieldInfo fieldinfo, CultureInfo cultureInfo)
         {
             object[] attrs = fieldinfo.GetCustomAttributes(typeof(EnumDescriptionAttribute), false);
@@ -96,7 +114,13 @@ namespace Qi
             }
             return null;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="multiEnumValue"></param>
+        /// <param name="infos"></param>
+        /// <param name="hasFlags"></param>
+        /// <returns></returns>
         private static bool IsMatch(Enum multiEnumValue, FieldInfo infos, bool hasFlags)
         {
             var singleEnumValue = (Enum)infos.GetValue(null);
@@ -151,17 +175,30 @@ namespace Qi
         {
             return (T)Enum.Parse(typeof(T), enumExpress, true);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static SortedDictionary<string, T> GetDescriptionList<T>()
         {
             return GetDescriptionList<T>(Thread.CurrentThread.CurrentUICulture);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <returns></returns>
         public static SortedDictionary<string, object> GetDescriptionList(Type enumType)
         {
             return GetDescriptionList(enumType, Thread.CurrentThread.CurrentUICulture);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="cultureInfo"></param>
+        /// <returns></returns>
         public static SortedDictionary<string, object> GetDescriptionList(Type enumType, CultureInfo cultureInfo)
         {
             FieldInfo[] fields = enumType.GetFields();
@@ -177,7 +214,12 @@ namespace Qi
             }
             return result;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="cultureInfo"></param>
+        /// <returns></returns>
         public static SortedDictionary<string, T> GetDescriptionList<T>(CultureInfo cultureInfo)
         {
             var resultItem = GetDescriptionList(typeof(T));

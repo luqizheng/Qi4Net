@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Qi.Web;
 
 namespace Qi
 {
@@ -17,6 +18,14 @@ namespace Qi
             get { return AppDomain.CurrentDomain.BaseDirectory; }
         }
 
+        public static bool IsWeb
+        {
+            get
+            {
+                var obj = ReflectiveHttpContext.HttpContextCurrentGetter;
+                return obj != null;
+            }
+        }
         /// <summary>
         /// 
         /// </summary>

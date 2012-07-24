@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Qi.SharePools
 {
-    public class SharePool
+    public static class SharePool
     {
 
     }

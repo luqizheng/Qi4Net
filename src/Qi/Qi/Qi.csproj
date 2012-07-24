@@ -82,11 +82,11 @@
     <Compile Include="ArrayHelper.cs" />
     <Compile Include="Collections\SetAccessor.cs" />
     <Compile Include="Collections\SetActivtor.cs" />
-    <Compile Include="SharePools\CallStore.cs" />
-    <Compile Include="SharePools\HttpStore.cs" />
+    <Compile Include="SharePools\Stores\CallStore.cs" />
+    <Compile Include="SharePools\Stores\HttpStore.cs" />
     <Compile Include="SharePools\IStore.cs" />
     <Compile Include="SharePools\SharePool.cs" />
-    <Compile Include="SharePools\ThreadStaticStore.cs" />
+    <Compile Include="SharePools\Stores\ThreadStaticStore.cs" />
     <Compile Include="DataTables\Calculators\Avg.cs" />
     <Compile Include="DataTables\Calculators\Avgs\AvgInt32.cs" />
     <Compile Include="DataTables\Calculators\Avgs\AvgInt32Nullable.cs" />

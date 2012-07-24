@@ -22,10 +22,11 @@ namespace Qi
         {
             get
             {
-                var obj = ReflectiveHttpContext.HttpContextCurrentGetter;
+                Func<object> obj = ReflectiveHttpContext.HttpContextCurrentGetter;
                 return obj != null;
             }
         }
+
         /// <summary>
         /// 
         /// </summary>

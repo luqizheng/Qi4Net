@@ -18,10 +18,9 @@ namespace Qi.SharePools
                 {
                     lock (this)
                     {
-                        var httpContext = ReflectiveHttpContext.HttpContextCurrentGetter;
-                        _dictionary = ReflectiveHttpContext.HttpContextCurrentItems(httpContext);
+                        var httpContext = ReflectiveHttpContext.HttpContextCurrentGetter();
+                        _dictionary = ReflectiveHttpContext.HttpContextItemsGetter(httpContext);
                     }
-
                 }
                 return _dictionary;
             }
@@ -47,10 +46,7 @@ namespace Qi.SharePools
             {
                 return null;
             }
-            else
-            {
-                return Dictionary[key];
-            }
+            return Dictionary[key];
         }
 
         #endregion

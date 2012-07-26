@@ -60,6 +60,7 @@
     <Compile Include="Nhibernates\NhFileConfig.cs" />
     <Compile Include="Nhibernates\SessionManager.cs" />
     <Compile Include="Nhibernates\SessionManagerException.cs" />
+    <Compile Include="Nhibernates\SessionSegment.cs" />
     <Compile Include="Nhibernates\Types\AbstractTimeType.cs" />
     <Compile Include="Nhibernates\Types\KeyValueCollectionType.cs" />
     <Compile Include="Nhibernates\Types\TimeStringType.cs" />
@@ -72,7 +73,6 @@
     <Compile Include="Web\Mvc\Founders\NHMappingHelper.cs" />
     <Compile Include="Web\Mvc\Founders\PropertyFounderAttribute.cs" />
     <Compile Include="Web\Mvc\NHModelBinder.cs" />
-    <Compile Include="Web\Mvc\NHModelBinderBase.cs" />
     <Compile Include="Web\Mvc\NHModelBinderException.cs" />
     <Compile Include="Web\Mvc\SessionAttribute.cs" />
   </ItemGroup>

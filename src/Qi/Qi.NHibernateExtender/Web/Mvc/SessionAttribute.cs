@@ -12,6 +12,7 @@ namespace Qi.Web.Mvc
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
+        private readonly SessionSegment _segment;
         private ITransaction _tras;
 
         /// <summary>
@@ -24,6 +25,7 @@ namespace Qi.Web.Mvc
             Order = 0;
             Enable = enabled;
             SessionFactoryName = sessionFactoryName;
+            _segment = SessionManager.GetSessionFactory(sessionFactoryName);
         }
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace Qi.Web.Mvc
         /// </summary>
         /// <param name="enabled"></param>
         public SessionAttribute(bool enabled)
-            : this(enabled, null)
+            : this(enabled, SessionManager.DefaultSessionFactoryKey)
         {
         }
 
@@ -39,7 +41,7 @@ namespace Qi.Web.Mvc
         /// 
         /// </summary>
         public SessionAttribute()
-            : this(true, null)
+            : this(true, SessionManager.DefaultSessionFactoryKey)
         {
             Order = 0;
         }
@@ -89,15 +91,14 @@ namespace Qi.Web.Mvc
         {
             if (Enable)
             {
-                SessionManager.Instance.InitSession();
-                if (!String.IsNullOrEmpty(SessionFactoryName))
-                    SessionManager.CurrentSessionFactoryKey = SessionFactoryName;
+                _segment.InitSession();
+                SessionManager.Instance.CurrentSessionFactory = SessionFactoryName;
 
                 if (Transaction)
                 {
                     _tras = IsolationLevel != null
-                                ? SessionManager.Instance.GetCurrentSession().BeginTransaction(IsolationLevel.Value)
-                                : SessionManager.Instance.GetCurrentSession().BeginTransaction();
+                                ? _segment.CurrentSession.BeginTransaction(IsolationLevel.Value)
+                                : _segment.CurrentSession.BeginTransaction();
                 }
             }
         }
@@ -108,7 +109,7 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            SessionManager.Instance.CleanUp(true);
+            _segment.CleanUp(true);
         }
     }
 }

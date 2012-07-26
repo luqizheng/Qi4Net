@@ -10,14 +10,26 @@ namespace Qi.Domain.NHibernates
     /// </summary>
     /// <typeparam name="TId"></typeparam>
     /// <typeparam name="TObject"></typeparam>
-    public abstract class DaoBase<TId, TObject> : IDao<TId,TObject> where TObject : DomainObject<TObject, TId>
+    public abstract class DaoBase<TId, TObject> : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
-        protected ISession CurrentSession
+        private readonly SessionSegment _segment;
+
+        protected DaoBase(string sessionFactoryName)
         {
-            get { return SessionManager.Instance.GetCurrentSession(); }
+            _segment = SessionManager.GetSessionFactory(sessionFactoryName);
         }
 
-        #region IDao<TObject,TId> Members
+        protected DaoBase()
+            : this(SessionManager.Instance.CurrentSessionFactory ?? SessionManager.DefaultSessionFactoryKey)
+        {
+        }
+
+        protected ISession CurrentSession
+        {
+            get { return _segment.CurrentSession; }
+        }
+
+        #region IDao<TId,TObject> Members
 
         public virtual TObject Get(TId id)
         {

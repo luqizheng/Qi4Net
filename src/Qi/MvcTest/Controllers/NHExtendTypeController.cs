@@ -27,9 +27,9 @@ namespace MvcTest.Controllers
                                                {"number",15},
                                                {"City","zhuhai"}
                                            });
-            SessionManager.Instance.GetCurrentSession(a.GetType()).SaveOrUpdate(a);
-            SessionManager.Instance.GetCurrentSession(a.GetType()).Flush();
-            a = SessionManager.Instance.GetCurrentSession(a.GetType()).Get<KeyValueMapping>(a.Id);
+            SessionManager.Instance.GetCurrentSession().SaveOrUpdate(a);
+            SessionManager.Instance.GetCurrentSession().Flush();
+            a = SessionManager.Instance.GetCurrentSession().Get<KeyValueMapping>(a.Id);
 
 
             return RedirectToAction("ValueKeyResult", new { id = a.Id });
@@ -37,7 +37,7 @@ namespace MvcTest.Controllers
         [Session]
         public ActionResult ValueKeyResult(Guid? id)
         {
-            var a = SessionManager.Instance.GetCurrentSession(typeof(KeyValueMapping)).Get<KeyValueMapping>(id.Value);
+            var a = SessionManager.Instance.GetCurrentSession().Get<KeyValueMapping>(id.Value);
 
             return View("ValueKeyTest", a);
         }

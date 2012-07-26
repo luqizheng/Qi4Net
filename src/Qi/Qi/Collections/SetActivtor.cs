@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Qi.Collections
 {
+    /// <summary>
+    /// Setter for Collections.
+    /// </summary>
     public class SetActivtor
     {
         private static readonly Dictionary<Type, Type> DefaultSetType = new Dictionary<Type, Type>

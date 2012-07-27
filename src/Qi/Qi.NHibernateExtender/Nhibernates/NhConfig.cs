@@ -15,8 +15,10 @@ namespace Qi.Nhibernates
 
         protected NhConfig(string sessionFactoryName, Configuration cfg)
         {
-            if (sessionFactoryName == null) throw new ArgumentNullException("sessionFactoryName");
-            if (cfg == null) throw new ArgumentNullException("cfg");
+            if (sessionFactoryName == null) 
+                throw new ArgumentNullException("sessionFactoryName");
+            if (cfg == null)
+                throw new ArgumentNullException("cfg");
             _sessionFactoryName = sessionFactoryName;
             _nhConfiguration = cfg;
         }

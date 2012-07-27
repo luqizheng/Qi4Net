@@ -24,10 +24,12 @@ namespace Qi.Nhibernates
                 return Cache.Keys.ToArray();
             }
         }
+
         public static bool Contains(string sessionFactoryName)
         {
             return Cache.ContainsKey(sessionFactoryName);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -52,13 +54,12 @@ namespace Qi.Nhibernates
         {
             if (Cache.Count == 0)
             {
-                lock (typeof(NhFileConfig))
+                lock (typeof (NhConfigManager))
                 {
                     foreach (NhFileConfig a in GetNHFileInfos())
                     {
                         Cache.Add(a.SessionFactoryName, a);
                     }
-
                 }
             }
             if (!Cache.ContainsKey(sessionFactory))

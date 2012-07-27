@@ -15,7 +15,7 @@ namespace MvcTest.Controllers
         public ActionResult Index()
         {
             IList<User> r = SessionManager.Instance.GetCurrentSession().CreateCriteria<User>().List<User>();
-            ViewData["view"] = SessionManager.Instance.CurrentSessionFactory;
+            ViewData["view"] = SessionManager.Instance.CurrentSessionFactoryName;
             return View(r);
         }
 
@@ -23,7 +23,7 @@ namespace MvcTest.Controllers
         public ActionResult Edit(Guid? id)
         {
             var r = SessionManager.Instance.GetCurrentSession().Load<User>(id.Value);
-            ViewData["view"] = SessionManager.Instance.CurrentSessionFactory;
+            ViewData["view"] = SessionManager.Instance.CurrentSessionFactoryName;
             return View(r);
         }
 

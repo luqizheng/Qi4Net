@@ -12,21 +12,21 @@ namespace Qi.Domain.NHibernates
     /// <typeparam name="TObject"></typeparam>
     public abstract class DaoBase<TId, TObject> : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
-        private readonly SessionSegment _segment;
+        private readonly SessionWrapper _wrapper;
 
         protected DaoBase(string sessionFactoryName)
         {
-            _segment = SessionManager.GetSessionFactory(sessionFactoryName);
+            _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         }
 
         protected DaoBase()
-            : this(SessionManager.Instance.CurrentSessionFactory ?? SessionManager.DefaultSessionFactoryKey)
+            : this(SessionManager.Instance.CurrentSessionFactoryName ?? SessionManager.DefaultSessionFactoryKey)
         {
         }
 
         protected ISession CurrentSession
         {
-            get { return _segment.CurrentSession; }
+            get { return _wrapper.CurrentSession; }
         }
 
         #region IDao<TId,TObject> Members

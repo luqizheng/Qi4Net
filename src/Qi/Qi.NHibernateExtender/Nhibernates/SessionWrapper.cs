@@ -6,12 +6,12 @@ using Qi.SharePools;
 
 namespace Qi.Nhibernates
 {
-    public class SessionSegment
+    public class SessionWrapper
     {
         private const string InitKeyName = "session.was.inited";
         private IStore _store;
 
-        public SessionSegment(ISessionFactory sessionFactory)
+        public SessionWrapper(ISessionFactory sessionFactory)
         {
             if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
             SessionFactory = sessionFactory;
@@ -59,7 +59,7 @@ namespace Qi.Nhibernates
             return result;
         }
 
-        public void CleanUp(bool submitData)
+        public void Close(bool submitData)
         {
             if (CurrentSessionContext.HasBind(SessionFactory))
             {
@@ -75,22 +75,18 @@ namespace Qi.Nhibernates
             {
                 session.Flush();
             }
-            else
+            if (session.Transaction != null && session.Transaction.IsActive && !session.Transaction.WasCommitted)
             {
-                session.Clear();
-            }
-
-            if (session.Transaction != null && session.Transaction.IsActive)
-            {
-                if (submitData && !session.Transaction.WasCommitted)
+                if (submitData)
                 {
                     session.Transaction.Commit();
                 }
-                else if (!session.Transaction.WasRolledBack)
+                else
                 {
                     session.Transaction.Rollback();
                 }
             }
+            session.Clear();
         }
 
         private static IStore GetStore(ISessionFactory sessionFactory)

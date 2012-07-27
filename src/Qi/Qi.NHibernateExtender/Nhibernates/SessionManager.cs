@@ -7,15 +7,15 @@ namespace Qi.Nhibernates
 {
     public class SessionManager
     {
-        internal static readonly SortedDictionary<string, SessionSegment> Factories =
-            new SortedDictionary<string, SessionSegment>();
+        internal static readonly SortedDictionary<string, SessionWrapper> Factories =
+            new SortedDictionary<string, SessionWrapper>();
 
 
         private static string _defaultSessionFactoryKey = String.Empty;
 
         public static readonly SessionManager Instance = new SessionManager();
 
-        public string CurrentSessionFactory
+        public string CurrentSessionFactoryName
         {
             get { return (string) CallContext.GetData("session.key.factory."); }
             set { CallContext.SetData("session.key.factory.", value); }
@@ -50,19 +50,29 @@ namespace Qi.Nhibernates
                 return _defaultSessionFactoryKey;
             }
         }
+
         /// <summary>
-        /// May be null, if you are not set the <see cref="CurrentSessionFactory"/> key
+        /// May be null, if you are not set the <see cref="CurrentSessionFactoryName"/> key
         /// </summary>
         /// <returns></returns>
+        /// <exception cref="SessionManagerException"></exception>
         public ISession GetCurrentSession()
         {
-            if (CurrentSessionFactory == null)
+            if (CurrentSessionFactoryName == null)
             {
-                throw new SessionManagerException("CurrentSessionFactory is empty, can't get the current session.");
+                throw new SessionManagerException("CurrentSessionFactoryName is empty, can't get the current session.");
             }
-            return GetSessionFactory(CurrentSessionFactory).CurrentSession;
+            return GetSessionWrapper(CurrentSessionFactoryName).CurrentSession;
         }
 
+        /// <summary>
+        /// Get the default Session wrapper
+        /// </summary>
+        /// <returns></returns>
+        public static SessionWrapper GetSessionWrapper()
+        {
+            return GetSessionWrapper(DefaultSessionFactoryKey);
+        }
 
         /// <summary>
         /// gets the session factory by session factory name defined in the sessionFactory file.
@@ -70,7 +80,7 @@ namespace Qi.Nhibernates
         /// <param name="sessionFactoryName"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"><see cref="sessionFactoryName"/> is not exist in session manager</exception>
-        public static SessionSegment GetSessionFactory(string sessionFactoryName)
+        public static SessionWrapper GetSessionWrapper(string sessionFactoryName)
         {
             // In order to lazy init the session.
             INhConfig nhFileConfig;
@@ -95,7 +105,7 @@ namespace Qi.Nhibernates
             }
             if (nhFileConfig != null && nhFileConfig.IsChanged)
             {
-                Factories[sessionFactoryName] = new SessionSegment(nhFileConfig.BuildSessionFactory());
+                Factories[sessionFactoryName] = new SessionWrapper(nhFileConfig.BuildSessionFactory());
             }
             return Factories[sessionFactoryName];
         }
@@ -116,7 +126,7 @@ namespace Qi.Nhibernates
                 throw new SessionManagerException(string.Format("session factory name {0} has defined.",
                                                                 sessionFacotryName));
 
-            Factories.Add(sessionFacotryName, new SessionSegment(sessionFactory));
+            Factories.Add(sessionFacotryName, new SessionWrapper(sessionFactory));
         }
 
         public static void Remove(string sessionFactoryName)

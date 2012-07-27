@@ -60,7 +60,7 @@
     <Compile Include="Nhibernates\NhFileConfig.cs" />
     <Compile Include="Nhibernates\SessionManager.cs" />
     <Compile Include="Nhibernates\SessionManagerException.cs" />
-    <Compile Include="Nhibernates\SessionSegment.cs" />
+    <Compile Include="Nhibernates\SessionWrapper.cs" />
     <Compile Include="Nhibernates\Types\AbstractTimeType.cs" />
     <Compile Include="Nhibernates\Types\KeyValueCollectionType.cs" />
     <Compile Include="Nhibernates\Types\TimeStringType.cs" />

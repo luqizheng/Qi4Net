@@ -12,7 +12,7 @@ namespace Qi.Web.Mvc
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        private readonly SessionSegment _segment;
+        private readonly SessionWrapper _wrapper;
         private ITransaction _tras;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Qi.Web.Mvc
             Order = 0;
             Enable = enabled;
             SessionFactoryName = sessionFactoryName;
-            _segment = SessionManager.GetSessionFactory(sessionFactoryName);
+            _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         }
 
         /// <summary>
@@ -91,14 +91,14 @@ namespace Qi.Web.Mvc
         {
             if (Enable)
             {
-                _segment.InitSession();
-                SessionManager.Instance.CurrentSessionFactory = SessionFactoryName;
+                _wrapper.InitSession();
+                SessionManager.Instance.CurrentSessionFactoryName = SessionFactoryName;
 
                 if (Transaction)
                 {
                     _tras = IsolationLevel != null
-                                ? _segment.CurrentSession.BeginTransaction(IsolationLevel.Value)
-                                : _segment.CurrentSession.BeginTransaction();
+                                ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel.Value)
+                                : _wrapper.CurrentSession.BeginTransaction();
                 }
             }
         }
@@ -109,7 +109,7 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            _segment.CleanUp(true);
+            _wrapper.Close(true);
         }
     }
 }

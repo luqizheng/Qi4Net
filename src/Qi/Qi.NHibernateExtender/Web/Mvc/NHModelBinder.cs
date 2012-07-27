@@ -20,7 +20,7 @@ namespace Qi.Web.Mvc
         /// </summary>
         private bool _isDto = true;
 
-        private SessionSegment _segment;
+        private SessionWrapper _wrapper;
 
         protected NameValueCollection GetSubmitValues(HttpContextBase context)
         {
@@ -31,7 +31,7 @@ namespace Qi.Web.Mvc
 
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            _segment = Initilize(controllerContext);
+            _wrapper = Initilize(controllerContext);
             return base.BindModel(controllerContext, bindingContext);
         }
 
@@ -105,7 +105,7 @@ namespace Qi.Web.Mvc
             object result = setHelper.Create(parameterType, capcaity);
             SetAccessor accessor = setHelper.CreateAccessor(result);
             bool isArray = result.GetType().IsArray;
-            IList val = founder.GetObject(requestKey, context, true, _segment.CurrentSession);
+            IList val = founder.GetObject(requestKey, context, true, _wrapper.CurrentSession);
             if (founder.Unique)
             {
                 if (isArray)
@@ -146,7 +146,7 @@ namespace Qi.Web.Mvc
                 founderAttribute.EntityType = propertyDescriptor.PropertyType;
             }
             IList result = founderAttribute.GetObject(propertyDescriptor.Name, httpContextBase, false,
-                                                      _segment.CurrentSession);
+                                                      _wrapper.CurrentSession);
             return result.Count > 0 ? result[0] : null;
         }
 
@@ -164,12 +164,12 @@ namespace Qi.Web.Mvc
 
             return
                 types.Any(
-                    type => _segment.SessionFactory.Statistics.EntityNames.Contains(type.UnderlyingSystemType.FullName));
+                    type => _wrapper.SessionFactory.Statistics.EntityNames.Contains(type.UnderlyingSystemType.FullName));
         }
 
         private bool IsMappingClass(Type modelType)
         {
-            return _segment.SessionFactory.Statistics.EntityNames.Contains(modelType.UnderlyingSystemType.FullName));
+            return _wrapper.SessionFactory.Statistics.EntityNames.Contains(modelType.UnderlyingSystemType.FullName);
         }
 
 
@@ -185,9 +185,9 @@ namespace Qi.Web.Mvc
                         {
                             EntityType = mappingType
                         };
-            string id = _segment.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
+            string id = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
 
-            IList result = idFounderAttribute.GetObject(id, context, false, _segment.CurrentSession);
+            IList result = idFounderAttribute.GetObject(id, context, false, _wrapper.CurrentSession);
             return result.Count > 0 ? result[0] : null;
         }
 
@@ -195,8 +195,7 @@ namespace Qi.Web.Mvc
         /// Find Session Attribute in the Action or Controller.
         /// </summary>
         /// <param name="controllerContext"></param>
-        /// <param name="bindingContext"></param>
-        private SessionSegment Initilize(ControllerContext controllerContext)
+        private SessionWrapper Initilize(ControllerContext controllerContext)
         {
             var reflectedControllerDescriptor = new ReflectedControllerDescriptor(controllerContext.Controller.GetType());
 
@@ -211,26 +210,26 @@ namespace Qi.Web.Mvc
                                              controllerContext.Controller.GetType().GetCustomAttributes(
                                                  typeof (SessionAttribute), true)
                                          };
-            SessionSegment segment = null;
-            if (customAttributeSet.Any(customAttributes => TryEnableSession(customAttributes, out segment)))
+            SessionWrapper wrapper = null;
+            if (customAttributeSet.Any(customAttributes => TryEnableSession(customAttributes, out wrapper)))
             {
-                return segment;
+                return wrapper;
             }
 
             throw new NHModelBinderException(
                 "can't find any enabled SessionAttribute on controller or action ,please special session attribute and make sure it's enabled.");
         }
 
-        private bool TryEnableSession(object[] customAttributes, out SessionSegment segment)
+        private bool TryEnableSession(object[] customAttributes, out SessionWrapper wrapper)
         {
-            segment = null;
+            wrapper = null;
             if (customAttributes.Length != 0)
             {
                 var custommAttr = (SessionAttribute) customAttributes[0];
                 if (custommAttr.Enable)
                 {
-                    segment = SessionManager.GetSessionFactory(custommAttr.SessionFactoryName);
-                    segment.InitSession();
+                    wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
+                    wrapper.InitSession();
                     return true;
                 }
             }

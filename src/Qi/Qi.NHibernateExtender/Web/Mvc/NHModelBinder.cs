@@ -13,6 +13,9 @@ using Qi.Web.Mvc.Founders;
 
 namespace Qi.Web.Mvc
 {
+    /// <summary>
+    /// Nhibernate model biner 
+    /// </summary>
     public class NHModelBinder : DefaultModelBinder
     {
         /// <summary>
@@ -21,7 +24,11 @@ namespace Qi.Web.Mvc
         private bool _isDto = true;
 
         private SessionWrapper _wrapper;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         protected NameValueCollection GetSubmitValues(HttpContextBase context)
         {
             return context.Request.HttpMethod.ToLower() == "post"
@@ -29,12 +36,26 @@ namespace Qi.Web.Mvc
                        : context.Request.QueryString;
         }
 
+        /// <summary>
+        /// Binds the model by using the specified controller context and binding context.
+        /// </summary>
+        /// <returns>
+        /// The bound object.
+        /// </returns>
+        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><exception cref="T:System.ArgumentNullException">The <paramref name="bindingContext "/>parameter is null.</exception>
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             _wrapper = Initilize(controllerContext);
             return base.BindModel(controllerContext, bindingContext);
         }
 
+        /// <summary>
+        /// Creates the specified model type by using the specified controller context and binding context.
+        /// </summary>
+        /// <returns>
+        /// A data object of the specified type.
+        /// </returns>
+        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><param name="modelType">The type of the model object to return.</param>
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
@@ -57,6 +78,10 @@ namespace Qi.Web.Mvc
             return result;
         }
 
+        /// <summary>
+        /// Binds the specified property by using the specified controller context and binding context and the specified property descriptor.
+        /// </summary>
+        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><param name="propertyDescriptor">Describes a property to be bound. The descriptor provides information such as the component type, property type, and property value. It also provides methods to get or set the property value.</param>
         protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                              PropertyDescriptor propertyDescriptor)
         {
@@ -149,7 +174,11 @@ namespace Qi.Web.Mvc
                                                       _wrapper.CurrentSession);
             return result.Count > 0 ? result[0] : null;
         }
-
+        /// <summary>
+        /// get a value to indecate the modelType or it's child element  is mapping class which defined in nhibernate.
+        /// </summary>
+        /// <param name="modelType"></param>
+        /// <returns></returns>
         public bool IsPersistentType(Type modelType)
         {
             if (!modelType.IsArray && modelType.IsValueType)
@@ -166,7 +195,11 @@ namespace Qi.Web.Mvc
                 types.Any(
                     type => _wrapper.SessionFactory.Statistics.EntityNames.Contains(type.UnderlyingSystemType.FullName));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelType"></param>
+        /// <returns></returns>
         private bool IsMappingClass(Type modelType)
         {
             return _wrapper.SessionFactory.Statistics.EntityNames.Contains(modelType.UnderlyingSystemType.FullName);
@@ -219,7 +252,12 @@ namespace Qi.Web.Mvc
             throw new NHModelBinderException(
                 "can't find any enabled SessionAttribute on controller or action ,please special session attribute and make sure it's enabled.");
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="customAttributes"></param>
+        /// <param name="wrapper"></param>
+        /// <returns></returns>
         private bool TryEnableSession(object[] customAttributes, out SessionWrapper wrapper)
         {
             wrapper = null;

@@ -9,6 +9,9 @@ using Qi.Nhibernates;
 
 namespace Qi.Web.Mvc.Founders
 {
+    /// <summary>
+    /// Use the Propertry equal value to find the mapping class.
+    /// </summary>
     public class PropertyFounderAttribute : FounderAttribute
     {
         private readonly string _propertyName;

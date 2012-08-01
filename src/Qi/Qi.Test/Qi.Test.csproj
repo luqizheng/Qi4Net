@@ -94,9 +94,9 @@
     <Compile Include="JsonContainerTest.cs" />
     <Compile Include="JsonHelperTest.cs" />
     <Compile Include="MacAddressTest.cs" />
+    <Compile Include="NhConfigManagerTest.cs" />
     <Compile Include="NHibernate\NHModelBinderTest.cs" />
     <Compile Include="NHModelBinderBaseTest.cs" />
-    <Compile Include="NHModelBinderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QCacheTest.cs" />
     <Compile Include="QMathTest.cs" />

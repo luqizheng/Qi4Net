@@ -2,6 +2,9 @@ using System;
 
 namespace Qi
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public sealed class EnumDescriptionAttribute : Attribute
     {

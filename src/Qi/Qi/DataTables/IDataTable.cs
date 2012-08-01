@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Qi.DataTables
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IDataTable
     {
         /// <summary>
@@ -32,7 +35,11 @@ namespace Qi.DataTables
         /// <param name="items"></param>
         /// <returns></returns>
         IDataTable SetData(IEnumerable<object> items);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="calculatorName"></param>
+        /// <returns></returns>
         object[] GetSummaries(string calculatorName);
     }
 }

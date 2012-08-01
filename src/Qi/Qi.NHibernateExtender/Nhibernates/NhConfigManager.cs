@@ -6,10 +6,16 @@ using System.Text.RegularExpressions;
 
 namespace Qi.Nhibernates
 {
+    /// <summary>
+    /// NhConfig manager.
+    /// </summary>
     public class NhConfigManager
     {
         private static readonly IDictionary<string, INhConfig> Cache = new Dictionary<string, INhConfig>();
 
+        /// <summary>
+        /// Gets or sets the session factory names.
+        /// </summary>
         public static string[] SessionFactoryNames
         {
             get
@@ -25,8 +31,16 @@ namespace Qi.Nhibernates
             }
         }
 
+        /// <summary>
+        /// Determine whether the configurations contains the session factory with the specified name.
+        /// </summary>
+        /// <param name="sessionFactoryName"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">session factory name is empty of null</exception>
         public static bool Contains(string sessionFactoryName)
         {
+            if (String.IsNullOrEmpty(sessionFactoryName))
+                throw new ArgumentNullException("sessionFactoryName");
             return Cache.ContainsKey(sessionFactoryName);
         }
 
@@ -50,6 +64,7 @@ namespace Qi.Nhibernates
         /// </summary>
         /// <param name="sessionFactory"></param>
         /// <returns></returns>
+        ///<exception cref="NhConfigurationException">Can't find the sessionFactory</exception>
         public static INhConfig GetNhConfig(string sessionFactory)
         {
             if (Cache.Count == 0)
@@ -63,7 +78,7 @@ namespace Qi.Nhibernates
                 }
             }
             if (!Cache.ContainsKey(sessionFactory))
-                return null;
+                throw new NhConfigurationException("Can not find the sessionFactory named " + sessionFactory);
 
 
             return Cache[sessionFactory];

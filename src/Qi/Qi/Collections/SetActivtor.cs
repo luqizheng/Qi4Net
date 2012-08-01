@@ -23,7 +23,10 @@ namespace Qi.Collections
                                                                             };
 
         private readonly Type _instanceType;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceType"></param>
         public SetActivtor(Type instanceType)
         {
             if (instanceType == null)
@@ -36,17 +39,31 @@ namespace Qi.Collections
         /// 3st int32 is the capacity,
         /// </summary>
         public Func<Type, Type, int, object> ActiveMethod { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="childElementType"></param>
+        /// <param name="capacity"></param>
+        /// <returns></returns>
         public object Create(Type childElementType, int capacity)
         {
             return ActiveMethod(_instanceType, childElementType, capacity);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public SetAccessor CreateAccessor(object target)
         {
             return SetAccessor.Create(target);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelType"></param>
+        /// <param name="parameterType"></param>
+        /// <returns></returns>
         public static bool IsSupport(Type modelType, out Type parameterType)
         {
             parameterType = null;
@@ -68,7 +85,11 @@ namespace Qi.Collections
             }
             return false;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
         public static SetActivtor Create(Type instanceType)
         {
             Type targetType = instanceType;

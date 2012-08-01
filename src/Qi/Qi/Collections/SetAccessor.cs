@@ -4,14 +4,23 @@ using Iesi.Collections;
 
 namespace Qi.Collections
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SetAccessor
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
         public SetAccessor(object target)
         {
             if (target == null) throw new ArgumentNullException("target");
             Target = target;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public object Target { get; set; }
 
         /// <summary>
@@ -23,9 +32,15 @@ namespace Qi.Collections
         /// 
         /// </summary>
         public VoidFunc<object, object, int> SetMethod { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public Func<object, int> CountMethod { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="index"></param>
         public void SetOrAdd(object item, int index)
         {
             if (CountMethod(item) <= index && index == -1)
@@ -35,18 +50,31 @@ namespace Qi.Collections
                 AddMethod(Target, item);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
         public void Add(object item)
         {
+            if (item == null) throw new ArgumentNullException("item");
             AddMethod(Target, item);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="index"></param>
         public void Set(object item, int index)
         {
             SetMethod(Target, item, index);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static SetAccessor Create(object target)
         {
             VoidFunc<object, object> addMethod = null;

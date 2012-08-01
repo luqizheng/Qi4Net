@@ -6,8 +6,16 @@ using System.Xml.Serialization;
 
 namespace Qi.IO.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class SerializationHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="outputSteam"></param>
         public static void SerializeBinary(this object obj, Stream outputSteam)
         {
             IFormatter formatter = new BinaryFormatter();
@@ -55,13 +63,21 @@ namespace Qi.IO.Serialization
                 return DeserializeBinary<T>(stream);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="outputSteam"></param>
         public static void SerializerXml(this object obj, Stream outputSteam)
         {
             var ser = new XmlSerializer(obj.GetType());
             ser.Serialize(outputSteam, obj);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="file"></param>
         public static void SerializerXml(this object obj, string file)
         {
             var ser = new XmlSerializer(obj.GetType());
@@ -70,7 +86,12 @@ namespace Qi.IO.Serialization
                 ser.Serialize(stream, obj);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static object DeserializerXml(string file, Type type)
         {
             if (!File.Exists(file))
@@ -80,13 +101,23 @@ namespace Qi.IO.Serialization
                 return DeserializerXml(stream, type);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static object DeserializerXml(Stream stream, Type type)
         {
             var ser = new XmlSerializer(type);
             return ser.Deserialize(stream);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public static T DeserializerXml<T>(string file)
         {
             return (T) DeserializerXml(file, typeof (T));

@@ -5,6 +5,9 @@ using NHibernate;
 
 namespace Qi.Nhibernates
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SessionManager
     {
         internal static readonly SortedDictionary<string, SessionWrapper> Factories =
@@ -12,12 +15,16 @@ namespace Qi.Nhibernates
 
 
         private static string _defaultSessionFactoryKey = String.Empty;
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly SessionManager Instance = new SessionManager();
-
+        /// <summary>
+        /// 
+        /// </summary>
         public string CurrentSessionFactoryName
         {
-            get { return (string) CallContext.GetData("session.key.factory."); }
+            get { return (string)CallContext.GetData("session.key.factory."); }
             set { CallContext.SetData("session.key.factory.", value); }
         }
 
@@ -79,7 +86,7 @@ namespace Qi.Nhibernates
         /// </summary>
         /// <param name="sessionFactoryName"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"><see cref="sessionFactoryName"/> is not exist in session manager</exception>
+        /// <exception cref="ArgumentOutOfRangeException">sessionFactoryName is not exist in session manager</exception>
         public static SessionWrapper GetSessionWrapper(string sessionFactoryName)
         {
             // In order to lazy init the session.
@@ -123,12 +130,14 @@ namespace Qi.Nhibernates
             if (String.IsNullOrEmpty(sessionFacotryName)) throw new ArgumentNullException("sessionFacotryName");
             if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
             if (Factories.ContainsKey(sessionFacotryName))
-                throw new SessionManagerException(string.Format("session factory name {0} has defined.",
-                                                                sessionFacotryName));
+                throw new SessionManagerException(sessionFacotryName,"Not find the session factory name.");
 
             Factories.Add(sessionFacotryName, new SessionWrapper(sessionFactory));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionFactoryName"></param>
         public static void Remove(string sessionFactoryName)
         {
             if (String.IsNullOrEmpty(sessionFactoryName)) throw new ArgumentNullException("sessionFactoryName");

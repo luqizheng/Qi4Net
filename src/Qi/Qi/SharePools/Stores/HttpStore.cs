@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Linq.Expressions;
-using System.Reflection;
+﻿using System.Collections;
 using Qi.Web;
 
-namespace Qi.SharePools
+namespace Qi.SharePools.Stores
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class HttpStore : IStore
     {
         private IDictionary _dictionary;
@@ -27,7 +27,11 @@ namespace Qi.SharePools
         }
 
         #region IStore Members
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="data"></param>
         public void SetData(string key, object data)
         {
             if (!Dictionary.Contains(key))
@@ -39,7 +43,11 @@ namespace Qi.SharePools
                 Dictionary.Add(key, data);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public object GetData(string key)
         {
             if (!Dictionary.Contains(key))

@@ -19,11 +19,17 @@ namespace Qi.Web
             CreateCurrentHttpContextGetter();
             CreateHttpContextItemsGetter();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static Func<object> HttpContextCurrentGetter { get; private set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static Func<object, IDictionary> HttpContextItemsGetter { get; private set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static IDictionary HttpContextCurrentItems
         {
             get { return HttpContextItemsGetter(HttpContextCurrentGetter()); }

@@ -92,7 +92,7 @@ namespace Qi.Web.Mvc
             Type modelType = bindingContext.PropertyMetadata[propertyDescriptor.Name].ModelType;
             Type parameterType;
             NameValueCollection context = GetSubmitValues(controllerContext.HttpContext);
-            bool isListProperty = SetActivtor.IsSupport(modelType, out parameterType);
+            bool isListProperty = CollectionActivtor.IsSupport(modelType, out parameterType);
 
             if (isListProperty)
             {
@@ -125,10 +125,10 @@ namespace Qi.Web.Mvc
         {
             if (context[requestKey] == null)
                 return null;
-            SetActivtor setHelper = SetActivtor.Create(modelType);
+            CollectionActivtor collectionHelper = CollectionActivtor.Create(modelType);
             int capcaity = NHMappingHelper.ConvertToArray(context[requestKey]).Length;
-            object result = setHelper.Create(parameterType, capcaity);
-            SetAccessor accessor = setHelper.CreateAccessor(result);
+            object result = collectionHelper.Create(parameterType, capcaity);
+            CollectionAccessor accessor = collectionHelper.CreateAccessor(result);
             bool isArray = result.GetType().IsArray;
             IList val = founder.GetObject(requestKey, context, true, _wrapper.CurrentSession);
             if (founder.Unique)

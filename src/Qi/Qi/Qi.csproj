@@ -79,8 +79,8 @@
   <ItemGroup>
     <Compile Include="ApplicationHelper.cs" />
     <Compile Include="ArrayHelper.cs" />
-    <Compile Include="Collections\SetAccessor.cs" />
-    <Compile Include="Collections\SetActivtor.cs" />
+    <Compile Include="Collections\CollectionAccessor.cs" />
+    <Compile Include="Collections\CollectionActivtor.cs" />
     <Compile Include="SharePools\Stores\CallStore.cs" />
     <Compile Include="SharePools\Stores\HttpStore.cs" />
     <Compile Include="SharePools\IStore.cs" />

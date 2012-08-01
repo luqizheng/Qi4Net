@@ -8,17 +8,31 @@ namespace Qi
     public struct Time
     {
         private readonly TimeSpan _ticks;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hour"></param>
+        /// <param name="mins"></param>
+        /// <param name="second"></param>
         public Time(int hour, int mins, int second)
         {
             _ticks = CheckTimeSpanBound(new TimeSpan(hour, mins, second));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hour"></param>
+        /// <param name="mins"></param>
+        /// <param name="second"></param>
+        /// <param name="millsecond"></param>
         public Time(int hour, int mins, int second, int millsecond)
         {
             _ticks = CheckTimeSpanBound(new TimeSpan(0, hour, mins, second, millsecond));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ticks"></param>
         public Time(long ticks)
         {
             _ticks = CheckTimeSpanBound(new TimeSpan(ticks));

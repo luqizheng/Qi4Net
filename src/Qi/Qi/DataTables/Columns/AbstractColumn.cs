@@ -108,7 +108,7 @@ namespace Qi.DataTables.Columns
         }
 
         /// <summary>
-        /// clear the reference of the <see cref="T"/>,because it may be object.
+        /// clear the reference of type,because it may be object.
         /// </summary>
         public void Clear()
         {

@@ -58,7 +58,7 @@ namespace Qi.DataTables
         }
 
         /// <summary>
-        /// 创建一个列，这个列的结果由其他列组合而成的。有方法<see cref="customeFunc"/>计算结果
+        /// 创建一个列，这个列的结果由其他列组合而成的。有方法计算结果
         /// </summary>
         /// <typeparam name="TReturnVaue">计算结果的类型</typeparam>
         /// <param name="table">数据</param>

@@ -13,19 +13,26 @@ namespace Qi
         private readonly bool _slideTime;
         private readonly SortedList<DateTime, int> _timeoutPools = new SortedList<DateTime, int>();
         private Thread _thread;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slideTime"></param>
         public QCache(bool slideTime)
         {
             _slideTime = slideTime;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public QCache()
             : this(false)
         {
         }
 
         #region IDisposable Members
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             _thread.Abort();
@@ -196,7 +203,7 @@ namespace Qi
 
         #region Nested type: TimeoutItem
 
-        public class TimeoutItem
+        internal class TimeoutItem
         {
             public int MilliSeconds;
             public object Target;

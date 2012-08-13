@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using NHibernate.Cfg;
 
-namespace Qi.Nhibernates
+namespace Qi.NHibernate
 {
     public class NhFileConfig : NhConfig
     {

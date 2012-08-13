@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using NHibernate;
 using NHibernate.Type;
-using Qi.Nhibernates;
+using Qi.NHibernate;
 
 namespace Qi.Web.Mvc.Founders
 {

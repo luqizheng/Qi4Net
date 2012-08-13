@@ -3,7 +3,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using MvcTest.Models;
 using NHibernate.Criterion;
-using Qi.Nhibernates;
+using Qi.NHibernate;
 using Qi.Web.Mvc;
 
 namespace MvcTest.Controllers

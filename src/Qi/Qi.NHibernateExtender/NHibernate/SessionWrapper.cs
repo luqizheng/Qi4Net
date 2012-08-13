@@ -4,7 +4,7 @@ using NHibernate.Context;
 using NHibernate.Impl;
 using Qi.SharePools;
 
-namespace Qi.Nhibernates
+namespace Qi.NHibernate
 {
     public class SessionWrapper
     {

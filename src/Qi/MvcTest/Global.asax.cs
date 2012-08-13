@@ -2,7 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Routing;
 using NHibernate.Tool.hbm2ddl;
-using Qi.Nhibernates;
+using Qi.NHibernate;
 using log4net.Config;
 
 namespace MvcTest

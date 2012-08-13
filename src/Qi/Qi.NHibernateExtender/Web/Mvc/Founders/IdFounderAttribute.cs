@@ -5,7 +5,7 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Criterion;
 using NHibernate.Type;
-using Qi.Nhibernates;
+using Qi.NHibernate;
 
 namespace Qi.Web.Mvc.Founders
 {

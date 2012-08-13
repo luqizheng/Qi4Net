@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
-using Qi.Nhibernates;
+using Qi.NHibernate;
 
 namespace Qi.Domain.NHibernates
 {

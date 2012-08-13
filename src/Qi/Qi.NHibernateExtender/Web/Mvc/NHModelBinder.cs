@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using Qi.Collections;
-using Qi.Nhibernates;
+using Qi.NHibernate;
 using Qi.Web.Mvc.Founders;
 
 namespace Qi.Web.Mvc

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Qi.Nhibernates
+namespace Qi.NHibernate
 {
     [Serializable]
     public class NhConfigurationException : ApplicationException

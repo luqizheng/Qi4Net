@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using NHibernate;
 
-namespace Qi.Nhibernates
+namespace Qi.NHibernate
 {
     public class SessionManager
     {

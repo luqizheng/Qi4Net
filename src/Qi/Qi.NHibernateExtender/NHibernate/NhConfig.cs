@@ -2,7 +2,7 @@ using System;
 using NHibernate;
 using NHibernate.Cfg;
 
-namespace Qi.Nhibernates
+namespace Qi.NHibernate
 {
     public abstract class NhConfig : INhConfig
     {

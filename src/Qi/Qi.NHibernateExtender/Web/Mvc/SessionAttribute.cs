@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using System.Web.Mvc;
 using NHibernate;
-using Qi.Nhibernates;
+using Qi.NHibernate;
 
 namespace Qi.Web.Mvc
 {

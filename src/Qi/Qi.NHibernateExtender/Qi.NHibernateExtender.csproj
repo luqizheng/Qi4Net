@@ -53,18 +53,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\NHibernates\DaoBase.cs" />
-    <Compile Include="Nhibernates\INhConfig.cs" />
-    <Compile Include="Nhibernates\NhConfig.cs" />
-    <Compile Include="Nhibernates\NhConfigManager.cs" />
-    <Compile Include="Nhibernates\NhConfigurationException.cs" />
-    <Compile Include="Nhibernates\NhFileConfig.cs" />
-    <Compile Include="Nhibernates\SessionManager.cs" />
-    <Compile Include="Nhibernates\SessionManagerException.cs" />
-    <Compile Include="Nhibernates\SessionWrapper.cs" />
-    <Compile Include="Nhibernates\Types\AbstractTimeType.cs" />
-    <Compile Include="Nhibernates\Types\KeyValueCollectionType.cs" />
-    <Compile Include="Nhibernates\Types\TimeStringType.cs" />
-    <Compile Include="Nhibernates\Types\TimeType.cs" />
+    <Compile Include="NHibernate\INhConfig.cs" />
+    <Compile Include="NHibernate\NhConfig.cs" />
+    <Compile Include="NHibernate\NhConfigManager.cs" />
+    <Compile Include="NHibernate\NhConfigurationException.cs" />
+    <Compile Include="NHibernate\NhFileConfig.cs" />
+    <Compile Include="NHibernate\SessionManager.cs" />
+    <Compile Include="NHibernate\SessionManagerException.cs" />
+    <Compile Include="NHibernate\SessionWrapper.cs" />
+    <Compile Include="NHibernate\Types\AbstractTimeType.cs" />
+    <Compile Include="NHibernate\Types\KeyValueCollectionType.cs" />
+    <Compile Include="NHibernate\Types\TimeStringType.cs" />
+    <Compile Include="NHibernate\Types\TimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\Mvc\CollectionHelper.cs" />
     <Compile Include="Web\Mvc\Founders\FounderAttribute.cs" />

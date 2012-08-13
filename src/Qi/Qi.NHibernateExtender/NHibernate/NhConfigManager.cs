@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Qi.Nhibernates
+namespace Qi.NHibernate
 {
     public class NhConfigManager
     {

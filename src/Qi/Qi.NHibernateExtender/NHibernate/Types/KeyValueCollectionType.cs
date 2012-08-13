@@ -9,7 +9,7 @@ using NHibernate.SqlTypes;
 using NHibernate.Type;
 using Qi.Web;
 
-namespace Qi.Nhibernates.Types
+namespace Qi.NHibernate.Types
 {
     public class KeyValueCollectionType : PrimitiveType
     {

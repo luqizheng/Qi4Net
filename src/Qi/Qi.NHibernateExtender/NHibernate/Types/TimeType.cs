@@ -4,7 +4,7 @@ using System.Data.Common;
 using NHibernate.Dialect;
 using NHibernate.SqlTypes;
 
-namespace Qi.Nhibernates.Types
+namespace Qi.NHibernate.Types
 {
     /// <summary>
     /// Use Int64 to store Time 

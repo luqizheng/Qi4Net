@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MvcTest.Models;
-using Qi.Nhibernates;
+using Qi.NHibernate;
 using Qi.Web.Mvc;
 
 namespace MvcTest.Controllers

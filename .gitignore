@@ -25,3 +25,4 @@ src/Qi/packages/
 src/Qi/Qi.sln.DotSettings.user
 src/Qi/Qi.suo
 src/Qi/Qi/Qi.csproj.user
+/src/Qi/Qi.NHibernateExtender/Qi.NHibernateExtender.csproj.user

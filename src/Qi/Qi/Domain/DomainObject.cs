@@ -43,7 +43,11 @@ namespace Qi.Domain
         {
             return !(x == y);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             var other = obj as DomainObject<T,TId>;

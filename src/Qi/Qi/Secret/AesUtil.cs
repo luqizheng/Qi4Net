@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Qi.Secret
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class AesUtil
     {
         /// <summary>

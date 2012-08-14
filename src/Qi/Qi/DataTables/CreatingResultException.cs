@@ -10,6 +10,10 @@ namespace Qi.DataTables
     /// </summary>
     public class CreatingResultException : ApplicationException
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public CreatingResultException(string message)
             : base(message)
         {

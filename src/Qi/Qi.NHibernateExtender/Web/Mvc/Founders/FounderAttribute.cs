@@ -7,11 +7,16 @@ using NHibernate.Type;
 
 namespace Qi.Web.Mvc.Founders
 {
+    /// <summary>
+    /// Find the object whihc belong a property or field defined in a DTO
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public abstract class FounderAttribute : Attribute
     {
         private Type _entityType;
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected FounderAttribute()
         {
             Unique = true;

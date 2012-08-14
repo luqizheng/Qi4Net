@@ -13,65 +13,104 @@ namespace Qi.Domain.NHibernates
     public abstract class DaoBase<TId, TObject> : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
         private readonly SessionWrapper _wrapper;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionFactoryName"></param>
         protected DaoBase(string sessionFactoryName)
         {
             _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected DaoBase()
             : this(SessionManager.Instance.CurrentSessionFactoryName ?? SessionManager.DefaultSessionFactoryKey)
         {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected ISession CurrentSession
         {
             get { return _wrapper.CurrentSession; }
         }
 
         #region IDao<TId,TObject> Members
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public virtual TObject Get(TId id)
         {
             return CurrentSession.Get<TObject>(id);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public virtual TObject Load(TId id)
         {
             return CurrentSession.Load<TObject>(id);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public virtual IList<TObject> GetAll()
         {
             return CreateDetachedCriteria().GetExecutableCriteria(CurrentSession).List<TObject>();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
         public void Update(TObject t)
         {
             CurrentSession.Update(t);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
         public virtual void Delete(TObject t)
         {
             CurrentSession.Delete(t);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
         public virtual void Refresh(TObject t)
         {
             CurrentSession.Refresh(t);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
         public virtual void SaveOrUpdate(TObject t)
         {
             CurrentSession.SaveOrUpdate(t);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
         public virtual TId Save(TObject t)
         {
             return (TId) CurrentSession.Save(t);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exampleInstance"></param>
+        /// <param name="propertiesToExclude"></param>
+        /// <returns></returns>
         public virtual IList<TObject> FindByExample(TObject exampleInstance, params string[] propertiesToExclude)
         {
             ICriteria criteria = CreateCriteria();
@@ -86,7 +125,9 @@ namespace Qi.Domain.NHibernates
 
             return criteria.List<TObject>();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void Flush()
         {
             CurrentSession.Flush();

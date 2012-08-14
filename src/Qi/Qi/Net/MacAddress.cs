@@ -10,7 +10,15 @@ namespace Qi.Net
     public struct MacAddress
     {
         private readonly byte[] _taken;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="d"></param>
+        /// <param name="e"></param>
+        /// <param name="f"></param>
         public MacAddress(byte a, byte b, byte c, byte d, byte e, byte f)
         {
             _taken = new byte[6];
@@ -21,7 +29,10 @@ namespace Qi.Net
             _taken[4] = e;
             _taken[5] = f;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bytes"></param>
         public MacAddress(byte[] bytes)
         {
             if (bytes == null)
@@ -61,7 +72,10 @@ namespace Qi.Net
                 bytes[i/2] = Convert.ToByte(hex.Substring(i, 2), 16);
             return bytes[0];
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             var result = new string[6];
@@ -71,7 +85,11 @@ namespace Qi.Net
             }
             return String.Join("-", result);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -85,22 +103,39 @@ namespace Qi.Net
             var iObj = (MacAddress) obj;
             return !_taken.Where((t, i) => iObj._taken[i] != t).Any();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(MacAddress other)
         {
             return Equals(other._taken, _taken);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return _taken.Sum(a => a.GetHashCode());
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static bool operator ==(MacAddress a, MacAddress b)
         {
             return a.Equals(b);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static bool operator !=(MacAddress a, MacAddress b)
         {
             return !(a == b);

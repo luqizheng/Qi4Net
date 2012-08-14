@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Qi
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ObjectInitialization
     {
         private readonly Dictionary<int, object> _inits = new Dictionary<int, object>();

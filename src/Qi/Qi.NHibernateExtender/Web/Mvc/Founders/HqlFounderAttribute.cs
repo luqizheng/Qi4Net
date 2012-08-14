@@ -7,11 +7,24 @@ using Qi.NHibernate;
 
 namespace Qi.Web.Mvc.Founders
 {
+    /// <summary>
+    /// Use Hql to find the object whihc belong a property or field defined in a DTO
+    /// </summary>
     public class HqlFounderAttribute : FounderAttribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly string _hql;
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly string _postDataType;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hql"></param>
+        /// <param name="postDataType"></param>
         public HqlFounderAttribute(string hql, string postDataType)
         {
             Unique = false;
@@ -19,7 +32,13 @@ namespace Qi.Web.Mvc.Founders
             _hql = hql;
             _postDataType = postDataType;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hql"></param>
+        /// <param name="postDataType"></param>
+        /// <param name="anotherParameterType"></param>
+        /// <param name="anotherParameterName"></param>
         public HqlFounderAttribute(string hql, string postDataType, string[] anotherParameterType,
                                    string[] anotherParameterName)
             : this(hql, postDataType)
@@ -27,16 +46,30 @@ namespace Qi.Web.Mvc.Founders
             AnotherParameterName = anotherParameterName;
             AnotherParameterType = anotherParameterType;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public new bool Unique
         {
             get { return base.Unique; }
             set { base.Unique = value; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public string[] AnotherParameterType { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string[] AnotherParameterName { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="id"></param>
+        /// <param name="postName"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
 
         protected override IList GetObject(ISession session, object[] id, string postName, NameValueCollection context)
         {
@@ -75,7 +108,12 @@ namespace Qi.Web.Mvc.Founders
                 crit.SetParameter(parameterName, val, paramType);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="requestKey"></param>
+        /// <returns></returns>
         public override IType GetMappingType(ISession session, string requestKey)
         {
             return TypeFactory.Basic(_postDataType);

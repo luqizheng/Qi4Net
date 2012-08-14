@@ -6,24 +6,36 @@ using Qi.SharePools;
 
 namespace Qi.NHibernate
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SessionWrapper
     {
         private const string InitKeyName = "session.was.inited";
         private IStore _store;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionFactory"></param>
         public SessionWrapper(ISessionFactory sessionFactory)
         {
             if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
             SessionFactory = sessionFactory;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public IStore Store
         {
             get { return _store ?? (_store = GetStore(SessionFactory)); }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public ISessionFactory SessionFactory { get; private set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public ISession CurrentSession
         {
             get
@@ -35,7 +47,9 @@ namespace Qi.NHibernate
                 return SessionFactory.GetCurrentSession();
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsInitSession
         {
             get
@@ -47,7 +61,10 @@ namespace Qi.NHibernate
             }
             private set { Store.SetData(InitKeyName, value); }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool InitSession()
         {
             bool result = false;
@@ -58,7 +75,10 @@ namespace Qi.NHibernate
             }
             return result;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="submitData"></param>
         public void Close(bool submitData)
         {
             if (CurrentSessionContext.HasBind(SessionFactory))

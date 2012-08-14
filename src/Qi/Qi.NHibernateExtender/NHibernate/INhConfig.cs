@@ -3,6 +3,9 @@ using NHibernate.Cfg;
 
 namespace Qi.NHibernate
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface INhConfig
     {
         /// <summary>

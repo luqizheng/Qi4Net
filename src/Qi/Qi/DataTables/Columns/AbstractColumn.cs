@@ -12,7 +12,10 @@ namespace Qi.DataTables.Columns
         private object _cacheData;
         private int _rowObjectHasCode;
         private SortedDictionary<string, ICalculator> _sets;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
         protected AbstractColumn(string name)
         {
             if (String.IsNullOrEmpty(name))
@@ -26,16 +29,24 @@ namespace Qi.DataTables.Columns
         {
             get { return _sets ?? (_sets = new SortedDictionary<string, ICalculator>()); }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count
         {
             get { return Calculators.Count; }
         }
 
         #region IColumn Members
-
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         object IColumn.GetValue(object data)
         {
             return GetValue(data);
@@ -64,7 +75,11 @@ namespace Qi.DataTables.Columns
             }
             return null;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="calculatorIndex"></param>
+        /// <returns></returns>
         public object GetResult(int calculatorIndex)
         {
             if (_sets == null)
@@ -93,7 +108,7 @@ namespace Qi.DataTables.Columns
         }
 
         /// <summary>
-        /// clear the reference of the <see cref="T"/>,because it may be object.
+        /// clear the reference of type,because it may be object.
         /// </summary>
         public void Clear()
         {
@@ -112,7 +127,11 @@ namespace Qi.DataTables.Columns
         }
 
         #endregion
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public T GetValue(object data)
         {
             bool sameRowObject = _rowObjectHasCode == data.GetHashCode();
@@ -129,7 +148,11 @@ namespace Qi.DataTables.Columns
             }
             return (T) _cacheData;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rowObject"></param>
+        /// <returns></returns>
         protected abstract object InvokeObject(object rowObject);
     }
 }

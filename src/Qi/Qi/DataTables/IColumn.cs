@@ -1,5 +1,8 @@
 namespace Qi.DataTables
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IColumn
     {
         /// <summary>

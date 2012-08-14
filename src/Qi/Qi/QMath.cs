@@ -2,6 +2,9 @@
 
 namespace Qi
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class QMath
     {
         /// <summary>

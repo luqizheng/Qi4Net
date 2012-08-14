@@ -6,9 +6,9 @@ using System.Linq;
 namespace Qi.Collections
 {
     /// <summary>
-    /// Setter for Collections.
+    /// Create instance base on colection type.
     /// </summary>
-    public class SetActivtor
+    public class CollectionActivtor
     {
         private static readonly Dictionary<Type, Type> DefaultSetType = new Dictionary<Type, Type>
                                                                             {
@@ -23,8 +23,11 @@ namespace Qi.Collections
                                                                             };
 
         private readonly Type _instanceType;
-
-        public SetActivtor(Type instanceType)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceType"></param>
+        public CollectionActivtor(Type instanceType)
         {
             if (instanceType == null)
                 throw new ArgumentNullException("instanceType");
@@ -36,17 +39,31 @@ namespace Qi.Collections
         /// 3st int32 is the capacity,
         /// </summary>
         public Func<Type, Type, int, object> ActiveMethod { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="childElementType"></param>
+        /// <param name="capacity"></param>
+        /// <returns></returns>
         public object Create(Type childElementType, int capacity)
         {
             return ActiveMethod(_instanceType, childElementType, capacity);
         }
-
-        public SetAccessor CreateAccessor(object target)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public CollectionAccessor CreateAccessor(object target)
         {
-            return SetAccessor.Create(target);
+            return CollectionAccessor.Create(target);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelType"></param>
+        /// <param name="parameterType"></param>
+        /// <returns></returns>
         public static bool IsSupport(Type modelType, out Type parameterType)
         {
             parameterType = null;
@@ -68,8 +85,12 @@ namespace Qi.Collections
             }
             return false;
         }
-
-        public static SetActivtor Create(Type instanceType)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
+        public static CollectionActivtor Create(Type instanceType)
         {
             Type targetType = instanceType;
             Func<Type, Type, int, object> activeMethod = null;
@@ -89,7 +110,7 @@ namespace Qi.Collections
                 activeMethod = (t1, t2, t3) => Activator.CreateInstance(t1.MakeGenericType(t2));
             }
 
-            return new SetActivtor(targetType)
+            return new CollectionActivtor(targetType)
                        {
                            ActiveMethod = activeMethod ?? ((t1, t2, t3) => Activator.CreateInstance(instanceType))
                        };

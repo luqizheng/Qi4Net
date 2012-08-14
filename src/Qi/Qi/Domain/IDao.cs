@@ -78,7 +78,10 @@ namespace Qi.Domain
         /// Save will use the current value of the identifier property if the Assigned generator is used.
         /// </remarks>
         TId Save(TReturn t);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
         void Update(TReturn t);
 
 

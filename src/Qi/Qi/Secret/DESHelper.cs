@@ -5,8 +5,19 @@ using System.Text;
 
 namespace Qi.Secret
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class DesHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="getByteFunc"></param>
+        /// <param name="rgbKey"></param>
+        /// <param name="rgbIv"></param>
+        /// <returns></returns>
         public static byte[] EncryptByDes(this string content, Encoding getByteFunc, string rgbKey, string rgbIv)
         {
             if (rgbIv.Length < 8)
@@ -29,7 +40,14 @@ namespace Qi.Secret
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inData"></param>
+        /// <param name="getByteFunc"></param>
+        /// <param name="rgbKey"></param>
+        /// <param name="rgbIv"></param>
+        /// <returns></returns>
         public static byte[] DecryptByDes(this byte[] inData, Encoding getByteFunc, string rgbKey, string rgbIv)
         {
             if (rgbIv.Length < 8)
@@ -51,13 +69,26 @@ namespace Qi.Secret
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="destFile"></param>
+        /// <param name="rgbKey"></param>
+        /// <param name="rgbIv"></param>
         public static void EncryptFileByDes(this FileInfo sourceFile, string destFile, string rgbKey,
                                             string rgbIv)
         {
             sourceFile.EncryptFileByDes(destFile, Encoding.Default, rgbKey, rgbIv);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="destFile"></param>
+        /// <param name="getByteFunc"></param>
+        /// <param name="rgbKey"></param>
+        /// <param name="rgbIv"></param>
         public static void EncryptFileByDes(this FileInfo sourceFile, string destFile, Encoding getByteFunc,
                                             string rgbKey,
                                             string rgbIv)
@@ -79,12 +110,25 @@ namespace Qi.Secret
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="destFile"></param>
+        /// <param name="rgbKey"></param>
+        /// <param name="rgbIv"></param>
         public static void DecryptFileByDes(this FileInfo sourceFile, string destFile, string rgbKey, string rgbIv)
         {
             sourceFile.DecryptFileByDes(destFile, Encoding.Default, rgbKey, rgbIv);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="destFile"></param>
+        /// <param name="getByteFunc"></param>
+        /// <param name="rgbKey"></param>
+        /// <param name="rgbIv"></param>
         public static void DecryptFileByDes(this FileInfo sourceFile, string destFile, Encoding getByteFunc,
                                             string rgbKey, string rgbIv)
         {

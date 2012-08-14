@@ -11,13 +11,15 @@ namespace Qi
     public class ApplicationHelper
     {
         /// <summary>
-        /// 获取物理路径
+        /// Get the PhysicalApplication
         /// </summary>
         public static string PhysicalApplicationPath
         {
             get { return AppDomain.CurrentDomain.BaseDirectory; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static bool IsWeb
         {
             get

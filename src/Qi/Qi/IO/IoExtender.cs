@@ -4,6 +4,9 @@ using System.IO;
 
 namespace Qi.IO
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class IoExtender
     {
         /// <summary>
@@ -28,10 +31,14 @@ namespace Qi.IO
                     a.Create();
             }
         }
-
+        /// <summary>
+        /// Create diectory and its sub-directory.
+        /// </summary>
+        /// <param name="directory"></param>
         public static void CreateEx(this DirectoryInfo directory)
         {
-            if (directory == null) throw new ArgumentNullException("directory");
+            if (directory == null)
+                throw new ArgumentNullException("directory");
             CreateDirectories(directory.FullName);
         }
 

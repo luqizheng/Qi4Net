@@ -4,15 +4,24 @@ using NHibernate.Cfg;
 
 namespace Qi.NHibernate
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class NhConfig : INhConfig
     {
         private Configuration _nhConfiguration;
         private string _sessionFactoryName;
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected NhConfig()
         {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionFactoryName"></param>
+        /// <param name="cfg"></param>
         protected NhConfig(string sessionFactoryName, Configuration cfg)
         {
             if (sessionFactoryName == null) 

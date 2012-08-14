@@ -6,15 +6,26 @@ using NHibernate.Cfg;
 
 namespace Qi.NHibernate
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class NhFileConfig : NhConfig
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
         public NhFileConfig(string file)
         {
             if (!File.Exists(file))
                 throw new FileNotFoundException("Can't find the nhibernate config file.", file);
             CfgFile = file;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionFactoryName"></param>
+        /// <param name="cfg"></param>
         public NhFileConfig(string sessionFactoryName, Configuration cfg)
             : base(sessionFactoryName, cfg)
         {
@@ -45,12 +56,17 @@ namespace Qi.NHibernate
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void ResetToUnChanged()
         {
             ModifyTime = File.GetLastWriteTime(CfgFile);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected override string GetSessionFactoryName()
         {
             using (XmlReader dom = XmlReader.Create(new StreamReader(CfgFile)))
@@ -66,7 +82,10 @@ namespace Qi.NHibernate
             }
             return "default";
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected override Configuration BuildConfiguration()
         {
             var result = new Configuration();

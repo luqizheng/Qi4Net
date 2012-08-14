@@ -11,7 +11,13 @@
     /// 
     /// </summary>
     public delegate void VoidFunc();
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TT1"></typeparam>
+    /// <typeparam name="TT2"></typeparam>
+    /// <param name="t1"></param>
+    /// <param name="t2"></param>
     public delegate void VoidFunc<in TT1, in TT2>(TT1 t1, TT2 t2);
     /// <summary>
     /// 

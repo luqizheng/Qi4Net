@@ -13,6 +13,7 @@ namespace Qi.Domain.NHibernates
     public abstract class DaoBase<TId, TObject> : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
         private readonly SessionWrapper _wrapper;
+
         /// <summary>
         /// 
         /// </summary>
@@ -21,6 +22,7 @@ namespace Qi.Domain.NHibernates
         {
             _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -28,6 +30,7 @@ namespace Qi.Domain.NHibernates
             : this(SessionManager.Instance.CurrentSessionFactoryName ?? SessionManager.DefaultSessionFactoryKey)
         {
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -37,6 +40,7 @@ namespace Qi.Domain.NHibernates
         }
 
         #region IDao<TId,TObject> Members
+
         /// <summary>
         /// 
         /// </summary>
@@ -46,6 +50,7 @@ namespace Qi.Domain.NHibernates
         {
             return CurrentSession.Get<TObject>(id);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -55,6 +60,7 @@ namespace Qi.Domain.NHibernates
         {
             return CurrentSession.Load<TObject>(id);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -63,6 +69,7 @@ namespace Qi.Domain.NHibernates
         {
             return CreateDetachedCriteria().GetExecutableCriteria(CurrentSession).List<TObject>();
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -80,6 +87,7 @@ namespace Qi.Domain.NHibernates
         {
             CurrentSession.Delete(t);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -88,6 +96,7 @@ namespace Qi.Domain.NHibernates
         {
             CurrentSession.Refresh(t);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -96,6 +105,7 @@ namespace Qi.Domain.NHibernates
         {
             CurrentSession.SaveOrUpdate(t);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -105,6 +115,7 @@ namespace Qi.Domain.NHibernates
         {
             return (TId) CurrentSession.Save(t);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -125,6 +136,7 @@ namespace Qi.Domain.NHibernates
 
             return criteria.List<TObject>();
         }
+
         /// <summary>
         /// 
         /// </summary>

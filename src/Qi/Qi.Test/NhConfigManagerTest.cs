@@ -1,6 +1,7 @@
-﻿using Qi.Nhibernates;
+﻿
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Qi.NHibernate;
 
 namespace Qi.Test
 {

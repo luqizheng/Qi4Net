@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Iesi.Collections.Generic;
 
 namespace Qi.Collections
 {
@@ -10,19 +11,19 @@ namespace Qi.Collections
     /// </summary>
     public class CollectionActivtor
     {
-        private static readonly Dictionary<Type, Type> DefaultSetType = new Dictionary<Type, Type>
-                                                                            {
-                                                                                {typeof(Iesi.Collections.Generic.ISet<>),typeof(Iesi.Collections.Generic.HashedSet<>)},
-                                                                                {typeof (ISet<>), typeof (HashSet<>)},
-                                                                                {typeof (IList<>), typeof (List<>)},
-                                                                                {typeof (IList), typeof (ArrayList)},
-                                                                                {typeof (ArrayList), typeof (ArrayList)},
-                                                                                {
-                                                                                    typeof (IEnumerable<>), typeof (List<>)
-                                                                                    },
-                                                                            };
+        private static readonly Dictionary<Type, Type> DefaultSetType =
+            new Dictionary<Type, Type>
+                {
+                    {typeof (Iesi.Collections.Generic.ISet<>),typeof (HashedSet<>)},
+                    {typeof (System.Collections.Generic.ISet<>),typeof (HashSet<>)},
+                    {typeof (IList<>), typeof (List<>)},
+                    {typeof (IList), typeof (ArrayList)},
+                    {typeof (ArrayList), typeof (ArrayList)},
+                    {typeof (IEnumerable<>),typeof (List<>)}
+                };
 
         private readonly Type _instanceType;
+
         /// <summary>
         /// 
         /// </summary>
@@ -39,6 +40,7 @@ namespace Qi.Collections
         /// 3st int32 is the capacity,
         /// </summary>
         public Func<Type, Type, int, object> ActiveMethod { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -49,6 +51,7 @@ namespace Qi.Collections
         {
             return ActiveMethod(_instanceType, childElementType, capacity);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -58,6 +61,7 @@ namespace Qi.Collections
         {
             return CollectionAccessor.Create(target);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -85,6 +89,7 @@ namespace Qi.Collections
             }
             return false;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -92,6 +97,7 @@ namespace Qi.Collections
         /// <returns></returns>
         public static CollectionActivtor Create(Type instanceType)
         {
+            if (instanceType == null) throw new ArgumentNullException("instanceType");
             Type targetType = instanceType;
             Func<Type, Type, int, object> activeMethod = null;
 

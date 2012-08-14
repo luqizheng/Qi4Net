@@ -4,7 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace Qi.Text
 {
-    public static class NamedFormatterHelper
+    /// <summary>
+    /// 
+    /// </summary>
+    public class NamedFormatterHelper
     {
         /// <summary>
         /// use replacePatten to replace Variables those in <seealso cref="formatString"/>, 
@@ -13,13 +16,26 @@ namespace Qi.Text
         /// <param name="formatString"></param>
         /// <param name="replacePattern"></param>
         /// <returns></returns>
-        public static string Replace(string formatString, IDictionary<string, string> replacePattern)
+        public string Replace(string formatString, IDictionary<string, string> replacePattern)
         {
             if (replacePattern == null)
                 throw new ArgumentNullException("replacePattern");
-            var pattern = new string[replacePattern.Count];
+
+            string[] variables = CollectVariable(formatString);
+            IDictionary<string, string> exist = new Dictionary<string, string>();
+
+            foreach (string variable in variables)
+            {
+                if (replacePattern.ContainsKey(variable))
+                {
+                    exist.Add(variable, replacePattern[variable]);
+                }
+            }
+
+
+            var pattern = new string[exist.Count];
             int index = 0;
-            foreach (string key in replacePattern.Keys)
+            foreach (string key in exist.Keys)
             {
                 pattern[index] = string.Format("\\[{0}\\]", key);
                 index++;

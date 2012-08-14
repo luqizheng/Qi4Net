@@ -10,32 +10,35 @@ namespace Qi.Collections
     public class CollectionAccessor
     {
         /// <summary>
-        /// 
+        /// create collectionAccessor, please use <seealso cref="Create"/>
         /// </summary>
         /// <param name="target"></param>
-        public CollectionAccessor(object target)
+        private CollectionAccessor(object target)
         {
             if (target == null) throw new ArgumentNullException("target");
             Target = target;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        public object Target { get; set; }
 
         /// <summary>
-        /// 
+        /// Gets the collection instance.
+        /// </summary>
+        public object Target { get; private set; }
+
+        /// <summary>
+        ///  Gets or sets handler for adding item .
         /// </summary>
         public VoidFunc<object, object> AddMethod { get; set; }
 
         /// <summary>
-        /// 
+        /// Gets or sets handler for setting item
         /// </summary>
         public VoidFunc<object, object, int> SetMethod { get; set; }
+
         /// <summary>
-        /// 
+        /// Gets or sets handler for couting the collection's number
         /// </summary>
         public Func<object, int> CountMethod { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -50,10 +53,12 @@ namespace Qi.Collections
                 AddMethod(Target, item);
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="item"></param>
+        /// 
         public void Add(object item)
         {
             if (item == null) throw new ArgumentNullException("item");

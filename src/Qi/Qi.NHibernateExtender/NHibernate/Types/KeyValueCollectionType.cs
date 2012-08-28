@@ -38,7 +38,7 @@ namespace Qi.NHibernate.Types
         /// </summary>
         public override Type PrimitiveClass
         {
-            get { return typeof (Dictionary<string, string>); }
+            get { return typeof(Dictionary<string, string>); }
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Qi.NHibernate.Types
         /// </summary>
         public override Type ReturnedClass
         {
-            get { return typeof (Dictionary<string, object>); }
+            get { return typeof(Dictionary<string, object>); }
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Qi.NHibernate.Types
         /// <returns></returns>
         public override string ObjectToSQLString(object value, Dialect dialect)
         {
-            var content = (IDictionary<string, object>) value;
+            var content = (IDictionary<string, object>)value;
             return content.ToString();
         }
 
@@ -109,7 +109,7 @@ namespace Qi.NHibernate.Types
         /// <param name="index"></param>
         public override void Set(IDbCommand cmd, object value, int index)
         {
-            var param = (IDbDataParameter) cmd.Parameters[index];
+            var param = (IDbDataParameter)cmd.Parameters[index];
             var dict = value as IDictionary<string, object>;
             param.Value = dict == null ? value : dict.ToJson(false);
         }
@@ -148,7 +148,8 @@ namespace Qi.NHibernate.Types
                 return false;
             foreach (string xKey in xDict.Keys)
             {
-                if (!yDict.ContainsKey(xKey) || yDict[xKey].Equals(xDict[xKey])) return false;
+                if (!yDict.ContainsKey(xKey) || !(yDict[xKey].Equals(xDict[xKey])))
+                    return false;
             }
             return true;
         }
@@ -171,7 +172,7 @@ namespace Qi.NHibernate.Types
                 return xDict.Count.CompareTo(yDict.Count);
             foreach (string xKey in xDict.Keys)
             {
-                if (!yDict.ContainsKey(xKey) || yDict[xKey].Equals(xDict[xKey]))
+                if (!yDict.ContainsKey(xKey) || !(yDict[xKey].Equals(xDict[xKey])))
                 {
                     return -1;
                 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Iesi.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcTest.Models;
-using Qi.Web.Mvc;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Qi.Test.NHibernate
 {
@@ -51,7 +46,5 @@ namespace Qi.Test.NHibernate
         //
 
         #endregion
-
-      
     }
 }

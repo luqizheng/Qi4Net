@@ -18,4 +18,8 @@
         /// <returns></returns>
         object GetData(string key);
     }
+    internal interface IStoreFactory
+    {
+        IStore Store { get; }
+    }
 }

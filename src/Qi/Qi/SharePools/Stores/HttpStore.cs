@@ -34,7 +34,7 @@ namespace Qi.SharePools.Stores
         /// <param name="data"></param>
         public void SetData(string key, object data)
         {
-            if (!Dictionary.Contains(key))
+            if (Dictionary.Contains(key))
             {
                 Dictionary[key] = data;
             }

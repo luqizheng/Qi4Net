@@ -17,7 +17,7 @@ namespace Qi.SharePools.Stores
         /// <param name="data"></param>
         public void SetData(string key, object data)
         {
-            if (_pools.ContainsKey(key))
+            if (!_pools.ContainsKey(key))
             {
                 _pools.Add(key, data);
             }

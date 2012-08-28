@@ -95,6 +95,7 @@
     <Compile Include="JsonHelperTest.cs" />
     <Compile Include="NHibernate\KeyValueCollectionTypeTest.cs" />
     <Compile Include="MacAddressTest.cs" />
+    <Compile Include="NamedFormatterHelperTest.cs" />
     <Compile Include="NhConfigManagerTest.cs" />
     <Compile Include="NHibernate\NHModelBinderTest.cs" />
     <Compile Include="NHModelBinderBaseTest.cs" />

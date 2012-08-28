@@ -24,12 +24,13 @@ namespace Qi.Web.Mvc
         private bool _isDto = true;
 
         private SessionWrapper _wrapper;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected NameValueCollection GetSubmitValues(HttpContextBase context)
+        private NameValueCollection GetSubmitValues(HttpContextBase context)
         {
             return context.Request.HttpMethod.ToLower() == "post"
                        ? context.Request.Form
@@ -45,6 +46,8 @@ namespace Qi.Web.Mvc
         /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><exception cref="T:System.ArgumentNullException">The <paramref name="bindingContext "/>parameter is null.</exception>
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
+            if (controllerContext == null) throw new ArgumentNullException("controllerContext");
+            if (bindingContext == null) throw new ArgumentNullException("bindingContext");
             _wrapper = Initilize(controllerContext);
             return base.BindModel(controllerContext, bindingContext);
         }
@@ -174,6 +177,7 @@ namespace Qi.Web.Mvc
                                                       _wrapper.CurrentSession);
             return result.Count > 0 ? result[0] : null;
         }
+
         /// <summary>
         /// get a value to indecate the modelType or it's child element  is mapping class which defined in nhibernate.
         /// </summary>
@@ -184,7 +188,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
+            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
 
             if (modelType.IsGenericType)
             {
@@ -195,6 +199,7 @@ namespace Qi.Web.Mvc
                 types.Any(
                     type => _wrapper.SessionFactory.Statistics.EntityNames.Contains(type.UnderlyingSystemType.FullName));
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -215,9 +220,9 @@ namespace Qi.Web.Mvc
         private Object GetObjectById(Type mappingType, NameValueCollection context)
         {
             var idFounderAttribute = new IdFounderAttribute
-                        {
-                            EntityType = mappingType
-                        };
+                                         {
+                                             EntityType = mappingType
+                                         };
             string id = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
 
             IList result = idFounderAttribute.GetObject(id, context, false, _wrapper.CurrentSession);
@@ -252,6 +257,7 @@ namespace Qi.Web.Mvc
             throw new NHModelBinderException(
                 "can't find any enabled SessionAttribute on controller or action ,please special session attribute and make sure it's enabled.");
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -263,7 +269,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute) customAttributes[0];
+                var custommAttr = (SessionAttribute)customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -277,13 +283,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
         }
     }
 }

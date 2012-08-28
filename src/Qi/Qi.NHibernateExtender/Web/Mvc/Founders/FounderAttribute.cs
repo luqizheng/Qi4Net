@@ -13,7 +13,6 @@ namespace Qi.Web.Mvc.Founders
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public abstract class FounderAttribute : Attribute
     {
-        private Type _entityType;
         /// <summary>
         /// 
         /// </summary>
@@ -30,17 +29,7 @@ namespace Qi.Web.Mvc.Founders
         /// <summary>
         /// 获取或设置Entity的类型
         /// </summary>
-        public Type EntityType
-        {
-            get { return _entityType; }
-            set
-            {
-                if (_entityType == null)
-                {
-                    _entityType = value;
-                }
-            }
-        }
+        public Type EntityType { get; set; }
 
         /// <summary>
         /// 获取对象

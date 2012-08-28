@@ -12,24 +12,27 @@ namespace Qi.SharePools
         /// </summary>
         public static IStore ThreadStaticStore
         {
-            get { return ThreadStatcBuilder.Instance; }
+            get { return ThreadStatcBuilder.Instance.Store; }
         }
+
         /// <summary>
         /// 
         /// </summary>
         public static IStore HttpStore
         {
-            get { return HttpStoreBuilder.Instance; }
+            get { return HttpStoreBuilder.Instance.Store; }
         }
+
         /// <summary>
         /// 
         /// </summary>
         public static IStore CallContextStore
         {
-            get { return CallStoreBuilder.Instance; }
+            get { return CallStoreBuilder.Instance.Store; }
         }
+
         /// <summary>
-        /// 
+        /// Get the Default Store, if in web context, return HttpStore, or CallContext
         /// </summary>
         public static IStore DefaultStore
         {
@@ -44,34 +47,70 @@ namespace Qi.SharePools
         }
 
         #region Nested type: CallStoreBuilder
+
         /// <summary>
         /// 
         /// </summary>
-        private class CallStoreBuilder
+        private class CallStoreBuilder : IStoreFactory
         {
-            public static readonly IStore Instance = new CallStore();
+            public static readonly IStoreFactory Instance = new CallStoreBuilder();
+
+            private CallStoreBuilder()
+            {
+                Store = new CallStore();
+            }
+
+            #region IStoreFactory Members
+
+            public IStore Store { get; set; }
+
+            #endregion
         }
 
         #endregion
 
         #region Nested type: HttpStoreBuilder
+
         /// <summary>
         /// 
         /// </summary>
-        private class HttpStoreBuilder
+        private class HttpStoreBuilder : IStoreFactory
         {
-            public static readonly IStore Instance = new HttpStore();
+            public static readonly IStoreFactory Instance = new HttpStoreBuilder();
+
+            private HttpStoreBuilder()
+            {
+                Store = new HttpStore();
+            }
+
+            #region IStoreFactory Members
+
+            public IStore Store { get; set; }
+
+            #endregion
         }
 
         #endregion
 
         #region Nested type: ThreadStatcBuilder
+
         /// <summary>
         /// 
         /// </summary>
-        private class ThreadStatcBuilder
+        private class ThreadStatcBuilder : IStoreFactory
         {
-            public static readonly IStore Instance = new ThreadStaticStore();
+            public static readonly IStoreFactory Instance = new ThreadStatcBuilder();
+
+            private ThreadStatcBuilder()
+            {
+                Store = new ThreadStaticStore();
+            }
+
+            #region IStoreFactory Members
+
+            public IStore Store { get; set; }
+
+            #endregion
         }
 
         #endregion

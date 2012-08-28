@@ -146,7 +146,11 @@ namespace Qi.NHibernate.Types
 
             if (xDict.Count != yDict.Count)
                 return false;
-            return xDict.Keys.All(xKey => yDict.ContainsKey(xKey) && !yDict[xKey].Equals(xDict[xKey]));
+            foreach (string xKey in xDict.Keys)
+            {
+                if (!yDict.ContainsKey(xKey) || yDict[xKey].Equals(xDict[xKey])) return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -165,9 +169,12 @@ namespace Qi.NHibernate.Types
                                                JsonContainer.Create(x.ToString()).Content;
             if (xDict.Count != yDict.Count)
                 return xDict.Count.CompareTo(yDict.Count);
-            if (xDict.Keys.Any(xKey => !yDict.ContainsKey(xKey) || yDict[xKey].Equals(xDict[xKey])))
+            foreach (string xKey in xDict.Keys)
             {
-                return -1;
+                if (!yDict.ContainsKey(xKey) || yDict[xKey].Equals(xDict[xKey]))
+                {
+                    return -1;
+                }
             }
             return 0;
         }

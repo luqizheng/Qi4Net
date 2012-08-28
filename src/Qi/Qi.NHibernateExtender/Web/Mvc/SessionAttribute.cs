@@ -74,7 +74,7 @@ namespace Qi.Web.Mvc
         /// <param name="filterContext"></param>
         public void OnException(ExceptionContext filterContext)
         {
-            if (_tras != null)
+            if (_tras != null && _tras.IsActive)
             {
                 _tras.Rollback();
                 _tras = null;

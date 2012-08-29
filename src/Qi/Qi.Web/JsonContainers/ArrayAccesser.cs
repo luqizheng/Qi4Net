@@ -13,6 +13,8 @@ namespace Qi.Web.JsonContainers
         public ArrayAccesser(Array ary)
             : base(ary)
         {
+            if (ary == null)
+                throw new ArgumentNullException("ary");
             _ary = ary;
         }
 

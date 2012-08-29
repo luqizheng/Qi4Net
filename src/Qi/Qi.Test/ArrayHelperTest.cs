@@ -1,40 +1,23 @@
-﻿using Qi;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 
 namespace Qi.Test
 {
-
-
     /// <summary>
     ///This is a test class for ArrayHelperTest and is intended
     ///to contain all ArrayHelperTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestClass]
     public class ArrayHelperTest
     {
-
-
-        private TestContext testContextInstance;
-
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
         ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
+        public TestContext TestContext { get; set; }
 
         #region Additional test attributes
+
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -62,8 +45,8 @@ namespace Qi.Test
         //{
         //}
         //
-        #endregion
 
+        #endregion
 
         /// <summary>
         ///A test for Split
@@ -71,7 +54,7 @@ namespace Qi.Test
         [TestMethod]
         public void SplitTestHelper()
         {
-            int[] ary = new int[33];
+            var ary = new int[33];
             for (int i = 0; i < ary.Length; i++)
             {
                 ary[i] = i;
@@ -81,28 +64,26 @@ namespace Qi.Test
             int remainder = 0;
             int remainderExpected = 3;
 
-            var actual = ArrayHelper.Split<int>(ary, eachAryLength, out remainder);
+            IList<int[]> actual = ary.Split(eachAryLength, out remainder);
             Assert.AreEqual(4, actual.Count);
             Assert.AreEqual(3, remainder);
             Assert.AreEqual(remainderExpected, remainder);
-
         }
 
 
-
-        [TestMethod()]
+        [TestMethod]
         public void DivEqualTest_7_div_3()
         {
-            int[] ary = new int[7];
+            var ary = new int[7];
             for (int i = 0; i < ary.Length; i++)
             {
                 ary[i] = i;
             }
             int dividEquallyNumber = 3;
-            var target = ary.DivEqual(dividEquallyNumber);
+            int[][] target = ary.DivEqual(dividEquallyNumber);
             Assert.AreEqual(target.Length, 3);
             Assert.AreEqual(3, target[0].Length);
-            var startChecked = 0;
+            int startChecked = 0;
             for (int i = startChecked; i < target[0].Length; i++)
             {
                 Assert.AreEqual(i, target[0][i]);
@@ -116,16 +97,16 @@ namespace Qi.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DivEqualTest_8_for_4()
         {
-            int[] ary = new int[8];
+            var ary = new int[8];
             for (int i = 0; i < ary.Length; i++)
             {
                 ary[i] = i;
             }
             int dividEquallyNumber = 4;
-            var target = ary.DivEqual(dividEquallyNumber);
+            int[][] target = ary.DivEqual(dividEquallyNumber);
             Assert.AreEqual(target.Length, 4);
             foreach (var aryItem in target)
             {
@@ -133,16 +114,16 @@ namespace Qi.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DivEqualTest_4_for_8()
         {
-            int[] ary = new int[4];
+            var ary = new int[4];
             for (int i = 0; i < ary.Length; i++)
             {
                 ary[i] = i;
             }
             int dividEquallyNumber = 8;
-            var target = ary.DivEqual(dividEquallyNumber);
+            int[][] target = ary.DivEqual(dividEquallyNumber);
             Assert.AreEqual(target.Length, 4);
             foreach (var aryItem in target)
             {
@@ -150,37 +131,34 @@ namespace Qi.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SubArrayTest()
         {
-            int[] array = new int[]
-            {
-                0,1,2,3,4,5
-            };
+            var array = new[]
+                            {
+                                0, 1, 2, 3, 4, 5
+                            };
 
-            var target = array.SubArray(1,2);
+            int[] target = array.SubArray(1, 2);
             Assert.AreEqual(1, target[0]);
             Assert.AreEqual(2, target[1]);
-            
         }
 
 
-        [TestMethod()]
+        [TestMethod]
         public void SubArray_Test()
         {
-            int[] array = new int[]
-            {
-                0,1,2,3,4,5
-            };
+            var array = new[]
+                            {
+                                0, 1, 2, 3, 4, 5
+                            };
 
-            var target = array.SubArray(1);
+            int[] target = array.SubArray(1);
             Assert.AreEqual(1, target[0]);
             Assert.AreEqual(2, target[1]);
             Assert.AreEqual(3, target[2]);
             Assert.AreEqual(4, target[3]);
             Assert.AreEqual(5, target[4]);
         }
-
-
     }
 }

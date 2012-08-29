@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 
 namespace Qi.Web.JsonContainers
@@ -8,6 +9,7 @@ namespace Qi.Web.JsonContainers
 
         public ListAccesser(IList target) : base(target)
         {
+            if (target == null) throw new ArgumentNullException("target");
             _target = target;
         }
 

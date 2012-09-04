@@ -54,12 +54,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+      <HintPath>..\packages\Iesi.Collections.3.3.1.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.3.2.0.4000\lib\Net35\NHibernate.dll</HintPath>
+      <HintPath>..\packages\NHibernate.3.3.1.4000\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -89,6 +89,7 @@
     <Compile Include="ArrayHelperTest.cs" />
     <Compile Include="EncryptHelperTest.cs" />
     <Compile Include="EnumDescriptionAttributeTest.cs" />
+    <Compile Include="HttpStoreTest.cs" />
     <Compile Include="IoExtenderTest.cs" />
     <Compile Include="JsonContainerFilterTest.cs" />
     <Compile Include="JsonContainerTest.cs" />
@@ -108,6 +109,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="ThreadStaticStoreTest.cs" />
     <Compile Include="TimeTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -161,10 +163,11 @@
     <EmbeddedResource Include="Resource1.zh-CN.resx" />
     <EmbeddedResource Include="Resource1.zh-TW.resx" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Test References\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Shadow Include="Test References\Qi.Web.accessor" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

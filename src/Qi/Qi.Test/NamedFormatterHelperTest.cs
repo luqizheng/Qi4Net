@@ -71,15 +71,16 @@ namespace Qi.Test
         [TestMethod]
         public void ReplaceTest()
         {
-            string formatString = "Hello,[Person], you are a good [job]";
+            string formatString = "Hello,[Person], you are a good [[job]]";
             IDictionary<string, string> replacePattern = new Dictionary<string, string>
                                                              {
                                                                  {"Person", "John"},
                                                                  {"job", "student"}
                                                              };
-            string expected = "Hello,John, you are a good student";
+            string expected = "Hello,John, you are a good [student]";
             string actual;
-            actual = NamedFormatterHelper.Replace(formatString, replacePattern);
+            var target = new NamedFormatterHelper();
+            actual = target.Replace(formatString, replacePattern);
             Assert.AreEqual(expected, actual);
         }
 

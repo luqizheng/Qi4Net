@@ -9,7 +9,9 @@ namespace Qi.SharePools.Stores
     public class HttpStore : IStore
     {
         private IDictionary _dictionary;
-
+        /// <summary>
+        /// 
+        /// </summary>
         private IDictionary Dictionary
         {
             get
@@ -18,7 +20,7 @@ namespace Qi.SharePools.Stores
                 {
                     lock (this)
                     {
-                        var httpContext = ReflectiveHttpContext.HttpContextCurrentGetter();
+                        object httpContext = ReflectiveHttpContext.HttpContextCurrentGetter();
                         _dictionary = ReflectiveHttpContext.HttpContextItemsGetter(httpContext);
                     }
                 }
@@ -27,6 +29,7 @@ namespace Qi.SharePools.Stores
         }
 
         #region IStore Members
+
         /// <summary>
         /// 
         /// </summary>
@@ -43,6 +46,7 @@ namespace Qi.SharePools.Stores
                 Dictionary.Add(key, data);
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -58,6 +62,5 @@ namespace Qi.SharePools.Stores
         }
 
         #endregion
-
     }
 }

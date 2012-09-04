@@ -14,7 +14,7 @@ namespace Qi.Text
         /// Variable need to defined in  square brackets, such as like that "[var]"
         /// </summary>
         /// <param name="formatString"></param>
-        /// <param name="replacePattern"></param>
+        /// <param name="replacePattern">a dictionary with key and value,the key without "["</param>
         /// <returns></returns>
         public string Replace(string formatString, IDictionary<string, string> replacePattern)
         {

@@ -17,8 +17,9 @@ namespace Qi
         {
             get { return AppDomain.CurrentDomain.BaseDirectory; }
         }
+
         /// <summary>
-        /// 
+        /// Gets a value indecate is web context or not
         /// </summary>
         public static bool IsWeb
         {

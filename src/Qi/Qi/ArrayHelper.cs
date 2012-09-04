@@ -131,7 +131,7 @@ namespace Qi
             }
             return arySet;
         }
-
+        
         /// <summary>
         /// 
         /// </summary>

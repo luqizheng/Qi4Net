@@ -42,7 +42,6 @@ namespace Qi.Web.Mvc.Founders
         public IList GetObject(string postName, NameValueCollection context, bool isSet, ISession session)
         {
             string requestValues = context[postName];
-
             IType mappingType = GetMappingType(session, postName);
 
 

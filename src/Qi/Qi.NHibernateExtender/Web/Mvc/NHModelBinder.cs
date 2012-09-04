@@ -223,9 +223,13 @@ namespace Qi.Web.Mvc
                                          {
                                              EntityType = mappingType
                                          };
-            string id = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
+            string idKey = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
+            var idStringValue = context[idKey];
+            
+            if (string.IsNullOrEmpty(idStringValue) || string.IsNullOrWhiteSpace(idStringValue))
+                return null;
 
-            IList result = idFounderAttribute.GetObject(id, context, false, _wrapper.CurrentSession);
+            IList result = idFounderAttribute.GetObject(idKey, context, false, _wrapper.CurrentSession);
             return result.Count > 0 ? result[0] : null;
         }
 

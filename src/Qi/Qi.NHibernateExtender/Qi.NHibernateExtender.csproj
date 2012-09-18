@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\NHibernates\DaoBase.cs" />
-    <Compile Include="NHibernate\BitwiseFlags.cs" />
+    <Compile Include="NHibernate\Criterion\BitwiseFlags.cs" />
     <Compile Include="NHibernate\INhConfig.cs" />
     <Compile Include="NHibernate\NhConfig.cs" />
     <Compile Include="NHibernate\NhConfigManager.cs" />

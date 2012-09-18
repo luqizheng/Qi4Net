@@ -15,6 +15,11 @@ namespace Qi.NHibernate.Criterion
         {
         }
 
+        private BitwiseFlags(ICriterion lhs, ICriterion rhs)
+            : base(lhs, rhs)
+        {
+
+        }
         protected override string Op
         {
             get { return "="; }
@@ -23,6 +28,13 @@ namespace Qi.NHibernate.Criterion
         public static BitwiseFlags IsSet(string propertyName, Enum flags)
         {
             return new BitwiseFlags(propertyName, flags, " & ");
+        }
+
+        public static BitwiseFlags IsSet(string propertyName, int flags)
+        {
+            var lhs = new SimpleExpression(propertyName, flags, " & ");
+            var rhs = Expression.Sql("?", flags, NHibernateUtil.Int32);
+            return new BitwiseFlags(lhs, rhs);
         }
     }
 }

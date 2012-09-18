@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using NHibernate;
+using Qi.SharePools;
 
 namespace Qi.NHibernate
 {
@@ -24,8 +25,8 @@ namespace Qi.NHibernate
         /// </summary>
         public string CurrentSessionFactoryName
         {
-            get { return (string)CallContext.GetData("session.key.factory."); }
-            set { CallContext.SetData("session.key.factory.", value); }
+            get { return (string)SharePool.DefaultStore.GetData("session.key.factory."); }
+            set { SharePool.DefaultStore.SetData("session.key.factory.", value); }
         }
 
         /// <summary>
@@ -67,6 +68,10 @@ namespace Qi.NHibernate
         {
             if (CurrentSessionFactoryName == null)
             {
+                if (ApplicationHelper.IsWeb)
+                    throw new SessionManagerException(
+                        "Please set the CurrentSessionFactoryName before used, if you are using mvc, try to add SessionAttribute on the action.");
+
                 throw new SessionManagerException("CurrentSessionFactoryName is empty, can't get the current session.");
             }
             return GetSessionWrapper(CurrentSessionFactoryName).CurrentSession;
@@ -130,7 +135,7 @@ namespace Qi.NHibernate
             if (String.IsNullOrEmpty(sessionFacotryName)) throw new ArgumentNullException("sessionFacotryName");
             if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
             if (Factories.ContainsKey(sessionFacotryName))
-                throw new SessionManagerException(sessionFacotryName,"Not find the session factory name.");
+                throw new SessionManagerException(sessionFacotryName, "Not find the session factory name.");
 
             Factories.Add(sessionFacotryName, new SessionWrapper(sessionFactory));
         }

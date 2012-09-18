@@ -45,7 +45,7 @@ namespace Qi.Web.Mvc.Founders
             IType mappingType = GetMappingType(session, postName);
 
 
-            if (context[postName] != null)
+            if (!string.IsNullOrEmpty(requestValues))
             {
                 try
                 {

@@ -62,6 +62,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -82,6 +83,7 @@
     <Compile Include="ArrayHelper.cs" />
     <Compile Include="Collections\CollectionAccessor.cs" />
     <Compile Include="Collections\CollectionActivtor.cs" />
+    <Compile Include="Draw\ResizePic.cs" />
     <Compile Include="SharePools\Stores\CallStore.cs" />
     <Compile Include="SharePools\Stores\HttpStore.cs" />
     <Compile Include="SharePools\IStore.cs" />

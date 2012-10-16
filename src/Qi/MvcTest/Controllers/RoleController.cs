@@ -21,6 +21,11 @@ namespace MvcTest.Controllers
             var a = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
             return View(a);
         }
+        [HttpPost]
+        public ActionResult Index([ModelBinder(typeof(NHModelBinder))]Role[] roles)
+        {
+            return View(roles);
+        }
 
         public ActionResult Edit(Guid? id)
         {

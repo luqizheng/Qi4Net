@@ -5,10 +5,14 @@ namespace MvcTest.Models
 {
     public class Role : DomainObject<Role, Guid>
     {
-        protected Role()
+        public Role()
         {
         }
 
+        public Role(Guid id)
+        {
+            this.Id = id;
+        }
         public Role(string name)
         {
             Name = name;

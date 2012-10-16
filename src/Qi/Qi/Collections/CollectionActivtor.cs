@@ -19,7 +19,8 @@ namespace Qi.Collections
                     {typeof (IList<>), typeof (List<>)},
                     {typeof (IList), typeof (ArrayList)},
                     {typeof (ArrayList), typeof (ArrayList)},
-                    {typeof (IEnumerable<>),typeof (List<>)}
+                    {typeof (IEnumerable<>),typeof (List<>)},
+                    {typeof(List<>),typeof(List<>)}
                 };
 
         private readonly Type _instanceType;

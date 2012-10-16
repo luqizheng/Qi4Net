@@ -63,14 +63,33 @@ namespace Qi.Web.Mvc
                                               Type modelType)
         {
             _isDto = false;
-
+            object result;
             if (!IsMappingClass(modelType))
             {
-                _isDto = true;
-                return base.CreateModel(controllerContext, bindingContext, modelType);
+                Type parameterType;
+                bool isListProperty = CollectionActivtor.IsSupport(modelType, out parameterType);
+                if (!isListProperty)
+                {
+                    _isDto = true;
+                    result = base.CreateModel(controllerContext, bindingContext, modelType);
+                }
+                else
+                {
+                    var access = CollectionActivtor.Create(modelType);
+                    result = access.Create(parameterType, 10);
+                    var accessor = access.CreateAccessor(result);
+                    accessor.Add(Activator.CreateInstance(parameterType,Guid.NewGuid()));
+                    accessor.Add(Activator.CreateInstance(parameterType, Guid.NewGuid()));
+                    accessor.Add(Activator.CreateInstance(parameterType, Guid.NewGuid()));
+                    //accessor.Add(Activator.CreateInstance(parameterType));
+
+                }
+            }
+            else
+            {
+                result = GetObjectById(modelType, GetSubmitValues(controllerContext.HttpContext));
             }
 
-            object result = GetObjectById(modelType, GetSubmitValues(controllerContext.HttpContext));
             if (result == null)
             {
                 ConstructorInfo constructor = modelType
@@ -80,7 +99,7 @@ namespace Qi.Web.Mvc
             }
             return result;
         }
-
+        
         /// <summary>
         /// Binds the specified property by using the specified controller context and binding context and the specified property descriptor.
         /// </summary>
@@ -188,7 +207,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
+            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
 
             if (modelType.IsGenericType)
             {
@@ -220,12 +239,12 @@ namespace Qi.Web.Mvc
         private Object GetObjectById(Type mappingType, NameValueCollection context)
         {
             var idFounderAttribute = new IdFounderAttribute
-                                         {
-                                             EntityType = mappingType
-                                         };
+                {
+                    EntityType = mappingType
+                };
             string idKey = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
-            var idStringValue = context[idKey];
-            
+            string idStringValue = context[idKey];
+
             if (string.IsNullOrEmpty(idStringValue) || string.IsNullOrWhiteSpace(idStringValue))
                 return null;
 
@@ -247,11 +266,11 @@ namespace Qi.Web.Mvc
 
             //Find session attribute on the action.
             var customAttributeSet = new[]
-                                         {
-                                             action.GetCustomAttributes(typeof (SessionAttribute), true),
-                                             controllerContext.Controller.GetType().GetCustomAttributes(
-                                                 typeof (SessionAttribute), true)
-                                         };
+                {
+                    action.GetCustomAttributes(typeof (SessionAttribute), true),
+                    controllerContext.Controller.GetType().GetCustomAttributes(
+                        typeof (SessionAttribute), true)
+                };
             SessionWrapper wrapper = null;
             if (customAttributeSet.Any(customAttributes => TryEnableSession(customAttributes, out wrapper)))
             {
@@ -273,7 +292,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute)customAttributes[0];
+                var custommAttr = (SessionAttribute) customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -287,13 +306,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute)customAttributes[0];
+            return (FounderAttribute) customAttributes[0];
         }
     }
 }

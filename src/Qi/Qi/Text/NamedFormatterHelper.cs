@@ -58,7 +58,7 @@ namespace Qi.Text
             if (content == null)
                 throw new ArgumentNullException("content");
 
-            const string pattern = @"\[[\w*\.]*\]";
+            const string pattern = @"\[([^\[\]]|\[([^\[\]])*\])*\]";
 
 
             var rex = new Regex(pattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);

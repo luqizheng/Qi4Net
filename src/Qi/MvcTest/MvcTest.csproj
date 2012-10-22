@@ -34,12 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.1.0\lib\net40-client\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Services.Logging.Log4netIntegration">
-      <HintPath>..\packages\Castle.Core-log4net.3.1.0\lib\net40\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
-    </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.3.3.1.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
@@ -222,10 +216,6 @@
     <ProjectReference Include="..\Qi.Web\Qi.Web.csproj">
       <Project>{D977A1FD-CA69-4A1F-9157-A8D47AF94831}</Project>
       <Name>Qi.Web</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Qi.Win32\Qi.Win32.csproj">
-      <Project>{7D8DD847-0F41-433E-BAC5-8717206AED96}</Project>
-      <Name>Qi.Win32</Name>
     </ProjectReference>
     <ProjectReference Include="..\Qi\Qi.csproj">
       <Project>{109EBD31-85C7-45C9-A850-EF3457055670}</Project>

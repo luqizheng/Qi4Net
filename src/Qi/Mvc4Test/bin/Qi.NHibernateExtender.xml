@@ -1,0 +1,1040 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Qi.NHibernateExtender</name>
+    </assembly>
+    <members>
+        <member name="T:Qi.Web.Mvc.NHModelBinder">
+            <summary>
+            Nhibernate model biner 
+            </summary>
+        </member>
+        <member name="F:Qi.Web.Mvc.NHModelBinder._isDto">
+            <summary>
+            when binder object is nhibernate entity, it will set to true,
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.GetSubmitValues(System.Web.HttpContextBase)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.BindModel(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext)">
+            <summary>
+            Binds the model by using the specified controller context and binding context.
+            </summary>
+            <returns>
+            The bound object.
+            </returns>
+            <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><exception cref="T:System.ArgumentNullException">The <paramref name="bindingContext "/>parameter is null.</exception>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.CreateModel(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext,System.Type)">
+            <summary>
+            Creates the specified model type by using the specified controller context and binding context.
+            </summary>
+            <returns>
+            A data object of the specified type.
+            </returns>
+            <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><param name="modelType">The type of the model object to return.</param>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.BindProperty(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext,System.ComponentModel.PropertyDescriptor)">
+            <summary>
+            Binds the specified property by using the specified controller context and binding context and the specified property descriptor.
+            </summary>
+            <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><param name="propertyDescriptor">Describes a property to be bound. The descriptor provides information such as the component type, property type, and property value. It also provides methods to get or set the property value.</param>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.GetObjectFrom(System.ComponentModel.PropertyDescriptor,System.Collections.Specialized.NameValueCollection,System.Type)">
+            <summary>
+            
+            </summary>
+            <param name="propertyDescriptor"></param>
+            <param name="httpContextBase"> </param>
+            <param name="modelType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.IsPersistentType(System.Type)">
+            <summary>
+            get a value to indecate the modelType or it's child element  is mapping class which defined in nhibernate.
+            </summary>
+            <param name="modelType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.IsMappingClass(System.Type)">
+            <summary>
+            
+            </summary>
+            <param name="modelType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.GetObjectById(System.Type,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            if model is nh mapping class, use this found to getit.
+            </summary>
+            <param name="mappingType"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.Initilize(System.Web.Mvc.ControllerContext)">
+            <summary>
+            Find Session Attribute in the Action or Controller.
+            </summary>
+            <param name="controllerContext"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinder.TryEnableSession(System.Object[],Qi.NHibernate.SessionWrapper@)">
+            <summary>
+            
+            </summary>
+            <param name="customAttributes"></param>
+            <param name="wrapper"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Qi.Web.Mvc.Founders.IdFounderAttribute">
+            <summary>
+            Use Id of Mapping class to find the object whihc belong a property or field defined in a DTO
+            </summary>
+        </member>
+        <member name="T:Qi.Web.Mvc.Founders.FounderAttribute">
+            <summary>
+            Find the object whihc belong a property or field defined in a DTO
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.FounderAttribute.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.FounderAttribute.GetObject(System.String,System.Collections.Specialized.NameValueCollection,System.Boolean,NHibernate.ISession)">
+            <summary>
+            获取对象
+            </summary>
+            <param name="postName"></param>
+            <param name="context"></param>
+            <param name="isSet"> </param>
+            <param name="session"> </param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.FounderAttribute.GetObject(NHibernate.ISession,System.Object[],System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            
+            </summary>
+            <param name="session"></param>
+            <param name="id"></param>
+            <param name="postName"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.FounderAttribute.GetMappingType(NHibernate.ISession,System.String)">
+            <summary>
+            把Post的string类型的data，转换为IType类型,用于NHibernate获取对象的时候使用。
+            </summary>
+            <param name="session"></param>
+            <param name="requestKey"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Qi.Web.Mvc.Founders.FounderAttribute.Unique">
+            <summary>
+            标记查询结果集合是否为唯一，如果不是唯一，那么会拿第一个
+            </summary>
+        </member>
+        <member name="P:Qi.Web.Mvc.Founders.FounderAttribute.EntityType">
+            <summary>
+            获取或设置Entity的类型
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.IdFounderAttribute.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.IdFounderAttribute.GetObject(NHibernate.ISession,System.Object[],System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            
+            </summary>
+            <param name="session"></param>
+            <param name="id"></param>
+            <param name="postName"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.IdFounderAttribute.GetMappingType(NHibernate.ISession,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="session"></param>
+            <param name="requestKey"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Qi.Web.Mvc.Founders.HqlFounderAttribute">
+            <summary>
+            Use Hql to find the object whihc belong a property or field defined in a DTO
+            </summary>
+        </member>
+        <member name="F:Qi.Web.Mvc.Founders.HqlFounderAttribute._hql">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Qi.Web.Mvc.Founders.HqlFounderAttribute._postDataType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.HqlFounderAttribute.#ctor(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="hql"></param>
+            <param name="postDataType"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.HqlFounderAttribute.#ctor(System.String,System.String,System.String[],System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="hql"></param>
+            <param name="postDataType"></param>
+            <param name="anotherParameterType"></param>
+            <param name="anotherParameterName"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.HqlFounderAttribute.GetObject(NHibernate.ISession,System.Object[],System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            
+            </summary>
+            <param name="session"></param>
+            <param name="id"></param>
+            <param name="postName"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.HqlFounderAttribute.GetMappingType(NHibernate.ISession,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="session"></param>
+            <param name="requestKey"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Qi.Web.Mvc.Founders.HqlFounderAttribute.Unique">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.Web.Mvc.Founders.HqlFounderAttribute.AnotherParameterType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.Web.Mvc.Founders.HqlFounderAttribute.AnotherParameterName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Qi.NHibernate.SessionManagerException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.SessionManagerException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Qi.NHibernate.SessionManagerException.#ctor(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="sessionFactoryKey"></param>
+            <param name="message"></param>
+        </member>
+        <member name="T:Qi.NHibernate.NhConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Qi.NHibernate.INhConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.INhConfig.BuildSessionFactory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.INhConfig.Refresh">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.INhConfig.SessionFactoryName">
+            <summary>
+            Gets the SessionFactoryName 
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.INhConfig.NHConfiguration">
+            <summary>
+            Gets the Nhibernate Configuration from this setting file.
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.INhConfig.IsChanged">
+            <summary>
+            Get the value indecate file is changed or not.
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfig.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfig.#ctor(System.String,NHibernate.Cfg.Configuration)">
+            <summary>
+            
+            </summary>
+            <param name="sessionFactoryName"></param>
+            <param name="cfg"></param>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfig.BuildSessionFactory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfig.Refresh">
+            <summary>
+            Refresh config target,it may be a file. and re-build the session name and configuration.
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfig.ResetToUnChanged">
+            <summary>
+            if apply changed, it will call this function to reset changed state to un-changed.
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfig.GetSessionFactoryName">
+            <summary>
+            get the sessionFacotry name
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfig.BuildConfiguration">
+            <summary>
+            Build Configuration 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Qi.NHibernate.NhConfig.SessionFactoryName">
+            <summary>
+            Gets the SessionFactoryName 
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.NhConfig.NHConfiguration">
+            <summary>
+            Gets the Nhibernate Configuration from this setting file.
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.NhConfig.IsChanged">
+            <summary>
+            Get the value indecate file is changed or not.
+            </summary>
+        </member>
+        <member name="T:Qi.Web.Mvc.SessionAttribute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.SessionAttribute.#ctor(System.Boolean,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="enabled"></param>
+            <param name="sessionFactoryName"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.SessionAttribute.#ctor(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="enabled"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.SessionAttribute.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.SessionAttribute.OnException(System.Web.Mvc.ExceptionContext)">
+            <summary>
+            
+            </summary>
+            <param name="filterContext"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.SessionAttribute.OnActionExecuting(System.Web.Mvc.ActionExecutingContext)">
+            <summary>
+            
+            </summary>
+            <param name="filterContext"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.SessionAttribute.OnResultExecuted(System.Web.Mvc.ResultExecutedContext)">
+            <summary>
+            
+            </summary>
+            <param name="filterContext"></param>
+        </member>
+        <member name="P:Qi.Web.Mvc.SessionAttribute.Enable">
+            <summary>
+            Enable session or not.
+            </summary>
+        </member>
+        <member name="P:Qi.Web.Mvc.SessionAttribute.SessionFactoryName">
+            <summary>
+            session factory 
+            </summary>
+        </member>
+        <member name="P:Qi.Web.Mvc.SessionAttribute.Transaction">
+            <summary>
+            Gets or sets the value indecate use transaction or not.
+            </summary>
+        </member>
+        <member name="P:Qi.Web.Mvc.SessionAttribute.IsolationLevel">
+            <summary>
+            Gets or sets the IsolationLevel, default use the config setting.
+            </summary>
+        </member>
+        <member name="T:Qi.Web.Mvc.NHModelBinderException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinderException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.NHModelBinderException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="formatException"></param>
+        </member>
+        <member name="T:Qi.NHibernate.Criterion.BitwiseFlags">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Qi.NHibernate.Types.TimeStringType">
+            <summary>
+            Use string like "00:00:00" to store time.
+            </summary>
+        </member>
+        <member name="T:Qi.NHibernate.Types.AbstractTimeType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.Types.AbstractTimeType.#ctor(NHibernate.SqlTypes.SqlType)">
+            <summary>
+            
+            </summary>
+            <param name="sqlType"></param>
+        </member>
+        <member name="M:Qi.NHibernate.Types.AbstractTimeType.FromStringValue(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="xml"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.AbstractTimeType.ToTime(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Qi.NHibernate.Types.AbstractTimeType.DefaultValue">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.Types.AbstractTimeType.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.Types.AbstractTimeType.ReturnedClass">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeStringType.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeStringType.ObjectToSQLString(System.Object,NHibernate.Dialect.Dialect)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="dialect"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeStringType.Get(System.Data.IDataReader,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="rs"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeStringType.Get(System.Data.IDataReader,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="rs"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeStringType.Set(System.Data.IDbCommand,System.Object,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="cmd"></param>
+            <param name="value"></param>
+            <param name="index"></param>
+        </member>
+        <member name="P:Qi.NHibernate.Types.TimeStringType.PrimitiveClass">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Qi.Web.Mvc.NHModelBinderProvider">
+            <summary>
+            
+            </summary>
+            <remarks>
+            Regist it to application_start
+            <code>  
+             ModelBinderProviders.BinderProviders.Add(new NHModelBinderProvider());
+            </code>
+            </remarks>
+        </member>
+        <member name="T:Qi.NHibernate.Types.TimeType">
+            <summary>
+            Use Int64 to store Time 
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeType.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeType.ObjectToSQLString(System.Object,NHibernate.Dialect.Dialect)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="dialect"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeType.Get(System.Data.IDataReader,System.String)">
+            <summary>
+            When implemented by a class, gets the <see cref="T:Qi.Time"/> object in the 
+                        <see cref="T:System.Data.IDataReader"/> for the Property.
+            </summary>
+            <param name="rs">The <see cref="T:System.Data.IDataReader"/> that contains the value.</param><param name="name">The name of the field to get the value from.</param>
+            <returns>
+            An object with the value from the database.
+            </returns>
+            <remarks>
+            Most implementors just call the <see cref="M:NHibernate.Type.NullableType.Get(System.Data.IDataReader,System.Int32)"/> 
+                        overload of this method.
+            </remarks>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeType.Get(System.Data.IDataReader,System.Int32)">
+            <summary>
+            When implemented by a class, gets the <see cref="T:Qi.Time"/> object in the 
+                        <see cref="T:System.Data.IDataReader"/> for the Property.
+            </summary>
+            <param name="rs">The <see cref="T:System.Data.IDataReader"/> that contains the value.</param><param name="index">The index of the field to get the value from.</param>
+            <returns>
+            An object with the value from the database.
+            </returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.TimeType.Set(System.Data.IDbCommand,System.Object,System.Int32)">
+            <summary>
+            When implemented by a class, put the value from the mapped 
+                        Property into to the <see cref="T:System.Data.IDbCommand"/>.
+            </summary>
+            <param name="cmd">The <see cref="T:System.Data.IDbCommand"/> to put the value into.</param><param name="value">The object that contains the value.</param><param name="index">The index of the <see cref="T:System.Data.IDbDataParameter"/> to start writing the values to.</param>
+            <remarks>
+            Implementors do not need to handle possibility of null values because this will
+                        only be called from <see cref="M:NHibernate.Type.NullableType.NullSafeSet(System.Data.IDbCommand,System.Object,System.Int32)"/> after 
+                        it has checked for nulls.
+            </remarks>
+        </member>
+        <member name="P:Qi.NHibernate.Types.TimeType.PrimitiveClass">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Qi.NHibernate.NhConfigurationException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfigurationException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfigurationException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="msg"></param>
+            <param name="innerexception"></param>
+        </member>
+        <member name="T:Qi.Domain.NHibernates.DaoBase`2">
+            <summary>
+            Dao base for nhibernate implement
+            </summary>
+            <typeparam name="TId"></typeparam>
+            <typeparam name="TObject"></typeparam>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="sessionFactoryName"></param>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.Get(`0)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.Load(`0)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.GetAll">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.Update(`1)">
+            <summary>
+            
+            </summary>
+            <param name="t"></param>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.Delete(`1)">
+            <summary>
+            
+            </summary>
+            <param name="t"></param>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.Refresh(`1)">
+            <summary>
+            
+            </summary>
+            <param name="t"></param>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.SaveOrUpdate(`1)">
+            <summary>
+            
+            </summary>
+            <param name="t"></param>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.Save(`1)">
+            <summary>
+            
+            </summary>
+            <param name="t"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.FindByExample(`1,System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="exampleInstance"></param>
+            <param name="propertiesToExclude"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.Flush">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.CreateDetachedCriteria">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.CreateCriteria">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Domain.NHibernates.DaoBase`2.CreateQuery(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="query"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Qi.Domain.NHibernates.DaoBase`2.CurrentSession">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Qi.NHibernate.Types.KeyValueCollectionType">
+            <summary>
+            Dictionary for nh mapping, Dictionary that key is string,value is object
+            object is a json string database.
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.ObjectToSQLString(System.Object,NHibernate.Dialect.Dialect)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="dialect"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.FromStringValue(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="xml"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.Get(System.Data.IDataReader,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="rs"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.Get(System.Data.IDataReader,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="rs"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.Set(System.Data.IDbCommand,System.Object,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="cmd"></param>
+            <param name="value"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.DeepCopy(System.Object,NHibernate.EntityMode,NHibernate.Engine.ISessionFactoryImplementor)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="entityMode"></param>
+            <param name="factory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.IsEqual(System.Object,System.Object,NHibernate.EntityMode)">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="entityMode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.Types.KeyValueCollectionType.Compare(System.Object,System.Object,System.Nullable{NHibernate.EntityMode})">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="entityMode"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Qi.NHibernate.Types.KeyValueCollectionType.DefaultValue">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.Types.KeyValueCollectionType.PrimitiveClass">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.Types.KeyValueCollectionType.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.Types.KeyValueCollectionType.ReturnedClass">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Qi.NHibernate.SessionWrapper">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.SessionWrapper.#ctor(NHibernate.ISessionFactory)">
+            <summary>
+            
+            </summary>
+            <param name="sessionFactory"></param>
+        </member>
+        <member name="M:Qi.NHibernate.SessionWrapper.InitSession">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.SessionWrapper.Close(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="submitData"></param>
+        </member>
+        <member name="P:Qi.NHibernate.SessionWrapper.Store">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.SessionWrapper.SessionFactory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.SessionWrapper.CurrentSession">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.SessionWrapper.IsInitSession">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Qi.Web.Mvc.Founders.PropertyFounderAttribute">
+            <summary>
+            Use the Propertry equal value to find the mapping class.
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.PropertyFounderAttribute.#ctor">
+            <summary>
+            default is the request's propertyName,
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.PropertyFounderAttribute.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="propertyName"></param>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.PropertyFounderAttribute.GetObject(NHibernate.ISession,System.Object[],System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            
+            </summary>
+            <param name="session"></param>
+            <param name="searchConditionValue"></param>
+            <param name="postName"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.PropertyFounderAttribute.GetMappingType(NHibernate.ISession,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="session"></param>
+            <param name="requestKey"></param>
+            <returns></returns>
+            <exception cref="T:Qi.NHibernate.NhConfigurationException">can found the property in class.</exception>
+        </member>
+        <member name="T:Qi.NHibernate.SessionManager">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Qi.NHibernate.SessionManager.Instance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.SessionManager.GetCurrentSession">
+            <summary>
+            May be null, if you are not set the <see cref="P:Qi.NHibernate.SessionManager.CurrentSessionFactoryName"/> key
+            </summary>
+            <returns></returns>
+            <exception cref="T:Qi.NHibernate.SessionManagerException"></exception>
+        </member>
+        <member name="M:Qi.NHibernate.SessionManager.GetSessionWrapper">
+            <summary>
+            Get the default Session wrapper
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.SessionManager.GetSessionWrapper(System.String)">
+            <summary>
+            gets the session factory by session factory name defined in the sessionFactory file.
+            </summary>
+            <param name="sessionFactoryName"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">sessionFactoryName is not exist in session manager</exception>
+        </member>
+        <member name="M:Qi.NHibernate.SessionManager.Add(System.String,NHibernate.ISessionFactory)">
+            <summary>
+            add session facotry in SessionManager.
+            </summary>
+            <param name="sessionFacotryName"></param>
+            <param name="sessionFactory"></param>
+            <exception cref="T:System.ArgumentNullException">sessionFacotryName or sessionFactory is null</exception>
+            <exception cref="T:Qi.NHibernate.SessionManagerException">SessionManager has this sessionFacotryName</exception>
+        </member>
+        <member name="M:Qi.NHibernate.SessionManager.Remove(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="sessionFactoryName"></param>
+        </member>
+        <member name="P:Qi.NHibernate.SessionManager.CurrentSessionFactoryName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.SessionManager.DefaultSessionFactoryKey">
+            <summary>
+            default sesison factory key in the sessionFactory file.
+            </summary>
+        </member>
+        <member name="T:Qi.NHibernate.NhConfigManager">
+            <summary>
+            NhConfig manager.
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfigManager.Contains(System.String)">
+            <summary>
+            Determine whether the configurations contains the session factory with the specified name.
+            </summary>
+            <param name="sessionFactoryName"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">session factory name is empty of null</exception>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfigManager.GetNHFileInfos">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfigManager.GetNhConfig(System.String)">
+             <summary>
+             if can't found the NHConfig return false.
+             </summary>
+             <param name="sessionFactory"></param>
+             <returns></returns>
+            <exception cref="T:Qi.NHibernate.NhConfigurationException">Can't find the sessionFactory</exception>
+        </member>
+        <member name="M:Qi.NHibernate.NhConfigManager.GetConfigurationFile">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Qi.NHibernate.NhConfigManager.SessionFactoryNames">
+            <summary>
+            Gets or sets the session factory names.
+            </summary>
+        </member>
+        <member name="M:Qi.Web.Mvc.Founders.NHMappingHelper.ConvertStringToObject(System.String,NHibernate.Type.IType)">
+            <summary>
+            
+            </summary>
+            <param name="valStrExpress"></param>
+            <param name="type"></param>
+            <returns></returns>
+            <exception cref="T:System.FormatException">format exception </exception>
+        </member>
+        <member name="T:Qi.NHibernate.NhFileConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhFileConfig.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="file"></param>
+        </member>
+        <member name="M:Qi.NHibernate.NhFileConfig.#ctor(System.String,NHibernate.Cfg.Configuration)">
+            <summary>
+            
+            </summary>
+            <param name="sessionFactoryName"></param>
+            <param name="cfg"></param>
+        </member>
+        <member name="M:Qi.NHibernate.NhFileConfig.ResetToUnChanged">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Qi.NHibernate.NhFileConfig.GetSessionFactoryName">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.NhFileConfig.BuildConfiguration">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Qi.NHibernate.NhFileConfig.Save(System.String)">
+            <summary>
+            It only set the property
+            </summary>
+            <param name="file"></param>
+        </member>
+        <member name="P:Qi.NHibernate.NhFileConfig.CfgFile">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.NhFileConfig.ModifyTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Qi.NHibernate.NhFileConfig.IsChanged">
+            <summary>
+            Get the value indecate file is changed or not.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,7 +1,7 @@
 ﻿using System;
 using Qi.Domain;
 
-namespace MvcTest.Models
+namespace Mvc4Test.Models
 {
     public class Role : DomainObject<Role, Guid>
     {

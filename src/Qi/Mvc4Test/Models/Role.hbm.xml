@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="MvcTest.Models" assembly="MvcTest">
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="Mvc4Test.Models" assembly="Mvc4Test">
   <class name="Role" table="MBS_Role" lazy="false">
     <id name="Id">
       <generator class="guid"></generator>

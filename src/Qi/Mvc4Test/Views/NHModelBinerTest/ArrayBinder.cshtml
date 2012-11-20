@@ -15,17 +15,14 @@
             <th>
             </th>
         </tr>
-        @foreach (var item in Model)
+        @for (int i = 0; i < this.Model.Count;i++ )
         {
             <tr>
                 <td>
-                    @Html.TextBox("["+this.Model.IndexOf(item)+"].Name",item.Name)
-                    @Html.Hidden("["+this.Model.IndexOf(item)+"].Id",item.Id)
+                    @Html.TextBoxFor(m=>m[i].Name)
+                    @Html.TextBoxFor(m=>m[i].Id)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 </td>
             </tr>
         }

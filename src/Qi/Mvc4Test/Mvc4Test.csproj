@@ -144,8 +144,10 @@
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\AssignRoleModel.cs" />
+    <Compile Include="Models\BugFix.cs" />
     <Compile Include="Models\ChangeUserPasswordModel.cs" />
     <Compile Include="Models\ListDemo.cs" />
+    <Compile Include="Models\NHModerBinderDTO.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -273,6 +275,11 @@
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\NHModelBinerTest\Index.cshtml" />
     <Content Include="Views\NHModelBinerTest\ArrayBinder.cshtml" />
+    <Content Include="Views\NHModelBinerTest\DtoListBiner.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\NHModelBinerTest\DtoListRefereOnly.cshtml" />
+    <Content Include="Views\NHModelBinerTest\DtoPropertyBinder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

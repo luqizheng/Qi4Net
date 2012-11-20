@@ -1,0 +1,54 @@
+﻿@using Mvc4Test.Models
+@using Qi.NHibernate
+@model Mvc4Test.Models.NHModerBinderDTO
+@{
+    ViewBag.Title = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var count = this.Model.RoleList != null ? this.Model.RoleList.Count : 0;
+    IList<Role> all = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
+    int index = 0;
+}
+<h2>
+    ArrayBinder(selected: @count)</h2>
+<form method="post">
+<table>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+        </th>
+    </tr>
+    @foreach (var item in all)
+    {
+        var check = this.Model != null && this.Model.RoleList.Contains(item) ? "checked" : "";
+        
+        <tr>
+            <td>
+                <input name="ids" value="@item.Id" type="checkbox" @check/>
+            </td>
+            <td>
+                @Html.Raw(item.Name)
+            </td>
+        </tr>
+        index++;
+    }
+</table>
+<button type="button">
+    submit</button>
+</form>
+<script type="text/javascript">
+    $("button").click(function() {
+        var data = {
+            RoleList:[]
+        };
+        $("[name=ids]").each(function() {
+            if(this.checked)
+            data.RoleList.push({Id:$(this).val()});
+        });
+        $.post("@Url.Action("DtoListRefereOnly")", data, function(e) {
+        alert(e);
+    });
+    });
+    
+</script>

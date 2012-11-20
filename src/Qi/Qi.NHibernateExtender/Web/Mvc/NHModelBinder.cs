@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -18,10 +19,6 @@ namespace Qi.Web.Mvc
     /// </summary>
     public class NHModelBinder : DefaultModelBinder
     {
-        /// <summary>
-        /// when binder object is nhibernate entity, it will set to true,
-        /// </summary>
-        private bool _isDto = true;
 
         private SessionWrapper _wrapper;
 
@@ -47,9 +44,13 @@ namespace Qi.Web.Mvc
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             _wrapper = Initilize(controllerContext);
-            return base.BindModel(controllerContext, bindingContext);
+            var result = base.BindModel(controllerContext, bindingContext);
+            return result;
         }
-
+        protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor)
+        {
+            base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
+        }
         /// <summary>
         /// Creates the specified model type by using the specified controller context and binding context.
         /// </summary>
@@ -60,24 +61,9 @@ namespace Qi.Web.Mvc
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
-            ModelMetadataProvider a = ModelMetadataProviders.Current;
-            _isDto = false;
-            object result;
-            if (!IsMappingClass(modelType))
-            {
-                Type parameterType;
-                bool isListProperty = CollectionActivtor.IsSupport(modelType, out parameterType);
-                if (!isListProperty)
-                {
-                    _isDto = true;
-                }
-                result = base.CreateModel(controllerContext, bindingContext, modelType);
-            }
-            else
-            {
-                
-                result = GetObjectById(modelType, GetSubmitValues(controllerContext.HttpContext));
-            }
+            object result = !IsMappingClass(modelType)
+                ? base.CreateModel(controllerContext, bindingContext, modelType)
+                : GetObjectById(modelType, GetSubmitValues(controllerContext.HttpContext), bindingContext);
 
             if (result == null)
             {
@@ -89,101 +75,16 @@ namespace Qi.Web.Mvc
             return result;
         }
 
-        /// <summary>
-        /// Binds the specified property by using the specified controller context and binding context and the specified property descriptor.
-        /// </summary>
-        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><param name="propertyDescriptor">Describes a property to be bound. The descriptor provides information such as the component type, property type, and property value. It also provides methods to get or set the property value.</param>
-        protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext,
-                                             PropertyDescriptor propertyDescriptor)
+        protected override object GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-            if (!bindingContext.PropertyMetadata.ContainsKey(propertyDescriptor.Name))
-            {
-                base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
-            }
-            Type modelType = bindingContext.PropertyMetadata[propertyDescriptor.Name].ModelType;
-            Type parameterType;
-            NameValueCollection context = GetSubmitValues(controllerContext.HttpContext);
-            bool isListProperty = CollectionActivtor.IsSupport(modelType, out parameterType);
+            object value = propertyBinder.BindModel(controllerContext, bindingContext);
 
-            if (isListProperty)
+            if (bindingContext.ModelMetadata.ConvertEmptyStringToNull && Equals(value, String.Empty))
             {
-                if (_isDto)
-                {
-                    FounderAttribute founder = GetEntityFounderIn(propertyDescriptor.ComponentType, propertyDescriptor);
-                    founder.EntityType = parameterType;
-                    object children = CreateSetInstance(modelType, context, propertyDescriptor.Name,
-                                                        parameterType, founder);
-                    base.SetProperty(controllerContext, bindingContext, propertyDescriptor, children);
-                    return;
-                }
-                base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
-                return;
-            }
-            if (IsPersistentType(modelType))
-            {
-                //set mapping class property.
-                object value = GetObjectFrom(propertyDescriptor,
-                                             GetSubmitValues(controllerContext.HttpContext), bindingContext.ModelType);
-                base.SetProperty(controllerContext, bindingContext, propertyDescriptor, value);
-                return;
-            }
-            base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
-        }
-
-        private object CreateSetInstance(Type modelType, NameValueCollection context, string requestKey,
-                                         Type parameterType,
-                                         FounderAttribute founder)
-        {
-            if (context[requestKey] == null)
                 return null;
-            CollectionActivtor collectionHelper = CollectionActivtor.Create(modelType);
-            int capcaity = NHMappingHelper.ConvertToArray(context[requestKey]).Length;
-            object result = collectionHelper.Create(parameterType, capcaity);
-            CollectionAccessor accessor = collectionHelper.CreateAccessor(result);
-            bool isArray = result.GetType().IsArray;
-            IList val = founder.GetObject(requestKey, context, true, _wrapper.CurrentSession);
-            if (founder.Unique)
-            {
-                if (isArray)
-                    accessor.Set(val, 0);
-                else
-
-                    accessor.Add(val);
-
-                return result;
             }
 
-            int index = 0;
-            foreach (object entity in val)
-            {
-                if (isArray)
-                    accessor.Set(entity, index);
-                else
-                    accessor.Add(entity);
-                index++;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="propertyDescriptor"></param>
-        /// <param name="httpContextBase"> </param>
-        /// <param name="modelType"></param>
-        /// <returns></returns>
-        private object GetObjectFrom(PropertyDescriptor propertyDescriptor, NameValueCollection httpContextBase,
-                                     Type modelType)
-        {
-            FounderAttribute founderAttribute = GetEntityFounderIn(modelType, propertyDescriptor);
-
-            if (founderAttribute.EntityType == null)
-            {
-                founderAttribute.EntityType = propertyDescriptor.PropertyType;
-            }
-            IList result = founderAttribute.GetObject(propertyDescriptor.Name, httpContextBase, false,
-                                                      _wrapper.CurrentSession);
-            return result.Count > 0 ? result[0] : null;
+            return value;
         }
 
         /// <summary>
@@ -196,7 +97,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
+            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
 
             if (modelType.IsGenericType)
             {
@@ -224,15 +125,22 @@ namespace Qi.Web.Mvc
         /// </summary>
         /// <param name="mappingType"></param>
         /// <param name="context"></param>
+        /// <param name="bindingContext"> </param>
         /// <returns></returns>
-        private Object GetObjectById(Type mappingType, NameValueCollection context)
+        private Object GetObjectById(Type mappingType, NameValueCollection context, ModelBindingContext bindingContext)
         {
             var idFounderAttribute = new IdFounderAttribute
                 {
                     EntityType = mappingType
                 };
             string idKey = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
+            idKey = CreateSubPropertyName(bindingContext.ModelName, idKey);//for to Role[0].Id
             string idStringValue = context[idKey];
+            if (idStringValue == null)
+            {
+                idKey = CreateSubPropertyName(bindingContext.ModelName, "");//empty
+                idStringValue = context[idKey];
+            }
 
             if (string.IsNullOrEmpty(idStringValue) || string.IsNullOrWhiteSpace(idStringValue))
                 return null;
@@ -256,9 +164,8 @@ namespace Qi.Web.Mvc
             //Find session attribute on the action.
             var customAttributeSet = new[]
                 {
-                    action.GetCustomAttributes(typeof (SessionAttribute), true),
-                    controllerContext.Controller.GetType().GetCustomAttributes(
-                        typeof (SessionAttribute), true)
+                    action.GetCustomAttributes(typeof (SessionAttribute), true)
+                    , controllerContext.Controller.GetType().GetCustomAttributes(typeof (SessionAttribute), true)
                 };
             SessionWrapper wrapper = null;
             if (customAttributeSet.Any(customAttributes => TryEnableSession(customAttributes, out wrapper)))
@@ -281,7 +188,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute) customAttributes[0];
+                var custommAttr = (SessionAttribute)customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -295,13 +202,32 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
+        }
+
+        /// <summary>
+        /// Create submit key of form/querystring 
+        /// </summary>
+        /// <param name="prefix"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        private new static string CreateSubPropertyName(string prefix, string propertyName)
+        {
+            if (String.IsNullOrEmpty(prefix))
+            {
+                return propertyName;
+            }
+            if (String.IsNullOrEmpty(propertyName))
+            {
+                return prefix;
+            }
+            return prefix + "." + propertyName;
         }
     }
 }

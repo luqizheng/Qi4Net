@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using System.Web.Mvc;
 using Mvc4Test.Models;
 using Qi.NHibernate;
@@ -22,13 +23,12 @@ namespace Mvc4Test.Controllers
         {
             IList<Role> a = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
             return View(a);
-
         }
 
         [HttpPost]
         public ActionResult ArrayBinder(Role[] roles)
         {
-            foreach (var role in roles)
+            foreach (Role role in roles)
             {
                 SessionManager.Instance.GetCurrentSession().SaveOrUpdate(role);
             }
@@ -38,21 +38,23 @@ namespace Mvc4Test.Controllers
         public ActionResult DtoPropertyBinder()
         {
             IList<Role> a = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
-            return View(new NHModerBinderDTO()
+            return View(new NHModerBinderDTO
                 {
                     RoleList = a,
                     Something = DateTime.Now.ToString("hh:mm:ss")
                 });
         }
+
         [HttpPost]
         public ActionResult DtoPropertyBinder(NHModerBinderDTO dto)
         {
-            foreach (var role in dto.RoleList)
+            foreach (Role role in dto.RoleList)
             {
                 SessionManager.Instance.GetCurrentSession().SaveOrUpdate(role);
             }
             return RedirectToAction("DtoPropertyBinder");
         }
+
         public ActionResult ArrayProperty()
         {
             throw new NotImplementedException();
@@ -60,20 +62,25 @@ namespace Mvc4Test.Controllers
 
         public ActionResult DtoListRefereOnly()
         {
-            IList<Role> a = TempData["roles"] as IList<Role>;
+            var a = TempData["roles"] as IList<Role>;
             if (a == null)
                 a = new List<Role>();
-            return View(new NHModerBinderDTO()
-            {
-                RoleList = a,
-                Something = DateTime.Now.ToString("hh:mm:ss")
-            });
+            return View(new NHModerBinderDTO
+                {
+                    RoleList = a,
+                    Something = DateTime.Now.ToString("hh:mm:ss")
+                });
         }
+
         [HttpPost]
         public ActionResult DtoListRefereOnly(NHModerBinderDTO dto)
         {
             TempData["roles"] = dto.RoleList;
-            return Json("ok");
+            if (Request.IsAjaxRequest())
+            {
+                return Json("ok");
+            }
+            return RedirectToAction("DtoListRefereOnly");
         }
     }
 }

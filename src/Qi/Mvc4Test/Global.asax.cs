@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using Mvc4Test.Models;
+using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using Qi.NHibernate;
 using Qi.Web.Mvc;
@@ -16,7 +13,7 @@ namespace Mvc4Test
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
         protected void Application_Start()
         {
@@ -27,15 +24,14 @@ namespace Mvc4Test
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            
-            
+
             ModelBinders.Binders.DefaultBinder = new NHModelBinder();
 
             AreaRegistration.RegisterAllAreas();
 
-            foreach (var config in NhConfigManager.SessionFactoryNames)
+            foreach (string config in NhConfigManager.SessionFactoryNames)
             {
-                var nhConfiguration =
+                Configuration nhConfiguration =
                     NhConfigManager.GetNhConfig(config).NHConfiguration;
                 var create = new SchemaUpdate(nhConfiguration);
 

@@ -19,17 +19,17 @@ namespace Qi.Web.Mvc
     {
         private SessionWrapper _wrapper;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private NameValueCollection GetSubmitValues(HttpContextBase context)
-        {
-            return context.Request.HttpMethod.ToLower() == "post"
-                       ? context.Request.Form
-                       : context.Request.QueryString;
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="context"></param>
+        ///// <returns></returns>
+        //private NameValueCollection GetSubmitValues(HttpContextBase context)
+        //{
+        //    return context.Request.HttpMethod.ToLower() == "post"
+        //               ? context.Request.Form
+        //               : context.Request.QueryString;
+        //}
 
         /// <summary>
         /// Binds the model by using the specified controller context and binding context.
@@ -68,8 +68,7 @@ namespace Qi.Web.Mvc
         {
             object result = !IsMappingClass(modelType)
                                 ? base.CreateModel(controllerContext, bindingContext, modelType)
-                                : GetObjectById(modelType, GetSubmitValues(controllerContext.HttpContext),
-                                                bindingContext);
+                                : GetObjectById(modelType, bindingContext);
 
             if (result == null)
             {
@@ -85,6 +84,7 @@ namespace Qi.Web.Mvc
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
+
             object value = propertyBinder.BindModel(controllerContext, bindingContext);
 
             if (bindingContext.ModelMetadata.ConvertEmptyStringToNull && Equals(value, String.Empty))
@@ -105,7 +105,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
+            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
 
             if (modelType.IsGenericType)
             {
@@ -135,7 +135,7 @@ namespace Qi.Web.Mvc
         /// <param name="context"></param>
         /// <param name="bindingContext"> </param>
         /// <returns></returns>
-        private Object GetObjectById(Type mappingType, NameValueCollection context, ModelBindingContext bindingContext)
+        private Object GetObjectById(Type mappingType, ModelBindingContext bindingContext)
         {
             var idFounderAttribute = new IdFounderAttribute
                 {
@@ -143,17 +143,17 @@ namespace Qi.Web.Mvc
                 };
             string idKey = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
             idKey = CreateSubPropertyName(bindingContext.ModelName, idKey); //for to Role[0].Id
-            string idStringValue = context[idKey];
+            string idStringValue = (string)bindingContext.ValueProvider.GetValue(idKey).ConvertTo(typeof(string));
             if (idStringValue == null)
             {
                 idKey = CreateSubPropertyName(bindingContext.ModelName, ""); //empty
-                idStringValue = context[idKey];
+                idStringValue = (string)bindingContext.ValueProvider.GetValue(idKey).ConvertTo(typeof(string));
             }
 
             if (string.IsNullOrEmpty(idStringValue) || string.IsNullOrWhiteSpace(idStringValue))
                 return null;
 
-            IList result = idFounderAttribute.GetObject(idKey, context, false, _wrapper.CurrentSession);
+            IList result = idFounderAttribute.GetObject(idKey, bindingContext, false, _wrapper.CurrentSession);
             return result.Count > 0 ? result[0] : null;
         }
 
@@ -196,7 +196,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute) customAttributes[0];
+                var custommAttr = (SessionAttribute)customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -210,13 +210,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace Qi.Web.Mvc
         /// <param name="prefix"></param>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        private new static string CreateSubPropertyName(string prefix, string propertyName)
+        internal new static string CreateSubPropertyName(string prefix, string propertyName)
         {
             if (String.IsNullOrEmpty(prefix))
             {

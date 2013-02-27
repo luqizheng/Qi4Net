@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileTypeHelper.cs" />
     <Compile Include="JsonContainer.cs" />
     <Compile Include="JsonContainers\Accesser.cs" />
     <Compile Include="JsonContainers\ArrayAccesser.cs" />

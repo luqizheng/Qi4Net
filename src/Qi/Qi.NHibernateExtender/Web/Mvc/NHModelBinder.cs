@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using System.Web.Mvc;
 using Qi.NHibernate;
 using Qi.Web.Mvc.Founders;
@@ -13,31 +11,23 @@ using Qi.Web.Mvc.Founders;
 namespace Qi.Web.Mvc
 {
     /// <summary>
-    /// Nhibernate model biner 
+    ///     Nhibernate model biner
     /// </summary>
     public class NHModelBinder : DefaultModelBinder
     {
         private SessionWrapper _wrapper;
 
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="context"></param>
-        ///// <returns></returns>
-        //private NameValueCollection GetSubmitValues(HttpContextBase context)
-        //{
-        //    return context.Request.HttpMethod.ToLower() == "post"
-        //               ? context.Request.Form
-        //               : context.Request.QueryString;
-        //}
-
         /// <summary>
-        /// Binds the model by using the specified controller context and binding context.
+        ///     Binds the model by using the specified controller context and binding context.
         /// </summary>
         /// <returns>
-        /// The bound object.
+        ///     The bound object.
         /// </returns>
-        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><exception cref="T:System.ArgumentNullException">The <paramref name="bindingContext "/>parameter is null.</exception>
+        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param>
+        /// <param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param>
+        /// <exception cref="T:System.ArgumentNullException">
+        ///     The <paramref name="bindingContext " />parameter is null.
+        /// </exception>
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             _wrapper = Initilize(controllerContext);
@@ -45,24 +35,15 @@ namespace Qi.Web.Mvc
             return result;
         }
 
-        protected override void SetProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value)
-        {
-            base.SetProperty(controllerContext, bindingContext, propertyDescriptor, value);
-        }
-
-        protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext,
-                                             PropertyDescriptor propertyDescriptor)
-        {
-            base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
-        }
-
         /// <summary>
-        /// Creates the specified model type by using the specified controller context and binding context.
+        ///     Creates the specified model type by using the specified controller context and binding context.
         /// </summary>
         /// <returns>
-        /// A data object of the specified type.
+        ///     A data object of the specified type.
         /// </returns>
-        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><param name="modelType">The type of the model object to return.</param>
+        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param>
+        /// <param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param>
+        /// <param name="modelType">The type of the model object to return.</param>
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
@@ -84,7 +65,6 @@ namespace Qi.Web.Mvc
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-
             object value = propertyBinder.BindModel(controllerContext, bindingContext);
 
             if (bindingContext.ModelMetadata.ConvertEmptyStringToNull && Equals(value, String.Empty))
@@ -96,7 +76,7 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// get a value to indecate the modelType or it's child element  is mapping class which defined in nhibernate.
+        ///     get a value to indecate the modelType or it's child element  is mapping class which defined in nhibernate.
         /// </summary>
         /// <param name="modelType"></param>
         /// <returns></returns>
@@ -105,7 +85,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
+            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
 
             if (modelType.IsGenericType)
             {
@@ -118,7 +98,6 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="modelType"></param>
         /// <returns></returns>
@@ -129,10 +108,9 @@ namespace Qi.Web.Mvc
 
 
         /// <summary>
-        /// if model is nh mapping class, use this found to getit.
+        ///     if model is nh mapping class, use this found to getit.
         /// </summary>
         /// <param name="mappingType"></param>
-        /// <param name="context"></param>
         /// <param name="bindingContext"> </param>
         /// <returns></returns>
         private Object GetObjectById(Type mappingType, ModelBindingContext bindingContext)
@@ -143,11 +121,11 @@ namespace Qi.Web.Mvc
                 };
             string idKey = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
             idKey = CreateSubPropertyName(bindingContext.ModelName, idKey); //for to Role[0].Id
-            string idStringValue = (string)bindingContext.ValueProvider.GetValue(idKey).ConvertTo(typeof(string));
+            var idStringValue = (string) bindingContext.ValueProvider.GetValue(idKey).ConvertTo(typeof (string));
             if (idStringValue == null)
             {
                 idKey = CreateSubPropertyName(bindingContext.ModelName, ""); //empty
-                idStringValue = (string)bindingContext.ValueProvider.GetValue(idKey).ConvertTo(typeof(string));
+                idStringValue = (string) bindingContext.ValueProvider.GetValue(idKey).ConvertTo(typeof (string));
             }
 
             if (string.IsNullOrEmpty(idStringValue) || string.IsNullOrWhiteSpace(idStringValue))
@@ -158,7 +136,7 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// Find Session Attribute in the Action or Controller.
+        ///     Find Session Attribute in the Action or Controller.
         /// </summary>
         /// <param name="controllerContext"></param>
         private SessionWrapper Initilize(ControllerContext controllerContext)
@@ -186,7 +164,6 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="customAttributes"></param>
         /// <param name="wrapper"></param>
@@ -196,7 +173,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute)customAttributes[0];
+                var custommAttr = (SessionAttribute) customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -210,17 +187,17 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute)customAttributes[0];
+            return (FounderAttribute) customAttributes[0];
         }
 
         /// <summary>
-        /// Create submit key of form/querystring 
+        ///     Create submit key of form/querystring
         /// </summary>
         /// <param name="prefix"></param>
         /// <param name="propertyName"></param>

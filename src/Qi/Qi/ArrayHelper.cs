@@ -54,31 +54,6 @@ namespace Qi
             return SubArray(array, start, array.Length - start);
         }
 
-        /// <summary>
-        /// Convert byte to string
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public static string ToStringEx(this byte[] bytes, string format)
-        {
-            var stringbuilder = new StringBuilder(bytes.Length*2);
-            foreach (byte byt in bytes)
-            {
-                stringbuilder.Append(byt.ToString(format));
-            }
-            return stringbuilder.ToString();
-        }
-
-        /// <summary>
-        /// use x2 format to conver byte;
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
-        public static string ToStringEx(this byte[] bytes)
-        {
-            return bytes.ToStringEx("X2");
-        }
 
 
         /// <summary>

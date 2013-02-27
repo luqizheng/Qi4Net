@@ -10,7 +10,7 @@ namespace Qi.Text
     public class NamedFormatterHelper
     {
         /// <summary>
-        /// use replacePatten to replace Variables those in <seealso cref="formatString"/>, 
+        /// use replacePatten to replace Variables those in ormatString, 
         /// Variable need to defined in  square brackets, such as like that "[var]"
         /// </summary>
         /// <param name="formatString"></param>
@@ -49,7 +49,7 @@ namespace Qi.Text
         }
 
         /// <summary>
-        /// Collect variable express in <seealso cref="content"/>, such as "I am a [varName]"
+        /// Collect variable express in content, such as "I am a [varName]"
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
@@ -58,7 +58,7 @@ namespace Qi.Text
             if (content == null)
                 throw new ArgumentNullException("content");
 
-            const string pattern = @"\[[\w*\.]*\]";
+            const string pattern = @"\[([^\[\]]|\[([^\[\]])*\])*\]";
 
 
             var rex = new Regex(pattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);

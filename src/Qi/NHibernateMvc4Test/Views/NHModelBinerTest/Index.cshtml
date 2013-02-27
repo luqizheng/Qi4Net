@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>NHibernate Mvc Model binder</h2>
+<h3>
+    How to use
+</h3>
+<p>
+    set it in the Global.asax.cs
+    ModelBinders.Binders.DefaultBinder = new NHModelBinder();
+</p>
+<ol>
+    <li title="change properyt in a list">@Html.ActionLink("Array List","ArrayBinder")</li>
+    <li>@Html.ActionLink("Array Property with DTO", "DTOPropertyBinder")</li>
+    <li>@Html.ActionLink("DTO with List Property without change child's property", "DtoListRefereOnly")</li>
+    <li>@Html.ActionLink("ArrayProperty with PO", "ArrayProperty")</li>
+</ol>

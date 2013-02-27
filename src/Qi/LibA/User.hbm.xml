@@ -13,7 +13,7 @@
     <id name="Id">
       <generator class="guid"></generator>
     </id>
-    <property name="Mapping" type="Qi.Nhibernates.Types.KeyValueCollectionType,Qi.NHibernateExtender">     
+    <property name="Mapping" type="Qi.NHibernate.Types.KeyValueCollectionType,Qi.NHibernateExtender">     
     </property>
   </class>
 </hibernate-mapping>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="NHibernateMvc4Test.Models" assembly="NHibernateMvc4Test">
+  <class name="User" table="MBS_User" lazy="false">
+    <id name="Id">
+      <generator class="guid"></generator>
+    </id>
+    <property name="LoginId" length="100" type="String"></property>
+    <property name="Password" length="100" type="String"></property>
+    <property name="CreateTime"></property>
+
+
+    <property name="Name" length="100" type="String"></property>
+    <set name="Roles" access="nosetter.camelcase-underscore"
+          table="UserRole_Relation">
+      <key column="userId"></key>
+      <many-to-many class="Role"/>
+    </set>
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,66 @@
+﻿@using Mvc4Test.Models
+@using NHibernateMvc4Test.Models
+@using Qi.NHibernate
+@model NHModerBinderDTO
+@{
+    ViewBag.Title = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var count = this.Model.RoleList != null ? this.Model.RoleList.Count : 0;
+    IList<Role> all = SessionManager.Instance.GetCurrentSession().CreateCriteria<Role>().List<Role>();
+    int index = 0;
+}
+<script type="text/javascript" src="@Url.Content("../Scripts/json2.js")"></script>
+<h2>
+    ArrayBinder(selected: @count)</h2>
+<form method="post">
+<table>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+        </th>
+    </tr>
+
+    @foreach (var item in all)
+    {
+        var check = this.Model != null && this.Model.RoleList.Contains(item) ? "checked" : "";
+        
+        <tr>
+            <td>
+                <input name="RoleList[@index].Index" value="@item.Id" type="checkbox" @check class="forAjax"/>
+            </td>
+            <td>
+                @Html.Raw(item.Name)
+            </td>
+        </tr>
+        index++;
+    }
+</table>
+    <button type="button">
+        submit by ajax</button>
+        <button type="submit"> submit by form</button>
+</form>
+<script type="text/javascript">
+    $("button:first").click(function() {
+        var data = {
+            RoleList: []
+        };
+        $(".forAjax").each(function() {
+            if (this.checked)
+                data.RoleList.push({Id:$(this).val()});
+        });
+        $.ajax({
+            url: "@Url.Action("DtoListRefereOnly")",
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            success: function(result) {
+                alert(result);
+            }
+        });
+    });
+            
+
+    
+</script>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using NHibernate;
 using NHibernate.Dialect;
 using NHibernate.Engine;
@@ -9,16 +8,15 @@ using NHibernate.SqlTypes;
 using NHibernate.Type;
 using Qi.Web;
 
-namespace Qi.NHibernate.Types
+namespace Qi.NHibernateExtender.Types
 {
     /// <summary>
-    /// Dictionary for nh mapping, Dictionary that key is string,value is object
-    /// object is a json string database.
+    ///     Dictionary for nh mapping, Dictionary that key is string,value is object
+    ///     object is a json string database.
     /// </summary>
     public class KeyValueCollectionType : PrimitiveType
     {
         /// <summary>
-        /// 
         /// </summary>
         public KeyValueCollectionType()
             : base(new StringClobSqlType())
@@ -26,7 +24,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public override object DefaultValue
         {
@@ -34,15 +31,13 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public override Type PrimitiveClass
         {
-            get { return typeof(Dictionary<string, string>); }
+            get { return typeof (Dictionary<string, string>); }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public override string Name
         {
@@ -50,27 +45,24 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public override Type ReturnedClass
         {
-            get { return typeof(Dictionary<string, object>); }
+            get { return typeof (Dictionary<string, object>); }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="dialect"></param>
         /// <returns></returns>
         public override string ObjectToSQLString(object value, Dialect dialect)
         {
-            var content = (IDictionary<string, object>)value;
+            var content = (IDictionary<string, object>) value;
             return content.ToString();
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="xml"></param>
         /// <returns></returns>
@@ -80,7 +72,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="rs"></param>
         /// <param name="name"></param>
@@ -91,7 +82,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="rs"></param>
         /// <param name="index"></param>
@@ -102,20 +92,18 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="cmd"></param>
         /// <param name="value"></param>
         /// <param name="index"></param>
         public override void Set(IDbCommand cmd, object value, int index)
         {
-            var param = (IDbDataParameter)cmd.Parameters[index];
+            var param = (IDbDataParameter) cmd.Parameters[index];
             var dict = value as IDictionary<string, object>;
             param.Value = dict == null ? value : dict.ToJson(false);
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="entityMode"></param>
@@ -130,7 +118,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -155,7 +142,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>

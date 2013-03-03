@@ -2,12 +2,11 @@ using System;
 using System.Data;
 using System.Web.Mvc;
 using NHibernate;
-using Qi.NHibernate;
+using Qi.NHibernateExtender;
 
 namespace Qi.Web.Mvc
 {
     /// <summary>
-    /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
@@ -16,7 +15,6 @@ namespace Qi.Web.Mvc
         private ITransaction _tras;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="enabled"></param>
         /// <param name="sessionFactoryName"></param>
@@ -29,7 +27,6 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="enabled"></param>
         public SessionAttribute(bool enabled)
@@ -38,7 +35,6 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public SessionAttribute()
             : this(true, SessionManager.DefaultSessionFactoryKey)
@@ -47,29 +43,28 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// Enable session or not.
+        ///     Enable session or not.
         /// </summary>
         public bool Enable { get; set; }
 
         /// <summary>
-        /// session factory 
+        ///     session factory
         /// </summary>
         public string SessionFactoryName { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indecate use transaction or not.
+        ///     Gets or sets the value indecate use transaction or not.
         /// </summary>
         public bool Transaction { get; set; }
 
         /// <summary>
-        /// Gets or sets the IsolationLevel, default use the config setting.
+        ///     Gets or sets the IsolationLevel, default use the config setting.
         /// </summary>
         public IsolationLevel? IsolationLevel { get; set; }
 
         #region IExceptionFilter Members
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="filterContext"></param>
         public void OnException(ExceptionContext filterContext)
@@ -84,7 +79,6 @@ namespace Qi.Web.Mvc
         #endregion
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="filterContext"></param>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -104,7 +98,6 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)

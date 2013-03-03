@@ -1,13 +1,11 @@
 using System;
 using NHibernate.Type;
-using Qi.NHibernate;
 
 namespace Qi.Web.Mvc.Founders
 {
     internal static class NHMappingHelper
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="valStrExpress"></param>
         /// <param name="type"></param>
@@ -17,7 +15,7 @@ namespace Qi.Web.Mvc.Founders
         {
             var idType = type as NullableType;
             if (idType == null)
-                throw new NhConfigurationException(
+                throw new ArgumentException(
                     "Resource's Id only support mapping from NullableType in nhibernate.");
             try
             {
@@ -38,7 +36,6 @@ namespace Qi.Web.Mvc.Founders
 
         public static object[] ConvertStringToObjects(string valStrJoinByComma, IType type)
         {
-         
             if (valStrJoinByComma != null)
             {
                 string[] aryStr = valStrJoinByComma.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
@@ -49,13 +46,15 @@ namespace Qi.Web.Mvc.Founders
                     {
                         result[i] = ConvertStringToObject(aryStr[i], type);
                     }
-                    catch(FormatException ex)
+                    catch (FormatException ex)
                     {
-                        throw new FormatException(ex.Message+",actualValue:"+aryStr+" target value type "+type.Name,ex);
+                        throw new FormatException(
+                            ex.Message + ",actualValue:" + aryStr + " target value type " + type.Name, ex);
                     }
-                    catch(ArgumentException ex)
+                    catch (ArgumentException ex)
                     {
-                        throw new FormatException(ex.Message + ",actualValue:" + aryStr + " target value type " + type.Name, ex);
+                        throw new FormatException(
+                            ex.Message + ",actualValue:" + aryStr + " target value type " + type.Name, ex);
                     }
                 }
                 return result;

@@ -7,12 +7,11 @@ using NHibernate.Type;
 namespace Qi.Web.Mvc.Founders
 {
     /// <summary>
-    /// Use Id of Mapping class to find the object whihc belong a property or field defined in a DTO
+    ///     Use Id of Mapping class to find the object whihc belong a property or field defined in a DTO
     /// </summary>
     public class IdFounderAttribute : FounderAttribute
     {
         /// <summary>
-        /// 
         /// </summary>
         public IdFounderAttribute()
         {
@@ -20,7 +19,6 @@ namespace Qi.Web.Mvc.Founders
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="id"></param>
@@ -38,7 +36,6 @@ namespace Qi.Web.Mvc.Founders
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="requestKey"></param>

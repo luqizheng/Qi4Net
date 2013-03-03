@@ -2,10 +2,9 @@ using System;
 using NHibernate;
 using NHibernate.Criterion;
 
-namespace Qi.NHibernate.Criterion
+namespace Qi.NHibernateExtender.Criterion
 {
     /// <summary>
-    /// 
     /// </summary>
     public class BitwiseFlags : LogicalExpression
     {

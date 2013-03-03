@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
-using Qi.NHibernate;
+using Qi.NHibernateExtender;
 
 namespace Qi.Domain.NHibernates
 {
     /// <summary>
-    /// Dao base for nhibernate implement
+    ///     Dao base for nhibernate implement
     /// </summary>
     /// <typeparam name="TId"></typeparam>
     /// <typeparam name="TObject"></typeparam>
@@ -15,7 +15,6 @@ namespace Qi.Domain.NHibernates
         private readonly SessionWrapper _wrapper;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="sessionFactoryName"></param>
         protected DaoBase(string sessionFactoryName)
@@ -24,7 +23,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         protected DaoBase()
             : this(SessionManager.Instance.CurrentSessionFactoryName ?? SessionManager.DefaultSessionFactoryKey)
@@ -32,7 +30,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         protected ISession CurrentSession
         {
@@ -42,7 +39,6 @@ namespace Qi.Domain.NHibernates
         #region IDao<TId,TObject> Members
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -52,7 +48,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -62,7 +57,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         public virtual IList<TObject> GetAll()
@@ -71,7 +65,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="t"></param>
         public void Update(TObject t)
@@ -80,7 +73,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="t"></param>
         public virtual void Delete(TObject t)
@@ -89,7 +81,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="t"></param>
         public virtual void Refresh(TObject t)
@@ -98,7 +89,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="t"></param>
         public virtual void SaveOrUpdate(TObject t)
@@ -107,7 +97,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
@@ -117,7 +106,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="exampleInstance"></param>
         /// <param name="propertiesToExclude"></param>
@@ -138,7 +126,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public void Flush()
         {
@@ -148,7 +135,6 @@ namespace Qi.Domain.NHibernates
         #endregion
 
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         protected DetachedCriteria CreateDetachedCriteria()
@@ -157,7 +143,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         protected virtual ICriteria CreateCriteria()
@@ -166,7 +151,6 @@ namespace Qi.Domain.NHibernates
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>

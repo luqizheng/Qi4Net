@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Qi.NHibernateExtender.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Qi.NHibernateExtender.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +33,10 @@
     <DocumentationFile>bin\Release\Qi.NHibernateExtender.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NHibernate.3.3.2.4000\lib\Net35\NHibernate.dll</HintPath>
@@ -77,19 +81,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\NHibernates\DaoBase.cs" />
-    <Compile Include="NHibernate\Criterion\BitwiseFlags.cs" />
-    <Compile Include="NHibernate\INhConfig.cs" />
-    <Compile Include="NHibernate\NhConfig.cs" />
-    <Compile Include="NHibernate\NhConfigManager.cs" />
-    <Compile Include="NHibernate\NhConfigurationException.cs" />
-    <Compile Include="NHibernate\NhFileConfig.cs" />
-    <Compile Include="NHibernate\SessionManager.cs" />
-    <Compile Include="NHibernate\SessionManagerException.cs" />
-    <Compile Include="NHibernate\SessionWrapper.cs" />
-    <Compile Include="NHibernate\Types\AbstractTimeType.cs" />
-    <Compile Include="NHibernate\Types\KeyValueCollectionType.cs" />
-    <Compile Include="NHibernate\Types\TimeStringType.cs" />
-    <Compile Include="NHibernate\Types\TimeType.cs" />
+    <Compile Include="NHibernateExtender\Criterion\BitwiseFlags.cs" />
+    <Compile Include="NHibernateExtender\SessionManager.cs" />
+    <Compile Include="NHibernateExtender\SessionManagerException.cs" />
+    <Compile Include="NHibernateExtender\SessionWrapper.cs" />
+    <Compile Include="NHibernateExtender\Types\AbstractTimeType.cs" />
+    <Compile Include="NHibernateExtender\Types\KeyValueCollectionType.cs" />
+    <Compile Include="NHibernateExtender\Types\TimeStringType.cs" />
+    <Compile Include="NHibernateExtender\Types\TimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\Mvc\Founders\FounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\HqlFounderAttribute.cs" />

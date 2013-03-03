@@ -1,28 +1,26 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Web.Mvc;
 using NHibernate;
 using NHibernate.Type;
-using Qi.NHibernate;
 
 namespace Qi.Web.Mvc.Founders
 {
     /// <summary>
-    /// Use Hql to find the object whihc belong a property or field defined in a DTO
+    ///     Use Hql to find the object whihc belong a property or field defined in a DTO
     /// </summary>
     public class HqlFounderAttribute : FounderAttribute
     {
         /// <summary>
-        /// 
         /// </summary>
         private readonly string _hql;
+
         /// <summary>
-        /// 
         /// </summary>
         private readonly string _postDataType;
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="hql"></param>
         /// <param name="postDataType"></param>
@@ -33,8 +31,8 @@ namespace Qi.Web.Mvc.Founders
             _hql = hql;
             _postDataType = postDataType;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="hql"></param>
         /// <param name="postDataType"></param>
@@ -47,31 +45,30 @@ namespace Qi.Web.Mvc.Founders
             AnotherParameterName = anotherParameterName;
             AnotherParameterType = anotherParameterType;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public new bool Unique
         {
             get { return base.Unique; }
             set { base.Unique = value; }
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public string[] AnotherParameterType { get; set; }
+
         /// <summary>
-        /// 
         /// </summary>
         public string[] AnotherParameterName { get; set; }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-
         protected override IList GetObject(ISession session, object[] id, string postName, ModelBindingContext context)
         {
             var result = new List<object>();
@@ -99,19 +96,19 @@ namespace Qi.Web.Mvc.Founders
             int i = 0;
             foreach (string pName in AnotherParameterName)
             {
-                var parameterName = NHModelBinder.CreateSubPropertyName(context.ModelName, pName);
-                string strValu = (string)context.ValueProvider.GetValue(parameterName).ConvertTo(typeof(string));
+                string parameterName = NHModelBinder.CreateSubPropertyName(context.ModelName, pName);
+                var strValu = (string) context.ValueProvider.GetValue(parameterName).ConvertTo(typeof (string));
                 IType paramType = TypeFactory.Basic(AnotherParameterType[i]);
                 if (paramType == null)
-                    throw new NhConfigurationException("Nhibernate do not defined base type named " +
-                                                       AnotherParameterType[i]);
+                    throw new ArgumentException("Nhibernate do not defined base type named " +
+                                                AnotherParameterType[i]);
 
                 object val = NHMappingHelper.ConvertStringToObject(strValu, paramType);
                 crit.SetParameter(parameterName, val, paramType);
             }
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="requestKey"></param>

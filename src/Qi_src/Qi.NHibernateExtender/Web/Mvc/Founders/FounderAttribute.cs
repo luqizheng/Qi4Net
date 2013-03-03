@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Reflection;
 using System.Web.Mvc;
 using NHibernate;
@@ -9,13 +8,12 @@ using NHibernate.Type;
 namespace Qi.Web.Mvc.Founders
 {
     /// <summary>
-    /// Find the object whihc belong a property or field defined in a DTO
+    ///     Find the object whihc belong a property or field defined in a DTO
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public abstract class FounderAttribute : Attribute
     {
         /// <summary>
-        /// 
         /// </summary>
         protected FounderAttribute()
         {
@@ -23,17 +21,17 @@ namespace Qi.Web.Mvc.Founders
         }
 
         /// <summary>
-        /// 标记查询结果集合是否为唯一，如果不是唯一，那么会拿第一个
+        ///     标记查询结果集合是否为唯一，如果不是唯一，那么会拿第一个
         /// </summary>
         public bool Unique { get; protected set; }
 
         /// <summary>
-        /// 获取或设置Entity的类型
+        ///     获取或设置Entity的类型
         /// </summary>
         public Type EntityType { get; set; }
 
         /// <summary>
-        /// 获取对象
+        ///     获取对象
         /// </summary>
         /// <param name="postName"></param>
         /// <param name="context"></param>
@@ -42,7 +40,7 @@ namespace Qi.Web.Mvc.Founders
         /// <returns></returns>
         public IList GetObject(string postName, ModelBindingContext context, bool isSet, ISession session)
         {
-            string requestValues = (string) context.ValueProvider.GetValue(postName).ConvertTo(typeof (string));
+            var requestValues = (string) context.ValueProvider.GetValue(postName).ConvertTo(typeof (string));
             IType mappingType = GetMappingType(session, postName);
 
 
@@ -54,10 +52,10 @@ namespace Qi.Web.Mvc.Founders
                                                          ? NHMappingHelper.ConvertStringToObjects(requestValues,
                                                                                                   mappingType)
                                                          : new[]
-                                                               {
-                                                                   NHMappingHelper.ConvertStringToObject(requestValues,
-                                                                                                         mappingType)
-                                                               };
+                                                             {
+                                                                 NHMappingHelper.ConvertStringToObject(requestValues,
+                                                                                                       mappingType)
+                                                             };
 
 
                     return GetObject(session, searchConditionValues, postName,
@@ -76,7 +74,6 @@ namespace Qi.Web.Mvc.Founders
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="id"></param>
@@ -86,7 +83,7 @@ namespace Qi.Web.Mvc.Founders
         protected abstract IList GetObject(ISession session, object[] id, string postName, ModelBindingContext context);
 
         /// <summary>
-        /// 把Post的string类型的data，转换为IType类型,用于NHibernate获取对象的时候使用。
+        ///     把Post的string类型的data，转换为IType类型,用于NHibernate获取对象的时候使用。
         /// </summary>
         /// <param name="session"></param>
         /// <param name="requestKey"></param>

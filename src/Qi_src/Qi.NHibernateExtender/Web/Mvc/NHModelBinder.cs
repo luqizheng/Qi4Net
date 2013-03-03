@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using Qi.NHibernate;
+using Qi.NHibernateExtender;
 using Qi.Web.Mvc.Founders;
 
 namespace Qi.Web.Mvc

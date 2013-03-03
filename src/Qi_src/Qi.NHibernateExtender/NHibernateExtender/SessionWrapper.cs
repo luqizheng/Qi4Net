@@ -1,40 +1,49 @@
 ﻿using System;
 using NHibernate;
+using NHibernate.Cfg;
 using NHibernate.Context;
 using NHibernate.Impl;
 using Qi.SharePools;
 
-namespace Qi.NHibernate
+namespace Qi.NHibernateExtender
 {
     /// <summary>
-    /// 
     /// </summary>
     public class SessionWrapper
     {
         private const string InitKeyName = "session.was.inited";
+        private ISessionFactory _sessionFactory;
         private IStore _store;
+
         /// <summary>
-        /// 
         /// </summary>
-        /// <param name="sessionFactory"></param>
-        public SessionWrapper(ISessionFactory sessionFactory)
+        /// <param name="configruation"></param>
+        public SessionWrapper(Configuration configruation)
         {
-            if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
-            SessionFactory = sessionFactory;
+            if (configruation == null)
+                throw new ArgumentNullException("configruation");
+            Configuration = configruation;
         }
+
         /// <summary>
-        /// 
+        /// </summary>
+        public Configuration Configuration { get; private set; }
+
+        /// <summary>
         /// </summary>
         public IStore Store
         {
             get { return _store ?? (_store = GetStore(SessionFactory)); }
         }
+
         /// <summary>
-        /// 
         /// </summary>
-        public ISessionFactory SessionFactory { get; private set; }
+        public ISessionFactory SessionFactory
+        {
+            get { return _sessionFactory ?? (_sessionFactory = Configuration.BuildSessionFactory()); }
+        }
+
         /// <summary>
-        /// 
         /// </summary>
         public ISession CurrentSession
         {
@@ -47,8 +56,8 @@ namespace Qi.NHibernate
                 return SessionFactory.GetCurrentSession();
             }
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public bool IsInitSession
         {
@@ -61,8 +70,8 @@ namespace Qi.NHibernate
             }
             private set { Store.SetData(InitKeyName, value); }
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         public bool InitSession()
@@ -75,8 +84,8 @@ namespace Qi.NHibernate
             }
             return result;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="submitData"></param>
         public void Close(bool submitData)
@@ -126,6 +135,14 @@ namespace Qi.NHibernate
                 return SharePool.HttpStore;
             }
             throw new SessionManagerException("Can't create save context base on " + context.GetType().Name);
+        }
+
+        /// <summary>
+        ///     Rebuild the sessionFactory.
+        /// </summary>
+        public void Configure()
+        {
+            _sessionFactory = null;
         }
     }
 }

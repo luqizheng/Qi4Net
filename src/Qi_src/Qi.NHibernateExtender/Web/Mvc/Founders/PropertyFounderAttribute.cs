@@ -1,24 +1,22 @@
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Web.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Metadata;
 using NHibernate.Type;
-using Qi.NHibernate;
 
 namespace Qi.Web.Mvc.Founders
 {
     /// <summary>
-    /// Use the Propertry equal value to find the mapping class.
+    ///     Use the Propertry equal value to find the mapping class.
     /// </summary>
     public class PropertyFounderAttribute : FounderAttribute
     {
         private readonly string _propertyName;
 
         /// <summary>
-        /// default is the request's propertyName,
+        ///     default is the request's propertyName,
         /// </summary>
         public PropertyFounderAttribute()
         {
@@ -26,7 +24,6 @@ namespace Qi.Web.Mvc.Founders
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="propertyName"></param>
         public PropertyFounderAttribute(string propertyName)
@@ -38,7 +35,6 @@ namespace Qi.Web.Mvc.Founders
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="searchConditionValue"></param>
@@ -64,7 +60,6 @@ namespace Qi.Web.Mvc.Founders
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <param name="requestKey"></param>
@@ -77,8 +72,8 @@ namespace Qi.Web.Mvc.Founders
             IType propertyType = mappingInfo.GetPropertyType(propertyName);
 
             if (propertyType == null)
-                throw new NhConfigurationException(string.Format("cannot find property {0} in class {1} ", propertyName,
-                                                                 mappingInfo.EntityName));
+                throw new ArgumentException(string.Format("cannot find property {0} in class {1} ", propertyName,
+                                                          mappingInfo.EntityName));
             return propertyType;
         }
     }

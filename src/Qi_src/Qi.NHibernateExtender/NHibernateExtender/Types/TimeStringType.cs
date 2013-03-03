@@ -4,15 +4,14 @@ using System.Data.Common;
 using NHibernate.Dialect;
 using NHibernate.SqlTypes;
 
-namespace Qi.NHibernate.Types
+namespace Qi.NHibernateExtender.Types
 {
     /// <summary>
-    /// Use string like "00:00:00" to store time.
+    ///     Use string like "00:00:00" to store time.
     /// </summary>
     public class TimeStringType : AbstractTimeType
     {
         /// <summary>
-        /// 
         /// </summary>
         public TimeStringType()
             : base(SqlTypeFactory.GetAnsiString(8))
@@ -20,7 +19,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         public override Type PrimitiveClass
         {
@@ -28,7 +26,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="value"></param>
         /// <param name="dialect"></param>
@@ -40,7 +37,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="rs"></param>
         /// <param name="name"></param>
@@ -56,7 +52,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="rs"></param>
         /// <param name="index"></param>
@@ -68,7 +63,6 @@ namespace Qi.NHibernate.Types
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="cmd"></param>
         /// <param name="value"></param>

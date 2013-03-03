@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Web.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Metadata;
@@ -45,7 +46,7 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="context"></param>
         /// <returns></returns>
         protected override IList GetObject(ISession session, object[] searchConditionValue, string postName,
-                                           NameValueCollection context)
+                                           ModelBindingContext context)
         {
             DetachedCriteria cri =
                 DetachedCriteria.For(EntityType);

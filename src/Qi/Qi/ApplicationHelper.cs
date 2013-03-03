@@ -6,12 +6,12 @@ using Qi.Web;
 namespace Qi
 {
     /// <summary>
-    /// Application extend methods
+    ///     Application extend methods
     /// </summary>
     public class ApplicationHelper
     {
         /// <summary>
-        /// Get the PhysicalApplication
+        ///     Get the PhysicalApplication
         /// </summary>
         public static string PhysicalApplicationPath
         {
@@ -19,7 +19,7 @@ namespace Qi
         }
 
         /// <summary>
-        /// Gets a value indecate is web context or not
+        ///     Gets a value indecate is web context or not
         /// </summary>
         public static bool IsWeb
         {
@@ -31,7 +31,6 @@ namespace Qi
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -46,13 +45,12 @@ namespace Qi
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="rootDirectory">以这个路基为开始</param>
         /// <param name="mapPath"></param>
         /// <returns></returns>
         /// <remarks>
-        /// <code>
+        ///     <code>
         /// var rootDirect="a/b/c";
         /// var result=MapPath(new DirectoryInfo(rootDirect),"../b/b2"); //result is /a/b/b2
         /// </code>
@@ -74,9 +72,9 @@ namespace Qi
                 StringSplitOptions.RemoveEmptyEntries
                 );
             string[] mapPathAry = mapPath.Split(new[]
-                                                    {
-                                                        mapPath.IndexOf('/') != -1 ? '/' : Path.DirectorySeparatorChar
-                                                    },
+                {
+                    mapPath.IndexOf('/') != -1 ? '/' : Path.DirectorySeparatorChar
+                },
                                                 StringSplitOptions.RemoveEmptyEntries);
             int subFolder = mapPathAry.Count(pathParty => pathParty == "..");
 

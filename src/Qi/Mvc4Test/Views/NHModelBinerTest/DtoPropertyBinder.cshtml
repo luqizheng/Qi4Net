@@ -1,0 +1,30 @@
+﻿@model Mvc4Test.Models.NHModerBinderDTO
+@{
+    ViewBag.Title = "DtoPropertyBinder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>DtoPropertyBinder</h2>
+<form method="post">
+    <table>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+            </th>
+        </tr>
+        @for (int i = 0; i < this.Model.RoleList.Count;i++ )
+        {
+            <tr>
+                <td>
+                    @Html.TextBoxFor(m=>m.RoleList[i].Name)
+                    @Html.TextBoxFor(m=>m.RoleList[i].Id)
+                </td>
+                <td>
+                </td>
+            </tr>
+        }
+    </table>
+    <button type="submit">submit</button>
+</form>

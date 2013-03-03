@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Web.Mvc;
 using NHibernate;
 using NHibernate.Type;
 using Qi.NHibernate;
@@ -71,7 +72,7 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="context"></param>
         /// <returns></returns>
 
-        protected override IList GetObject(ISession session, object[] id, string postName, NameValueCollection context)
+        protected override IList GetObject(ISession session, object[] id, string postName, ModelBindingContext context)
         {
             var result = new List<object>();
             IQuery crit = session.CreateQuery(_hql);
@@ -93,12 +94,13 @@ namespace Qi.Web.Mvc.Founders
             return result;
         }
 
-        private void CreateParameter(NameValueCollection context, IQuery crit)
+        private void CreateParameter(ModelBindingContext context, IQuery crit)
         {
             int i = 0;
-            foreach (string parameterName in AnotherParameterName)
+            foreach (string pName in AnotherParameterName)
             {
-                string strValu = context[parameterName];
+                var parameterName = NHModelBinder.CreateSubPropertyName(context.ModelName, pName);
+                string strValu = (string)context.ValueProvider.GetValue(parameterName).ConvertTo(typeof(string));
                 IType paramType = TypeFactory.Basic(AnotherParameterType[i]);
                 if (paramType == null)
                     throw new NhConfigurationException("Nhibernate do not defined base type named " +

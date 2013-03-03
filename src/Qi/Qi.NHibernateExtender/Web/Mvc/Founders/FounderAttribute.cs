@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
+using System.Web.Mvc;
 using NHibernate;
 using NHibernate.Type;
 
@@ -39,9 +40,9 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="isSet"> </param>
         /// <param name="session"> </param>
         /// <returns></returns>
-        public IList GetObject(string postName, NameValueCollection context, bool isSet, ISession session)
+        public IList GetObject(string postName, ModelBindingContext context, bool isSet, ISession session)
         {
-            string requestValues = context[postName];
+            string requestValues = (string) context.ValueProvider.GetValue(postName).ConvertTo(typeof (string));
             IType mappingType = GetMappingType(session, postName);
 
 
@@ -82,7 +83,7 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected abstract IList GetObject(ISession session, object[] id, string postName, NameValueCollection context);
+        protected abstract IList GetObject(ISession session, object[] id, string postName, ModelBindingContext context);
 
         /// <summary>
         /// 把Post的string类型的data，转换为IType类型,用于NHibernate获取对象的时候使用。

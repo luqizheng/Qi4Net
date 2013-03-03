@@ -1,4 +1,4 @@
-namespace Qi.DataTables
+ namespace Qi.DataTables
 {
     /// <summary>
     /// 

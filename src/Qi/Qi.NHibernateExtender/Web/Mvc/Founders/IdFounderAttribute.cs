@@ -1,11 +1,8 @@
 using System.Collections;
-using System.Collections.Specialized;
-using System.Web;
+using System.Web.Mvc;
 using NHibernate;
-using NHibernate.Cfg;
 using NHibernate.Criterion;
 using NHibernate.Type;
-using Qi.NHibernate;
 
 namespace Qi.Web.Mvc.Founders
 {
@@ -21,6 +18,7 @@ namespace Qi.Web.Mvc.Founders
         {
             Unique = false;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -29,15 +27,16 @@ namespace Qi.Web.Mvc.Founders
         /// <param name="postName"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected override IList GetObject(ISession session, object[] id, string postName, NameValueCollection context)
+        protected override IList GetObject(ISession session, object[] id, string postName, ModelBindingContext context)
         {
             var disJun = new Disjunction();
-            foreach (var ids in id)
+            foreach (object ids in id)
             {
                 disJun.Add(Restrictions.Eq(Projections.Id(), ids));
             }
             return DetachedCriteria.For(EntityType).Add(disJun).GetExecutableCriteria(session).List();
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -46,7 +45,7 @@ namespace Qi.Web.Mvc.Founders
         /// <returns></returns>
         public override IType GetMappingType(ISession session, string requestKey)
         {
-            return session.SessionFactory.GetClassMetadata(this.EntityType).IdentifierType;
+            return session.SessionFactory.GetClassMetadata(EntityType).IdentifierType;
         }
     }
 }

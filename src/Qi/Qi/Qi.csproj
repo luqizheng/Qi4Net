@@ -55,9 +55,6 @@
     <DocumentationFile>bin\Release\Qi.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.3.3.1.4000\lib\Net35\Iesi.Collections.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -81,8 +78,7 @@
   <ItemGroup>
     <Compile Include="ApplicationHelper.cs" />
     <Compile Include="ArrayHelper.cs" />
-    <Compile Include="Collections\CollectionAccessor.cs" />
-    <Compile Include="Collections\CollectionActivtor.cs" />
+    <Compile Include="ByteHelper.cs" />
     <Compile Include="Draw\ResizePic.cs" />
     <Compile Include="SharePools\Stores\CallStore.cs" />
     <Compile Include="SharePools\Stores\HttpStore.cs" />

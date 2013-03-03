@@ -21,6 +21,7 @@ namespace Qi.IO.Serialization
             IFormatter formatter = new BinaryFormatter();
             formatter.Serialize(outputSteam, obj);
         }
+
         /// <summary>
         /// SerializeBinary to binary.
         /// </summary>
@@ -63,6 +64,7 @@ namespace Qi.IO.Serialization
                 return DeserializeBinary<T>(stream);
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -73,6 +75,7 @@ namespace Qi.IO.Serialization
             var ser = new XmlSerializer(obj.GetType());
             ser.Serialize(outputSteam, obj);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -86,6 +89,7 @@ namespace Qi.IO.Serialization
                 ser.Serialize(stream, obj);
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -101,6 +105,7 @@ namespace Qi.IO.Serialization
                 return DeserializerXml(stream, type);
             }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -112,6 +117,7 @@ namespace Qi.IO.Serialization
             var ser = new XmlSerializer(type);
             return ser.Deserialize(stream);
         }
+
         /// <summary>
         /// 
         /// </summary>

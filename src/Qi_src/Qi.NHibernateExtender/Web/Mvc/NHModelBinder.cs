@@ -4,12 +4,28 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
+using NHibernate.Metadata;
+using NHibernate.Type;
 using Qi.NHibernateExtender;
 using Qi.Web.Mvc.Founders;
 
 namespace Qi.Web.Mvc
 {
+    public class NHModelBindingContext : ModelBindingContext
+    {
+        public ModelBindingContext Context { get; set; }
+
+        public NHModelBindingContext(ModelBindingContext context)
+        {
+            Context = context;
+        }
+
+        public SessionWrapper Wrapper { get; set; }
+
+
+    }
     /// <summary>
     ///     Nhibernate model biner
     /// </summary>
@@ -30,8 +46,9 @@ namespace Qi.Web.Mvc
         /// </exception>
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            _wrapper = Initilize(controllerContext);
-            object result = base.BindModel(controllerContext, bindingContext);
+            var context = bindingContext as NHModelBindingContext;
+            _wrapper = context == null ? Initilize(controllerContext) : context.Wrapper;
+            object result = base.BindModel(controllerContext, context == null ? bindingContext : context.Context);
             return result;
         }
 
@@ -61,11 +78,36 @@ namespace Qi.Web.Mvc
             return result;
         }
 
+        protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor)
+        {
+            base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
+        }
+
         protected override object GetPropertyValue(ControllerContext controllerContext,
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-            object value = propertyBinder.BindModel(controllerContext, bindingContext);
+            
+            var context = new NHModelBindingContext(bindingContext)
+                {
+                    Wrapper = this._wrapper
+                };
+           
+            //if (IsPersistentType(bindingContext.ModelType))
+            //{
+            //    IClassMetadata perisisteType = _wrapper.SessionFactory.GetClassMetadata(bindingContext.ModelType);
+            //    ValueProviderResult v = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+            //    var id = bindingContext.ModelName + "." + perisisteType.IdentifierPropertyName;
+            //    if (!bindingContext.ValueProvider.ContainsPrefix(bindingContext.ModelName + "."))
+            //    {
+            //        //Employee should be a Employee.Id and something like that
+            //        //controllerContext.HttpContext.Items.Add(id,v.RawValue);
+            //        controllerContext.HttpContext.Items.Add(id, ((string[])v.RawValue)[0]);
+            //    }
+            //}
+
+
+            object value = propertyBinder.BindModel(controllerContext, context);
 
             if (bindingContext.ModelMetadata.ConvertEmptyStringToNull && Equals(value, String.Empty))
             {
@@ -73,8 +115,14 @@ namespace Qi.Web.Mvc
             }
 
             return value;
-        }
 
+        }
+        private void BindPersistentClass(ControllerContext controllerContext,
+                                         ModelBindingContext bindingContext,
+                                         PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
+        {
+            
+        }
         /// <summary>
         ///     get a value to indecate the modelType or it's child element  is mapping class which defined in nhibernate.
         /// </summary>
@@ -85,7 +133,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
+            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
 
             if (modelType.IsGenericType)
             {
@@ -119,18 +167,19 @@ namespace Qi.Web.Mvc
                 {
                     EntityType = mappingType
                 };
-            string idKey = _wrapper.SessionFactory.GetClassMetadata(mappingType).IdentifierPropertyName;
-            idKey = CreateSubPropertyName(bindingContext.ModelName, idKey); //for to Role[0].Id
-            var idStringValue = (string) bindingContext.ValueProvider.GetValue(idKey).ConvertTo(typeof (string));
-            if (idStringValue == null)
+            IClassMetadata perisisteType = _wrapper.SessionFactory.GetClassMetadata(mappingType);
+            PrimitiveType identity = perisisteType.IdentifierType as PrimitiveType;
+            if (identity == null)
             {
-                idKey = CreateSubPropertyName(bindingContext.ModelName, ""); //empty
-                idStringValue = (string) bindingContext.ValueProvider.GetValue(idKey).ConvertTo(typeof (string));
+                throw new NHModelBinderException("NHModelBinder only support Id is valueType.");
             }
+            string idKey = CreateSubPropertyName(bindingContext.ModelName, perisisteType.IdentifierPropertyName); //for to Role[0].Id
+            var postIdValue = bindingContext.ValueProvider.GetValue(idKey).ConvertTo(identity.DefaultValue.GetType());
 
-            if (string.IsNullOrEmpty(idStringValue) || string.IsNullOrWhiteSpace(idStringValue))
+            if (postIdValue.Equals(identity.DefaultValue))
+            {
                 return null;
-
+            }
             IList result = idFounderAttribute.GetObject(idKey, bindingContext, false, _wrapper.CurrentSession);
             return result.Count > 0 ? result[0] : null;
         }
@@ -173,7 +222,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute) customAttributes[0];
+                var custommAttr = (SessionAttribute)customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -187,13 +236,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
         }
 
         /// <summary>

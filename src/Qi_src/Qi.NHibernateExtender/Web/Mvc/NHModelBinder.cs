@@ -48,6 +48,10 @@ namespace Qi.Web.Mvc
         {
             var context = bindingContext as NHModelBindingContext;
             _wrapper = context == null ? Initilize(controllerContext) : context.Wrapper;
+            if (controllerContext.RequestContext.HttpContext.Items.Contains("nhwrapper"))
+            {
+                controllerContext.RequestContext.HttpContext.Items.Add("nhwrapper",_wrapper);
+            }
             object result = base.BindModel(controllerContext, context == null ? bindingContext : context.Context);
             return result;
         }
@@ -78,11 +82,6 @@ namespace Qi.Web.Mvc
             return result;
         }
 
-        protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor)
-        {
-            base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
-        }
-
         protected override object GetPropertyValue(ControllerContext controllerContext,
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
@@ -92,23 +91,7 @@ namespace Qi.Web.Mvc
                 {
                     Wrapper = this._wrapper
                 };
-           
-            //if (IsPersistentType(bindingContext.ModelType))
-            //{
-            //    IClassMetadata perisisteType = _wrapper.SessionFactory.GetClassMetadata(bindingContext.ModelType);
-            //    ValueProviderResult v = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
-            //    var id = bindingContext.ModelName + "." + perisisteType.IdentifierPropertyName;
-            //    if (!bindingContext.ValueProvider.ContainsPrefix(bindingContext.ModelName + "."))
-            //    {
-            //        //Employee should be a Employee.Id and something like that
-            //        //controllerContext.HttpContext.Items.Add(id,v.RawValue);
-            //        controllerContext.HttpContext.Items.Add(id, ((string[])v.RawValue)[0]);
-            //    }
-            //}
-
-
             object value = propertyBinder.BindModel(controllerContext, context);
-
             if (bindingContext.ModelMetadata.ConvertEmptyStringToNull && Equals(value, String.Empty))
             {
                 return null;
@@ -117,12 +100,7 @@ namespace Qi.Web.Mvc
             return value;
 
         }
-        private void BindPersistentClass(ControllerContext controllerContext,
-                                         ModelBindingContext bindingContext,
-                                         PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
-        {
-            
-        }
+      
         /// <summary>
         ///     get a value to indecate the modelType or it's child element  is mapping class which defined in nhibernate.
         /// </summary>

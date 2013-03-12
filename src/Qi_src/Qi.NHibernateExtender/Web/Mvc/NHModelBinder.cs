@@ -13,19 +13,6 @@ using Qi.Web.Mvc.Founders;
 
 namespace Qi.Web.Mvc
 {
-    public class NHModelBindingContext : ModelBindingContext
-    {
-        public ModelBindingContext Context { get; set; }
-
-        public NHModelBindingContext(ModelBindingContext context)
-        {
-            Context = context;
-        }
-
-        public SessionWrapper Wrapper { get; set; }
-
-
-    }
     /// <summary>
     ///     Nhibernate model biner
     /// </summary>
@@ -81,7 +68,14 @@ namespace Qi.Web.Mvc
             }
             return result;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="controllerContext"></param>
+        /// <param name="bindingContext"></param>
+        /// <param name="propertyDescriptor"></param>
+        /// <param name="propertyBinder"></param>
+        /// <returns></returns>
         protected override object GetPropertyValue(ControllerContext controllerContext,
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)

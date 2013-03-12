@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Users\leo-home\Documents\GitHub\OrnamentFramework\lib\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -98,6 +98,7 @@
     <Compile Include="Web\Mvc\NHModelBinder.cs" />
     <Compile Include="Web\Mvc\NHModelBinderException.cs" />
     <Compile Include="Web\Mvc\NHModelBinderProvider.cs" />
+    <Compile Include="Web\Mvc\NHModelBindingContext.cs" />
     <Compile Include="Web\Mvc\NHMvcExtender\NHFormValueProvider.cs" />
     <Compile Include="Web\Mvc\NHMvcExtender\NHFormValueProviderFactory.cs" />
     <Compile Include="Web\Mvc\NHMvcExtender\NHQueryValuePrivoder.cs" />

@@ -15,6 +15,11 @@ namespace Qi.Web.Mvc
     /// </remarks>
     public class NHModelBinderProvider : IModelBinderProvider
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelType"></param>
+        /// <returns></returns>
         public IModelBinder GetBinder(Type modelType)
         {
             foreach (string key in SessionManager.Factories.Keys)

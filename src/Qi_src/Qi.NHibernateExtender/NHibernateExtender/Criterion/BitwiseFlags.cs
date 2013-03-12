@@ -23,12 +23,22 @@ namespace Qi.NHibernateExtender.Criterion
         {
             get { return "="; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
         public static BitwiseFlags IsSet(string propertyName, Enum flags)
         {
             return new BitwiseFlags(propertyName, flags, " & ");
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
         public static BitwiseFlags IsSet(string propertyName, int flags)
         {
             var lhs = new SimpleExpression(propertyName, flags, " & ");

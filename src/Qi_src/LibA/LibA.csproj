@@ -53,12 +53,6 @@
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Qi\Qi.csproj">
-      <Project>{109EBD31-85C7-45C9-A850-EF3457055670}</Project>
-      <Name>Qi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="User.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

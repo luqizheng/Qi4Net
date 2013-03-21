@@ -52,12 +52,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Qi\Qi.csproj">
-      <Project>{109EBD31-85C7-45C9-A850-EF3457055670}</Project>
-      <Name>Qi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resource.en-us.resx" />
     <EmbeddedResource Include="Resource.zh-cn.resx" />
     <EmbeddedResource Include="Resource.resx">

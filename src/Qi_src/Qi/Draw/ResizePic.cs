@@ -6,22 +6,18 @@ using System.IO;
 namespace Qi.Draw
 {
     /// <summary>
-    /// 
     /// </summary>
     public class ResizePic
     {
         /// <summary>
-        /// 
         /// </summary>
         public int MaxWidth { get; set; }
 
         /// <summary>
-        /// 
         /// </summary>
         public int MaxHeight { get; set; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="originalImagePath"></param>
         /// <param name="thumNailPath"></param>
@@ -42,7 +38,7 @@ namespace Qi.Draw
                         File.Copy(originalImagePath, thumNailPath);
                     }
                     targetHight = MaxHeight;
-                    targetWidth = originalImage.Width * targetHight / originalImage.Height;
+                    targetWidth = originalImage.Width*targetHight/originalImage.Height;
                 }
                 else
                 {
@@ -51,18 +47,16 @@ namespace Qi.Draw
                         File.Copy(originalImagePath, thumNailPath);
                     }
                     targetWidth = MaxWidth;
-                    targetHight = originalImage.Height * targetWidth / originalImage.Width;
+                    targetHight = originalImage.Height*targetWidth/originalImage.Width;
                 }
 
 
                 //新建一个bmp图片
                 using (var bitmap = new Bitmap(targetWidth, targetWidth))
                 {
-
                     //新建一个画板
                     using (Graphics graphic = Graphics.FromImage(bitmap))
                     {
-
                         //设置高质量查值法
                         graphic.InterpolationMode = InterpolationMode.High;
 
@@ -78,15 +72,12 @@ namespace Qi.Draw
                                           GraphicsUnit.Pixel);
                         bitmap.Save(thumNailPath, ImageFormat.Png);
                     }
-
                 }
             }
             finally
             {
                 originalImage.Dispose();
             }
-
-
         }
     }
 }

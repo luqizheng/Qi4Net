@@ -44,12 +44,6 @@
     <Compile Include="Net\IpAddressExtender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Qi\Qi.csproj">
-      <Project>{109EBD31-85C7-45C9-A850-EF3457055670}</Project>
-      <Name>Qi</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

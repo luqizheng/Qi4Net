@@ -142,20 +142,6 @@
     <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Qi.NHibernateExtender\Qi.NHibernateExtender.csproj">
-      <Project>{310038D7-CC1C-49EC-A560-8CF2370A0DA7}</Project>
-      <Name>Qi.NHibernateExtender</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Qi.Web\Qi.Web.csproj">
-      <Project>{D977A1FD-CA69-4A1F-9157-A8D47AF94831}</Project>
-      <Name>Qi.Web</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Qi\Qi.csproj">
-      <Project>{109EBD31-85C7-45C9-A850-EF3457055670}</Project>
-      <Name>Qi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>

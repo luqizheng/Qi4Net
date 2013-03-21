@@ -25,7 +25,12 @@ namespace Qi.Web.Mvc.NHMvcExtender
             Culture = result.Culture;
             RawValue = result.RawValue;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public override object ConvertTo(Type type, CultureInfo culture)
         {
             if (type.IsValueType || typeof(string) == type)

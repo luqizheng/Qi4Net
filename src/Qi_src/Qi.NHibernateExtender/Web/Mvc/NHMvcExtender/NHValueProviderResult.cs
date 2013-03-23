@@ -10,6 +10,8 @@ namespace Qi.Web.Mvc.NHMvcExtender
     /// </summary>
     public class NHValueProviderResult : ValueProviderResult
     {
+        private readonly SessionWrapper _sessionWrapper;
+
         /// <summary>
         /// 
         /// </summary>
@@ -18,9 +20,7 @@ namespace Qi.Web.Mvc.NHMvcExtender
         /// <exception cref="ArgumentNullException"></exception>
         public NHValueProviderResult(ValueProviderResult result, SessionWrapper sessionWrapper)
         {
-            if (result == null)
-                throw new ArgumentNullException("result");
-
+            _sessionWrapper = sessionWrapper;
             AttemptedValue = result.AttemptedValue;
             Culture = result.Culture;
             RawValue = result.RawValue;
@@ -40,7 +40,7 @@ namespace Qi.Web.Mvc.NHMvcExtender
             if (perisisteType == null)
                 return base.ConvertTo(type, culture);
             object id = base.ConvertTo(perisisteType.IdentifierType.ReturnedClass, culture);
-            return SessionManager.GetSessionWrapper()
+            return _sessionWrapper
                                  .CurrentSession.Get(type, id);
         }
     }

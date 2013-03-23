@@ -11,6 +11,10 @@ namespace Qi.Web.Mvc.NHMvcExtender
     {
         private readonly ControllerContext _controllerContext;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="controllerContext"></param>
+        /// <param name="collection"></param>
         public NHValueProvider(ControllerContext controllerContext, NameValueCollection collection)
             : base(collection, CultureInfo.CurrentCulture)
         {
@@ -21,6 +25,8 @@ namespace Qi.Web.Mvc.NHMvcExtender
         public override ValueProviderResult GetValue(string key)
         {
             ValueProviderResult result = base.GetValue(key);
+            if (result == null)
+                return null;
             return new NHValueProviderResult(result,
                                              (SessionWrapper)
                                              _controllerContext.RequestContext.HttpContext.Items["nhwrapper"]);
@@ -30,6 +36,8 @@ namespace Qi.Web.Mvc.NHMvcExtender
         public override ValueProviderResult GetValue(string key, bool skipValidation)
         {
             ValueProviderResult result = base.GetValue(key, skipValidation);
+            if (result == null)
+                return null;
             return new NHValueProviderResult(result,
                                              (SessionWrapper)
                                              _controllerContext.RequestContext.HttpContext.Items["nhwrapper"]);

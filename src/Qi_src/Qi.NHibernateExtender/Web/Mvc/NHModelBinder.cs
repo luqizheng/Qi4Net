@@ -35,12 +35,22 @@ namespace Qi.Web.Mvc
         {
             var context = bindingContext as NHModelBindingContext;
             _wrapper = context == null ? Initilize(controllerContext) : context.Wrapper;
-            if (controllerContext.RequestContext.HttpContext.Items.Contains("nhwrapper"))
+            if (!controllerContext.RequestContext.HttpContext.Items.Contains("nhwrapper"))
             {
-                controllerContext.RequestContext.HttpContext.Items.Add("nhwrapper",_wrapper);
+                controllerContext.RequestContext.HttpContext.Items.Add("nhwrapper", _wrapper);
             }
-            object result = base.BindModel(controllerContext, context == null ? bindingContext : context.Context);
-            return result;
+            try
+            {
+                object result = base.BindModel(controllerContext, context == null ? bindingContext : context.Context);
+                return result;
+            }
+            finally
+            {
+                if (controllerContext.RequestContext.HttpContext.Items.Contains("nhwrapper"))
+                {
+                    controllerContext.RequestContext.HttpContext.Items.Remove("nhwrapper");
+                }
+            }
         }
 
         /// <summary>
@@ -55,9 +65,9 @@ namespace Qi.Web.Mvc
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext,
                                               Type modelType)
         {
-            object result = !IsMappingClass(modelType)
-                                ? base.CreateModel(controllerContext, bindingContext, modelType)
-                                : GetObjectById(modelType, bindingContext);
+            object result = IsMappingClass(modelType)
+                                ? GetObjectById(modelType, bindingContext)
+                                : base.CreateModel(controllerContext, bindingContext, modelType);
 
             if (result == null)
             {
@@ -80,7 +90,7 @@ namespace Qi.Web.Mvc
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-            
+
             var context = new NHModelBindingContext(bindingContext)
                 {
                     Wrapper = this._wrapper
@@ -94,7 +104,7 @@ namespace Qi.Web.Mvc
             return value;
 
         }
-      
+
         /// <summary>
         ///     get a value to indecate the modelType or it's child element  is mapping class which defined in nhibernate.
         /// </summary>
@@ -141,7 +151,7 @@ namespace Qi.Web.Mvc
                     EntityType = mappingType
                 };
             IClassMetadata perisisteType = _wrapper.SessionFactory.GetClassMetadata(mappingType);
-            PrimitiveType identity = perisisteType.IdentifierType as PrimitiveType;
+            var identity = perisisteType.IdentifierType as PrimitiveType;
             if (identity == null)
             {
                 throw new NHModelBinderException("NHModelBinder only support Id is valueType.");

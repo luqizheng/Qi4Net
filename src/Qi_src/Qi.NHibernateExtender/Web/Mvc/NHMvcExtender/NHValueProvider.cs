@@ -28,8 +28,7 @@ namespace Qi.Web.Mvc.NHMvcExtender
             if (result == null)
                 return null;
             return new NHValueProviderResult(result,
-                                             (SessionWrapper)
-                                             _controllerContext.RequestContext.HttpContext.Items["nhwrapper"]);
+                                             NHModelBinder.GetWrapper(_controllerContext));
         }
 
 
@@ -38,9 +37,7 @@ namespace Qi.Web.Mvc.NHMvcExtender
             ValueProviderResult result = base.GetValue(key, skipValidation);
             if (result == null)
                 return null;
-            return new NHValueProviderResult(result,
-                                             (SessionWrapper)
-                                             _controllerContext.RequestContext.HttpContext.Items["nhwrapper"]);
+            return new NHValueProviderResult(result,NHModelBinder.GetWrapper(_controllerContext));
         }
     }
 }

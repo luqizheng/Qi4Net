@@ -18,6 +18,7 @@ namespace Qi.Web.Mvc
     /// </summary>
     public class NHModelBinder : DefaultModelBinder
     {
+        private const string SessionWrapperContainer = "nhwrapper";
         private SessionWrapper _wrapper;
 
         /// <summary>
@@ -35,10 +36,7 @@ namespace Qi.Web.Mvc
         {
             var context = bindingContext as NHModelBindingContext;
             _wrapper = context == null ? Initilize(controllerContext) : context.Wrapper;
-            if (!controllerContext.RequestContext.HttpContext.Items.Contains("nhwrapper"))
-            {
-                controllerContext.RequestContext.HttpContext.Items.Add("nhwrapper", _wrapper);
-            }
+            bool addSuccess = SetWrapper(controllerContext, _wrapper);
             try
             {
                 object result = base.BindModel(controllerContext, context == null ? bindingContext : context.Context);
@@ -46,13 +44,60 @@ namespace Qi.Web.Mvc
             }
             finally
             {
-                if (controllerContext.RequestContext.HttpContext.Items.Contains("nhwrapper"))
+                if (addSuccess)
                 {
-                    controllerContext.RequestContext.HttpContext.Items.Remove("nhwrapper");
+                    RemoveWrapper(controllerContext);
                 }
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="controllerContext"></param>
+        /// <param name="wrapper"></param>
+        internal
+            static bool SetWrapper(ControllerContext controllerContext, SessionWrapper wrapper)
+        {
+            var items = controllerContext.RequestContext.HttpContext.Items;
+            if (items.Contains(SessionWrapperContainer))
+            {
+                items.Add(SessionWrapperContainer, wrapper);
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="controllerContext"></param>
+        /// <returns></returns>
+        internal static bool RemoveWrapper(ControllerContext controllerContext)
+        {
+            var items = controllerContext.RequestContext.HttpContext.Items;
+            if (items.Contains(SessionWrapperContainer))
+            {
+                items.Remove(SessionWrapperContainer);
+                return true;
+            }
+            return false;
 
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="controllerContext"></param>
+        /// <returns></returns>
+        internal static SessionWrapper GetWrapper(ControllerContext controllerContext)
+        {
+
+            var items = controllerContext.RequestContext.HttpContext.Items;
+            if (items.Contains(SessionWrapperContainer))
+            {
+                return items[SessionWrapperContainer] as SessionWrapper;
+            }
+            return null;
+
+        }
         /// <summary>
         ///     Creates the specified model type by using the specified controller context and binding context.
         /// </summary>

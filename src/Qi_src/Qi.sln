@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.NHibernateExtender", "Qi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.Web", "Qi.Web\Qi.Web.csproj", "{D977A1FD-CA69-4A1F-9157-A8D47AF94831}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.Net", "Qi.Net\Qi.Net.csproj", "{C2161169-BAF5-4873-BB8F-461FBF3DA993}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Qi.vsmdi
@@ -127,6 +129,18 @@ Global
 		{D977A1FD-CA69-4A1F-9157-A8D47AF94831}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D977A1FD-CA69-4A1F-9157-A8D47AF94831}.Release|Win32.ActiveCfg = Release|Any CPU
 		{D977A1FD-CA69-4A1F-9157-A8D47AF94831}.Release|x86.ActiveCfg = Release|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|Win32.ActiveCfg = Release|Any CPU
+		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

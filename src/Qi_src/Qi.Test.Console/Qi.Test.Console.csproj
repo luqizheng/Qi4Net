@@ -11,7 +11,8 @@
     <RootNamespace>Qi.Test.Console</RootNamespace>
     <AssemblyName>Qi.Test.Console</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -58,6 +59,19 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Qi.Net\Qi.Net.csproj">
+      <Project>{c2161169-baf5-4873-bb8f-461fbf3da993}</Project>
+      <Name>Qi.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Qi\Qi.csproj">
+      <Project>{109EBD31-85C7-45C9-A850-EF3457055670}</Project>
+      <Name>Qi</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

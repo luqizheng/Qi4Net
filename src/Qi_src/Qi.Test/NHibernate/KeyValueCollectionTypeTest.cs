@@ -1,40 +1,24 @@
-﻿using Qi.NHibernate.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
+using Qi.NHibernateExtender.Types;
 
 namespace Qi.Test
 {
-    
-    
     /// <summary>
-    ///This is a test class for KeyValueCollectionTypeTest and is intended
-    ///to contain all KeyValueCollectionTypeTest Unit Tests
-    ///</summary>
-    [TestClass()]
+    ///     This is a test class for KeyValueCollectionTypeTest and is intended
+    ///     to contain all KeyValueCollectionTypeTest Unit Tests
+    /// </summary>
+    [TestClass]
     public class KeyValueCollectionTypeTest
     {
-
-
-        private TestContext testContextInstance;
-
         /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
+        ///     Gets or sets the test context which provides
+        ///     information about and functionality for the current test run.
+        /// </summary>
+        public TestContext TestContext { get; set; }
 
         #region Additional test attributes
+
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -62,19 +46,19 @@ namespace Qi.Test
         //{
         //}
         //
+
         #endregion
 
-
         /// <summary>
-        ///A test for Compare
-        ///</summary>
-        [TestMethod()]
+        ///     A test for Compare
+        /// </summary>
+        [TestMethod]
         public void CompareTest()
         {
-            KeyValueCollectionType target = new KeyValueCollectionType(); // TODO: Initialize to an appropriate value
+            var target = new KeyValueCollectionType(); // TODO: Initialize to an appropriate value
             object x = null; // TODO: Initialize to an appropriate value
             object y = null; // TODO: Initialize to an appropriate value
-            Nullable<EntityMode> entityMode = new Nullable<EntityMode>(); // TODO: Initialize to an appropriate value
+            var entityMode = new EntityMode?(); // TODO: Initialize to an appropriate value
             int expected = 0; // TODO: Initialize to an appropriate value
             int actual;
             actual = target.Compare(x, y, entityMode);

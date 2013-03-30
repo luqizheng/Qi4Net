@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using System.Web.Mvc;
 using NHibernate.Metadata;
 using NHibernate.Type;
@@ -50,15 +49,15 @@ namespace Qi.Web.Mvc
                 }
             }
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="controllerContext"></param>
         /// <param name="wrapper"></param>
         internal
             static bool SetWrapper(ControllerContext controllerContext, SessionWrapper wrapper)
         {
-            var items = controllerContext.RequestContext.HttpContext.Items;
+            IDictionary items = controllerContext.RequestContext.HttpContext.Items;
             if (items.Contains(SessionWrapperContainer))
             {
                 items.Add(SessionWrapperContainer, wrapper);
@@ -66,38 +65,36 @@ namespace Qi.Web.Mvc
             }
             return false;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="controllerContext"></param>
         /// <returns></returns>
         internal static bool RemoveWrapper(ControllerContext controllerContext)
         {
-            var items = controllerContext.RequestContext.HttpContext.Items;
+            IDictionary items = controllerContext.RequestContext.HttpContext.Items;
             if (items.Contains(SessionWrapperContainer))
             {
                 items.Remove(SessionWrapperContainer);
                 return true;
             }
             return false;
-
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="controllerContext"></param>
         /// <returns></returns>
         internal static SessionWrapper GetWrapper(ControllerContext controllerContext)
         {
-
-            var items = controllerContext.RequestContext.HttpContext.Items;
+            IDictionary items = controllerContext.RequestContext.HttpContext.Items;
             if (items.Contains(SessionWrapperContainer))
             {
                 return items[SessionWrapperContainer] as SessionWrapper;
             }
             return null;
-
         }
+
         /// <summary>
         ///     Creates the specified model type by using the specified controller context and binding context.
         /// </summary>
@@ -125,20 +122,22 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// Returns the value of a property using the specified controller context, binding context, property descriptor, and property binder.
+        ///     Returns the value of a property using the specified controller context, binding context, property descriptor, and property binder.
         /// </summary>
         /// <returns>
-        /// An object that represents the property value.
+        ///     An object that represents the property value.
         /// </returns>
-        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param><param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param><param name="propertyDescriptor">The descriptor for the property to access. The descriptor provides information such as the component type, property type, and property value. It also provides methods to get or set the property value.</param><param name="propertyBinder">An object that provides a way to bind the property.</param>
+        /// <param name="controllerContext">The context within which the controller operates. The context information includes the controller, HTTP content, request context, and route data.</param>
+        /// <param name="bindingContext">The context within which the model is bound. The context includes information such as the model object, model name, model type, property filter, and value provider.</param>
+        /// <param name="propertyDescriptor">The descriptor for the property to access. The descriptor provides information such as the component type, property type, and property value. It also provides methods to get or set the property value.</param>
+        /// <param name="propertyBinder">An object that provides a way to bind the property.</param>
         protected override object GetPropertyValue(ControllerContext controllerContext,
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
-
             var context = new NHModelBindingContext(bindingContext)
                 {
-                    Wrapper = this._wrapper
+                    Wrapper = _wrapper
                 };
             object value = propertyBinder.BindModel(controllerContext, context);
             if (bindingContext.ModelMetadata.ConvertEmptyStringToNull && Equals(value, String.Empty))
@@ -147,7 +146,6 @@ namespace Qi.Web.Mvc
             }
 
             return value;
-
         }
 
         /// <summary>
@@ -160,7 +158,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
+            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
 
             if (modelType.IsGenericType)
             {
@@ -173,7 +171,7 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// return value  this modelType is belong to Mappling class or not.
+        ///     return value  this modelType is belong to Mappling class or not.
         /// </summary>
         /// <param name="modelType"></param>
         /// <returns></returns>
@@ -196,18 +194,25 @@ namespace Qi.Web.Mvc
                     EntityType = mappingType
                 };
             IClassMetadata perisisteType = _wrapper.SessionFactory.GetClassMetadata(mappingType);
+            string idKey = CreateSubPropertyName(bindingContext.ModelName, perisisteType.IdentifierPropertyName);
             var identity = perisisteType.IdentifierType as PrimitiveType;
-            if (identity == null)
+            if (identity != null)
             {
-                throw new NHModelBinderException("NHModelBinder only support Id is valueType.");
+                object postIdValue =
+                    bindingContext.ValueProvider.GetValue(idKey).ConvertTo(identity.DefaultValue.GetType());
+                if (postIdValue.Equals(identity.DefaultValue))
+                {
+                    return null;
+                }
             }
-            string idKey = CreateSubPropertyName(bindingContext.ModelName, perisisteType.IdentifierPropertyName); //for to Role[0].Id
-            var postIdValue = bindingContext.ValueProvider.GetValue(idKey).ConvertTo(identity.DefaultValue.GetType());
+            var immutableId = perisisteType.IdentifierType as ImmutableType;
+            if (immutableId != null)
+            {
+                idKey = CreateSubPropertyName(bindingContext.ModelName, perisisteType.IdentifierPropertyName);
+                if (idKey == null)
+                    return null;
+            }
 
-            if (postIdValue.Equals(identity.DefaultValue))
-            {
-                return null;
-            }
             IList result = idFounderAttribute.GetObject(idKey, bindingContext, false, _wrapper.CurrentSession);
             return result.Count > 0 ? result[0] : null;
         }
@@ -250,7 +255,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute)customAttributes[0];
+                var custommAttr = (SessionAttribute) customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -264,14 +269,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
-
             }
-            return (FounderAttribute)customAttributes[0];
+            return (FounderAttribute) customAttributes[0];
         }
 
         /// <summary>

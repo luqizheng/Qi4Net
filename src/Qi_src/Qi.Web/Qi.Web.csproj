@@ -103,7 +103,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Browsers\Cookies.cs" />
     <Compile Include="FileTypeHelper.cs" />
     <Compile Include="JsonContainer.cs" />
     <Compile Include="JsonContainers\Accesser.cs" />

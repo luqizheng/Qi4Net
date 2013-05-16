@@ -9,8 +9,8 @@ namespace Qi.Browsers
     public interface ICookie
     {
         void SetCookie(HttpCookie cookie);
-        System.Web.HttpCookie GetCookie(string name)
-        
+        System.Web.HttpCookie GetCookie(string name);
+
 
     }
 }

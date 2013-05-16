@@ -30,7 +30,7 @@ namespace Qi.Browsers
         }
         public string[] GetCookieNames(string hostName)
         {
-            
+            return null;
         }
         public void Clear(string name)
         {

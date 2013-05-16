@@ -30,8 +30,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.Web", "Qi.Web\Qi.Web.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.Net", "Qi.Net\Qi.Net.csproj", "{C2161169-BAF5-4873-BB8F-461FBF3DA993}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qi.Browsers", "Qi.Browsers\Qi.Browsers.csproj", "{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Qi.vsmdi
@@ -143,18 +141,6 @@ Global
 		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|Win32.ActiveCfg = Release|Any CPU
 		{C2161169-BAF5-4873-BB8F-461FBF3DA993}.Release|x86.ActiveCfg = Release|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Release|Win32.ActiveCfg = Release|Any CPU
-		{1EC11C23-6BE0-4F78-BEEA-364AC3D86E88}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

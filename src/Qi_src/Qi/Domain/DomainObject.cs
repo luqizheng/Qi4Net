@@ -66,6 +66,8 @@ namespace Qi.Domain
         /// </summary>
         public virtual bool IsTransient()
         {
+            if (default(TId) == null)
+                return ReferenceEquals(default(TId), Id);
             return Id.Equals(default(TId));
         }
 

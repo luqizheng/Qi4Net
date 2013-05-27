@@ -6,11 +6,11 @@ using System.Reflection;
 namespace Qi.Web
 {
     /// <summary>
-    /// This class allows access to the HttpContext without referring to HttpContext at compile time.
-    /// The accessors are cached as delegates for performance.
+    ///     This class allows access to the HttpContext without referring to HttpContext at compile time.
+    ///     The accessors are cached as delegates for performance.
     /// </summary>
     /// <remarks>
-    /// Code from NHibernate
+    ///     Code from NHibernate
     /// </remarks>
     public static class ReflectiveHttpContext
     {
@@ -19,16 +19,16 @@ namespace Qi.Web
             CreateCurrentHttpContextGetter();
             CreateHttpContextItemsGetter();
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public static Func<object> HttpContextCurrentGetter { get; private set; }
+
         /// <summary>
-        /// 
         /// </summary>
         public static Func<object, IDictionary> HttpContextItemsGetter { get; private set; }
+
         /// <summary>
-        /// 
         /// </summary>
         public static IDictionary HttpContextCurrentItems
         {

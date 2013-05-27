@@ -35,13 +35,34 @@ namespace Qi.Web.Mvc.NHMvcExtender
         {
             if (type.IsValueType || typeof(string) == type)
                 return base.ConvertTo(type, culture);
-            IClassMetadata perisisteType =
-                SessionManager.GetSessionWrapper().SessionFactory.GetClassMetadata(type);
+            Type elementType = type;
+            if (type.IsArray)
+            {
+                elementType = type.GetElementType();
+            }
+            IClassMetadata perisisteType = SessionManager.GetSessionWrapper().SessionFactory.GetClassMetadata(elementType);
             if (perisisteType == null)
-                return base.ConvertTo(type, culture);
+                return base.ConvertTo(elementType, culture);
+            else if (type.IsArray)
+            {
+                return GetArray(elementType, perisisteType, culture);
+            }
             object id = base.ConvertTo(perisisteType.IdentifierType.ReturnedClass, culture);
-            return _sessionWrapper
-                                 .CurrentSession.Get(type, id);
+            return _sessionWrapper.CurrentSession.Get(elementType, id);
+        }
+
+        private object GetArray(Type elemetType, IClassMetadata classMetadata, CultureInfo culture)
+        {
+            var idArray = (object[])base.ConvertTo(Array.CreateInstance(classMetadata.IdentifierType.ReturnedClass, 0).GetType(),
+                                         culture);
+            Array result = Array.CreateInstance(elemetType, idArray.Length);
+            int i = 0;
+            foreach (var id in idArray)
+            {
+                result.SetValue(_sessionWrapper.CurrentSession.Get(elemetType, id), i);
+                i++;
+            }
+            return result;
         }
     }
 }

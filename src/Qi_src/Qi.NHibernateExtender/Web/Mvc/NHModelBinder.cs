@@ -58,7 +58,7 @@ namespace Qi.Web.Mvc
             static bool SetWrapper(ControllerContext controllerContext, SessionWrapper wrapper)
         {
             IDictionary items = controllerContext.RequestContext.HttpContext.Items;
-            if (items.Contains(SessionWrapperContainer))
+            if (!items.Contains(SessionWrapperContainer))
             {
                 items.Add(SessionWrapperContainer, wrapper);
                 return true;
@@ -75,7 +75,9 @@ namespace Qi.Web.Mvc
             IDictionary items = controllerContext.RequestContext.HttpContext.Items;
             if (items.Contains(SessionWrapperContainer))
             {
+                var sessionWrpa = GetWrapper(controllerContext);
                 items.Remove(SessionWrapperContainer);
+                sessionWrpa.Close(false);
                 return true;
             }
             return false;

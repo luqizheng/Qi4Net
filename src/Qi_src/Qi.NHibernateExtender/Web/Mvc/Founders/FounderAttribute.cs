@@ -40,37 +40,42 @@ namespace Qi.Web.Mvc.Founders
         /// <returns></returns>
         public IList GetObject(string postName, ModelBindingContext context, bool isSet, ISession session)
         {
-            var requestValues = (string) context.ValueProvider.GetValue(postName).ConvertTo(typeof (string));
-            IType mappingType = GetMappingType(session, postName);
-
-
-            if (!string.IsNullOrEmpty(requestValues))
+            var result = context.ValueProvider.GetValue(postName);
+            if (result != null)
             {
-                try
+                var requestValues = (string)result.ConvertTo(typeof(string));
+                IType mappingType = GetMappingType(session, postName);
+
+                if (!string.IsNullOrEmpty(requestValues))
                 {
-                    object[] searchConditionValues = isSet
-                                                         ? NHMappingHelper.ConvertStringToObjects(requestValues,
-                                                                                                  mappingType)
-                                                         : new[]
-                                                             {
-                                                                 NHMappingHelper.ConvertStringToObject(requestValues,
-                                                                                                       mappingType)
-                                                             };
+                    try
+                    {
+                        object[] searchConditionValues = isSet
+                                                             ? NHMappingHelper.ConvertStringToObjects(requestValues,
+                                                                                                      mappingType)
+                                                             : new[]
+                                                                 {
+                                                                     NHMappingHelper.ConvertStringToObject(
+                                                                         requestValues,
+                                                                         mappingType)
+                                                                 };
 
 
-                    return GetObject(session, searchConditionValues, postName,
-                                     context);
-                }
-                catch (FormatException ex)
-                {
-                    throw new NHModelBinderException(
-                        "Translate submit data from client to target type (" + mappingType.Name + ") fail.", ex);
+                        return GetObject(session, searchConditionValues, postName,
+                                         context);
+                    }
+                    catch (FormatException ex)
+                    {
+                        throw new NHModelBinderException(
+                            "Translate submit data from client to target type (" + mappingType.Name + ") fail.", ex);
+                    }
                 }
             }
+
             ConstructorInfo constructor = EntityType
                 .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
                                 null, new Type[0], new ParameterModifier[0]);
-            return new ArrayList {constructor.Invoke(null)};
+            return new ArrayList { constructor.Invoke(null) };
         }
 
         /// <summary>

@@ -59,5 +59,7 @@ namespace Qi
             decimal res = Math.Truncate(dec*vs)/vs;
             return integer + res;
         }
+
+     
     }
 }

@@ -57,6 +57,9 @@
     <DocumentationFile>bin\Release\Qi.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\Qi.Test\bin\Debug\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

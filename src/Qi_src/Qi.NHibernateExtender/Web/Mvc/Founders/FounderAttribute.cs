@@ -43,7 +43,7 @@ namespace Qi.Web.Mvc.Founders
             var result = context.ValueProvider.GetValue(postName);
             if (result != null)
             {
-                var requestValues = (string)result.ConvertTo(typeof(string));
+                var requestValues = (string) result.ConvertTo(typeof (string));
                 IType mappingType = GetMappingType(session, postName);
 
                 if (!string.IsNullOrEmpty(requestValues))
@@ -70,6 +70,10 @@ namespace Qi.Web.Mvc.Founders
                             "Translate submit data from client to target type (" + mappingType.Name + ") fail.", ex);
                     }
                 }
+            }
+            else
+            {
+                return new ArrayList();
             }
 
             ConstructorInfo constructor = EntityType

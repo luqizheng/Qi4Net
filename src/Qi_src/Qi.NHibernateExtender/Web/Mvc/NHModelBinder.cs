@@ -67,6 +67,7 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
+        /// Remvoe NH Session, but it nevery close the session.
         /// </summary>
         /// <param name="controllerContext"></param>
         /// <returns></returns>
@@ -75,9 +76,7 @@ namespace Qi.Web.Mvc
             IDictionary items = controllerContext.RequestContext.HttpContext.Items;
             if (items.Contains(SessionWrapperContainer))
             {
-                var sessionWrpa = GetWrapper(controllerContext);
                 items.Remove(SessionWrapperContainer);
-                sessionWrpa.Close(false);
                 return true;
             }
             return false;

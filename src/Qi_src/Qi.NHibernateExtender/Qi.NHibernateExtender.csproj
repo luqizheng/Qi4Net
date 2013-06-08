@@ -105,6 +105,8 @@
     <Compile Include="Web\Mvc\NHMvcExtender\NHFormValueProviderFactory.cs" />
     <Compile Include="Web\Mvc\NHMvcExtender\NHQueryValuePrivoder.cs" />
     <Compile Include="Web\Mvc\NHMvcExtender\NHQueryValuePrivoderFactory.cs" />
+    <Compile Include="Web\Mvc\NHMvcExtender\NHRouterDataValueProvider.cs" />
+    <Compile Include="Web\Mvc\NHMvcExtender\NHRouterDataProviderFactory.cs" />
     <Compile Include="Web\Mvc\NHMvcExtender\NHValueProvider.cs" />
     <Compile Include="Web\Mvc\NHMvcExtender\NHValueProviderResult.cs" />
     <Compile Include="Web\Mvc\SessionAttribute.cs" />

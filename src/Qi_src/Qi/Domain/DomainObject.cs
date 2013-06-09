@@ -39,7 +39,7 @@ namespace Qi.Domain
         /// <summary>
         /// Inequality operator so we can have != semantics
         /// </summary>
-        public static bool operator !=(DomainObject<T, TId> x, DomainObject<T,TId> y)
+        public static bool operator !=(DomainObject<T, TId> x, DomainObject<T, TId> y)
         {
             return !(x == y);
         }
@@ -50,7 +50,7 @@ namespace Qi.Domain
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            var other = obj as DomainObject<T,TId>;
+            var other = obj as DomainObject<T, TId>;
             if (other == null)
                 return false;
             //to handle the case of comparing two new objects
@@ -58,7 +58,16 @@ namespace Qi.Domain
             bool thisIsTransient = Equals(Id, default(TId));
             if (otherIsTransient && thisIsTransient)
                 return ReferenceEquals(other, this);
+            if (!otherIsTransient && !thisIsTransient)
+            {
+                return true;
+            }
+            if (otherIsTransient)
+            {
+                return Id.Equals(other.Id);
+            }
             return other.Id.Equals(Id);
+
         }
 
         /// <summary>

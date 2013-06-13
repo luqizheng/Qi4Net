@@ -60,7 +60,7 @@ namespace Qi.Domain
                 return ReferenceEquals(other, this);
             if (!otherIsTransient && !thisIsTransient)
             {
-                return true;
+                return object.ReferenceEquals(other, this);
             }
             if (otherIsTransient)
             {

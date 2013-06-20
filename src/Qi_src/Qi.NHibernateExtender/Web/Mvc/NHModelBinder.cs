@@ -114,10 +114,7 @@ namespace Qi.Web.Mvc
 
             if (result == null)
             {
-                ConstructorInfo constructor = modelType
-                    .GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                                    null, new Type[0], new ParameterModifier[0]);
-                return constructor.Invoke(null);
+                CreateInstanceHelper.CreateInstance(modelType);
             }
             return result;
         }

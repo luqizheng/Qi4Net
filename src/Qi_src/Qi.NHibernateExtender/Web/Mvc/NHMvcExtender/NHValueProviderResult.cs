@@ -59,8 +59,12 @@ namespace Qi.Web.Mvc.NHMvcExtender
             int i = 0;
             foreach (var id in idArray)
             {
-                result.SetValue(_sessionWrapper.CurrentSession.Get(elemetType, id), i);
-                i++;
+                if (!String.IsNullOrEmpty(id.ToString()))
+                {
+                    var pesisite = _sessionWrapper.CurrentSession.Get(elemetType, id);
+                    result.SetValue(pesisite, i);
+                    i++;
+                }
             }
             return result;
         }

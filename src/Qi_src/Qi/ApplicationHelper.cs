@@ -26,7 +26,7 @@ namespace Qi
             get
             {
                 Func<object> obj = ReflectiveHttpContext.HttpContextCurrentGetter;
-                return obj != null;
+                return obj.Invoke() != null;
             }
         }
 

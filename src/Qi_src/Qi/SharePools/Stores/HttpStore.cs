@@ -37,13 +37,16 @@ namespace Qi.SharePools.Stores
         /// <param name="data"></param>
         public void SetData(string key, object data)
         {
-            if (Dictionary.Contains(key))
+            lock (this.Dictionary)
             {
-                Dictionary[key] = data;
-            }
-            else
-            {
-                Dictionary.Add(key, data);
+                if (Dictionary.Contains(key))
+                {
+                    Dictionary[key] = data;
+                }
+                else
+                {
+                    Dictionary.Add(key, data);
+                }
             }
         }
 
@@ -54,11 +57,15 @@ namespace Qi.SharePools.Stores
         /// <returns></returns>
         public object GetData(string key)
         {
-            if (!Dictionary.Contains(key))
+            lock (this.Dictionary)
             {
-                return null;
+                if (!Dictionary.Contains(key))
+                {
+                    return null;
+                }
+                return Dictionary[key];
             }
-            return Dictionary[key];
+
         }
 
         #endregion

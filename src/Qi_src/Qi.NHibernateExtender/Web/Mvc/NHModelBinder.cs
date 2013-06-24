@@ -35,11 +35,14 @@ namespace Qi.Web.Mvc
         {
             var context = bindingContext as NHModelBindingContext;
             _wrapper = context == null ? Initilize(controllerContext) : context.Wrapper;
+
+            if (_wrapper == null)
+                return base.BindModel(controllerContext, bindingContext);
+
             bool addSuccess = SetWrapper(controllerContext, _wrapper);
             try
             {
-                object result = base.BindModel(controllerContext, context == null ? bindingContext : context.Context);
-                return result;
+                return base.BindModel(controllerContext, context == null ? bindingContext : context.Context);
             }
             finally
             {
@@ -156,7 +159,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
+            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
 
             if (modelType.IsGenericType)
             {
@@ -238,9 +241,10 @@ namespace Qi.Web.Mvc
             {
                 return wrapper;
             }
+            return null;
 
-            throw new NHModelBinderException(
-                "can't find any enabled SessionAttribute on controller or action ,please special session attribute and make sure it's enabled.");
+            /*throw new NHModelBinderException(
+                "can't find any enabled SessionAttribute on controller or action ,please special session attribute and make sure it's enabled.");*/
         }
 
         /// <summary>
@@ -253,7 +257,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute) customAttributes[0];
+                var custommAttr = (SessionAttribute)customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -267,13 +271,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
         }
 
         /// <summary>

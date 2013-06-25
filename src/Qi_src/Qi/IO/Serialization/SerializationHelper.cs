@@ -2,17 +2,16 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace Qi.IO.Serialization
 {
     /// <summary>
-    /// 
     /// </summary>
     public static class SerializationHelper
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="outputSteam"></param>
@@ -23,7 +22,7 @@ namespace Qi.IO.Serialization
         }
 
         /// <summary>
-        /// SerializeBinary to binary.
+        ///     SerializeBinary to binary.
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="filePath"></param>
@@ -36,7 +35,6 @@ namespace Qi.IO.Serialization
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="objectStream"></param>
@@ -44,11 +42,10 @@ namespace Qi.IO.Serialization
         public static T DeserializeBinary<T>(Stream objectStream)
         {
             IFormatter formatter = new BinaryFormatter();
-            return (T) formatter.Deserialize(objectStream);
+            return (T)formatter.Deserialize(objectStream);
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="file"></param>
@@ -64,9 +61,35 @@ namespace Qi.IO.Serialization
                 return DeserializeBinary<T>(stream);
             }
         }
-
+        /// <summary>
+        /// Deserialize from xml string
+        /// </summary>
+        /// <typeparam name="T">Deserialize object Type</typeparam>
+        /// <param name="xml">xml string</param>
+        /// <returns></returns>
+        public static T DeserializeFromXml<T>(string xml)
+        {
+            using (var zhStream = new MemoryStream(Encoding.UTF8.GetBytes(xml)))
+            {
+                var content = (T)DeserializerXml(zhStream, typeof(T));
+                return content;
+            }
+        }
         /// <summary>
         /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string SerializerToXml(object obj)
+        {
+            using (var stream = new MemoryStream())
+            {
+                var ser = new XmlSerializer(obj.GetType());
+                ser.Serialize(stream, obj);
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
+        }
+        /// <summary>
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="outputSteam"></param>
@@ -77,7 +100,6 @@ namespace Qi.IO.Serialization
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="file"></param>
@@ -91,7 +113,6 @@ namespace Qi.IO.Serialization
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="file"></param>
         /// <param name="type"></param>
@@ -107,7 +128,6 @@ namespace Qi.IO.Serialization
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="type"></param>
@@ -119,14 +139,13 @@ namespace Qi.IO.Serialization
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="file"></param>
         /// <returns></returns>
         public static T DeserializerXml<T>(string file)
         {
-            return (T) DeserializerXml(file, typeof (T));
+            return (T)DeserializerXml(file, typeof(T));
         }
     }
 }

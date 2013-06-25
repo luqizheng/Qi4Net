@@ -5,13 +5,14 @@ using System.Text.RegularExpressions;
 namespace Qi.Text
 {
     /// <summary>
-    /// 
     /// </summary>
     public class NamedFormatterHelper
     {
+        private const string pattern = @"\[([^\[\]]|\[([^\[\]])*\])*\]";
+
         /// <summary>
-        /// use replacePatten to replace Variables those in ormatString, 
-        /// Variable need to defined in  square brackets, such as like that "[var]"
+        ///     use replacePatten to replace Variables those in ormatString,
+        ///     Variable need to defined in  square brackets, such as like that "[var]"
         /// </summary>
         /// <param name="formatString"></param>
         /// <param name="replacePattern">a dictionary with key and value,the key without "["</param>
@@ -20,36 +21,16 @@ namespace Qi.Text
         {
             if (replacePattern == null)
                 throw new ArgumentNullException("replacePattern");
-
-            string[] variables = CollectVariable(formatString);
-            IDictionary<string, string> exist = new Dictionary<string, string>();
-
-            foreach (string variable in variables)
-            {
-                if (replacePattern.ContainsKey(variable))
+            var rex = new Regex(pattern, RegexOptions.IgnoreCase);
+            return rex.Replace(formatString, match =>
                 {
-                    exist.Add(variable, replacePattern[variable]);
-                }
-            }
-
-
-            var pattern = new string[exist.Count];
-            int index = 0;
-            foreach (string key in exist.Keys)
-            {
-                pattern[index] = string.Format("\\[{0}\\]", key);
-                index++;
-            }
-
-            var rex = new Regex(String.Join("|", pattern), RegexOptions.IgnoreCase);
-
-
-            return rex.Replace(formatString,
-                               match => replacePattern[match.Value.Substring(1, match.Value.Length - 2)]);
+                    var key = match.Value.Substring(1, match.Value.Length - 2);
+                    return replacePattern.ContainsKey(key) ? replacePattern[key] : match.Value;
+                });
         }
 
         /// <summary>
-        /// Collect variable express in content, such as "I am a [varName]"
+        ///     Collect variable express in content, such as "I am a [varName]"
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
@@ -57,8 +38,6 @@ namespace Qi.Text
         {
             if (content == null)
                 throw new ArgumentNullException("content");
-
-            const string pattern = @"\[([^\[\]]|\[([^\[\]])*\])*\]";
 
 
             var rex = new Regex(pattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);

@@ -117,7 +117,7 @@ namespace Qi.Web.Mvc
 
             if (result == null)
             {
-                CreateInstanceHelper.CreateInstance(modelType);
+              return CreateInstanceHelper.CreateInstance(modelType);
             }
             return result;
         }

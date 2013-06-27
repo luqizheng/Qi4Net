@@ -9,7 +9,7 @@ namespace Qi.NHibernateExtender
 {
     /// <summary>
     /// </summary>
-    public class SessionWrapper
+    public class SessionWrapper : IDisposable
     {
         private const string InitKeyName = "session.was.inited";
         private ISessionFactory _sessionFactory;
@@ -70,6 +70,25 @@ namespace Qi.NHibernateExtender
             }
             private set { Store.SetData(InitKeyName, value); }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool OpenInThisCurrent { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// <code>
+        /// 
+        /// </code>
+        /// </remarks>
+        public void Dispose()
+        {
+            if (OpenInThisCurrent)
+            {
+                Close(true);
+            }
+        }
 
         /// <summary>
         /// </summary>
@@ -82,10 +101,12 @@ namespace Qi.NHibernateExtender
                 result = true;
                 IsInitSession = true;
             }
+            OpenInThisCurrent = result;
             return result;
         }
 
         /// <summary>
+        ///     关闭Session 而且不管这个Session是否在当前CallContext中打开
         /// </summary>
         /// <param name="submitData"></param>
         public void Close(bool submitData)

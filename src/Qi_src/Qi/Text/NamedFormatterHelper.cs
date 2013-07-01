@@ -8,7 +8,31 @@ namespace Qi.Text
     /// </summary>
     public class NamedFormatterHelper
     {
-        private const string pattern = @"\[([^\[\]]|\[([^\[\]])*\])*\]";
+        //private const string pattern = @"\[([^\[\]]|\[([^\[\]])*\])*\]";
+        private const string PatternTemplate = @"{0}([^{0}{1}])*{1}";
+
+        /// <summary>
+        /// </summary>
+        public NamedFormatterHelper()
+        {
+            StartPlaceholder = "\\[";
+            EndPlaceHolder = "\\]";
+        }
+
+        private string Pattern
+        {
+            get { return string.Format(PatternTemplate, StartPlaceholder, EndPlaceHolder); }
+        }
+
+        /// <summary>
+        /// Start Placholder default is "["
+        /// </summary>
+        public string StartPlaceholder { get; set; }
+
+        /// <summary>
+        /// End Placeholder default is "]"
+        /// </summary>
+        public string EndPlaceHolder { get; set; }
 
         /// <summary>
         ///     use replacePatten to replace Variables those in ormatString,
@@ -21,10 +45,12 @@ namespace Qi.Text
         {
             if (replacePattern == null)
                 throw new ArgumentNullException("replacePattern");
-            var rex = new Regex(pattern, RegexOptions.IgnoreCase);
+            var rex = new Regex(Pattern, RegexOptions.IgnoreCase);
+            //rex = new Regex(pattern, RegexOptions.IgnoreCase);
+
             return rex.Replace(formatString, match =>
                 {
-                    var key = match.Value.Substring(1, match.Value.Length - 2);
+                    string key = match.Value.Substring(1, match.Value.Length - 2);
                     return replacePattern.ContainsKey(key) ? replacePattern[key] : match.Value;
                 });
         }
@@ -34,13 +60,13 @@ namespace Qi.Text
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        public static string[] CollectVariable(string content)
+        public string[] CollectVariable(string content)
         {
             if (content == null)
                 throw new ArgumentNullException("content");
 
 
-            var rex = new Regex(pattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            var rex = new Regex(Pattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
             MatchCollection groups = rex.Matches(content);
 

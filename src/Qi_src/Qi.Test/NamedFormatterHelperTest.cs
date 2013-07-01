@@ -95,7 +95,8 @@ namespace Qi.Test
 [c]isAGood[a]";
             var expected = new[] { "a", "b.a", "c", "b" };
             string[] actual;
-            actual = NamedFormatterHelper.CollectVariable(content);
+            var a = new NamedFormatterHelper();
+            actual = a.CollectVariable(content);
             Assert.AreEqual(expected.Length, actual.Length);
 
             for (int idx = 0; idx < actual.Length; idx++)

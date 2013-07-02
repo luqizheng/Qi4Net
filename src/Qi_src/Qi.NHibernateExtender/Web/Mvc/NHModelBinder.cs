@@ -117,7 +117,7 @@ namespace Qi.Web.Mvc
 
             if (result == null)
             {
-              return CreateInstanceHelper.CreateInstance(modelType);
+                return CreateInstanceHelper.CreateInstance(modelType);
             }
             return result;
         }
@@ -199,8 +199,10 @@ namespace Qi.Web.Mvc
             var identity = perisisteType.IdentifierType as PrimitiveType;
             if (identity != null)
             {
-                object postIdValue =
-                    bindingContext.ValueProvider.GetValue(idKey).ConvertTo(identity.DefaultValue.GetType());
+                var valurProvider = bindingContext.ValueProvider.GetValue(idKey);
+                if (valurProvider == null)
+                    return null;
+                object postIdValue = valurProvider.ConvertTo(identity.DefaultValue.GetType());
                 if (postIdValue.Equals(identity.DefaultValue))
                 {
                     return null;

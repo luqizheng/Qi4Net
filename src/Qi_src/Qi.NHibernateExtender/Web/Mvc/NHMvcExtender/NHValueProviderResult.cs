@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Globalization;
 using System.Web.Mvc;
 using NHibernate.Metadata;
@@ -13,7 +14,6 @@ namespace Qi.Web.Mvc.NHMvcExtender
         private readonly SessionWrapper _sessionWrapper;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="result"></param>
         /// <param name="sessionWrapper"></param>
@@ -25,22 +25,23 @@ namespace Qi.Web.Mvc.NHMvcExtender
             Culture = result.Culture;
             RawValue = result.RawValue;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="type"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
         public override object ConvertTo(Type type, CultureInfo culture)
         {
-            if (type.IsValueType || typeof(string) == type)
+            if (type.IsValueType || typeof (string) == type)
                 return base.ConvertTo(type, culture);
             Type elementType = type;
             if (type.IsArray)
             {
                 elementType = type.GetElementType();
             }
-            IClassMetadata perisisteType = SessionManager.GetSessionWrapper().SessionFactory.GetClassMetadata(elementType);
+            IClassMetadata perisisteType =
+                SessionManager.GetSessionWrapper().SessionFactory.GetClassMetadata(elementType);
             if (perisisteType == null)
                 return base.ConvertTo(elementType, culture);
             else if (type.IsArray)
@@ -53,20 +54,26 @@ namespace Qi.Web.Mvc.NHMvcExtender
 
         private object GetArray(Type elemetType, IClassMetadata classMetadata, CultureInfo culture)
         {
-            var idArray = (object[])base.ConvertTo(Array.CreateInstance(classMetadata.IdentifierType.ReturnedClass, 0).GetType(),
-                                         culture);
-            Array result = Array.CreateInstance(elemetType, idArray.Length);
-            int i = 0;
-            foreach (var id in idArray)
+            Array aryType = Array.CreateInstance(classMetadata.IdentifierType.ReturnedClass, 0);
+            var idArray = (object[]) base.ConvertTo(aryType.GetType(), culture);
+            var result = new ArrayList();
+
+            foreach (object id in idArray)
             {
                 if (!String.IsNullOrEmpty(id.ToString()))
                 {
-                    var pesisite = _sessionWrapper.CurrentSession.Get(elemetType, id);
-                    result.SetValue(pesisite, i);
-                    i++;
+                    object pesisite = _sessionWrapper.CurrentSession.Get(elemetType, id);
+                    result.Add(pesisite);
                 }
             }
-            return result;
+
+            Array arrayRsult = Array.CreateInstance(elemetType, result.Count);
+            for (int index = 0; index < result.Count; index++)
+            {
+                object a = result[index];
+                arrayRsult.SetValue(a, index);
+            }
+            return arrayRsult;
         }
     }
 }

@@ -25,12 +25,12 @@ namespace Qi.Text
         }
 
         /// <summary>
-        /// Start Placholder default is "["
+        ///     Start Placholder default is "["
         /// </summary>
         public string StartPlaceholder { get; set; }
 
         /// <summary>
-        /// End Placeholder default is "]"
+        ///     End Placeholder default is "]"
         /// </summary>
         public string EndPlaceHolder { get; set; }
 

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Web.Mvc;
 using NHibernate.Metadata;
 using NHibernate.Type;
@@ -70,7 +69,7 @@ namespace Qi.Web.Mvc
         }
 
         /// <summary>
-        /// Remvoe NH Session, but it nevery close the session.
+        ///     Remvoe NH Session, but it nevery close the session.
         /// </summary>
         /// <param name="controllerContext"></param>
         /// <returns></returns>
@@ -159,7 +158,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
+            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
 
             if (modelType.IsGenericType)
             {
@@ -199,7 +198,7 @@ namespace Qi.Web.Mvc
             var identity = perisisteType.IdentifierType as PrimitiveType;
             if (identity != null)
             {
-                var valurProvider = bindingContext.ValueProvider.GetValue(idKey);
+                ValueProviderResult valurProvider = bindingContext.ValueProvider.GetValue(idKey);
                 if (valurProvider == null)
                     return null;
                 object postIdValue = valurProvider.ConvertTo(identity.DefaultValue.GetType());
@@ -259,7 +258,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute)customAttributes[0];
+                var custommAttr = (SessionAttribute) customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -273,13 +272,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute)customAttributes[0];
+            return (FounderAttribute) customAttributes[0];
         }
 
         /// <summary>

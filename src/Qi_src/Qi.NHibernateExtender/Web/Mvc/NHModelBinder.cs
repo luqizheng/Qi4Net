@@ -158,16 +158,18 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
+            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
 
             if (modelType.IsGenericType)
             {
                 types.AddRange(modelType.GetGenericArguments());
             }
-
+            var sessionFactory = _wrapper != null
+                                     ? _wrapper.SessionFactory
+                                     : SessionManager.Factories[SessionManager.DefaultSessionFactoryKey].SessionFactory;
             return
                 types.Any(
-                    type => _wrapper.SessionFactory.Statistics.EntityNames.Contains(type.UnderlyingSystemType.FullName));
+                    type => sessionFactory.Statistics.EntityNames.Contains(type.UnderlyingSystemType.FullName));
         }
 
         /// <summary>
@@ -177,6 +179,16 @@ namespace Qi.Web.Mvc
         /// <returns></returns>
         private bool IsMappingClass(Type modelType)
         {
+            if (_wrapper == null)
+            {
+                return SessionManager.Factories[SessionManager.DefaultSessionFactoryKey].SessionFactory.Statistics
+                                                                                        .EntityNames
+                                                                                        .Contains(
+                                                                                            modelType
+                                                                                                .UnderlyingSystemType
+                                                                                                .FullName);
+            }
+
             return _wrapper.SessionFactory.Statistics.EntityNames.Contains(modelType.UnderlyingSystemType.FullName);
         }
 
@@ -258,7 +270,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute) customAttributes[0];
+                var custommAttr = (SessionAttribute)customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -272,13 +284,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute) customAttributes[0];
+            return (FounderAttribute)customAttributes[0];
         }
 
         /// <summary>

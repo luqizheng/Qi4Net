@@ -11,6 +11,7 @@ namespace Qi.Web.Mvc.NHMvcExtender
     /// </summary>
     public class NHValueProviderResult : ValueProviderResult
     {
+        private readonly ValueProviderResult _result;
         private readonly SessionWrapper _sessionWrapper;
 
         /// <summary>
@@ -20,10 +21,12 @@ namespace Qi.Web.Mvc.NHMvcExtender
         /// <exception cref="ArgumentNullException"></exception>
         public NHValueProviderResult(ValueProviderResult result, SessionWrapper sessionWrapper)
         {
+            _result = result;
             _sessionWrapper = sessionWrapper;
             AttemptedValue = result.AttemptedValue;
             Culture = result.Culture;
             RawValue = result.RawValue;
+
         }
 
         /// <summary>
@@ -34,7 +37,7 @@ namespace Qi.Web.Mvc.NHMvcExtender
         public override object ConvertTo(Type type, CultureInfo culture)
         {
             if (type.IsValueType || typeof (string) == type)
-                return base.ConvertTo(type, culture);
+                return _result.ConvertTo(type, culture);
             Type elementType = type;
             if (type.IsArray)
             {
@@ -43,19 +46,19 @@ namespace Qi.Web.Mvc.NHMvcExtender
             IClassMetadata perisisteType =
                 SessionManager.GetSessionWrapper().SessionFactory.GetClassMetadata(elementType);
             if (perisisteType == null)
-                return base.ConvertTo(elementType, culture);
+                return _result.ConvertTo(elementType, culture);
             else if (type.IsArray)
             {
                 return GetArray(elementType, perisisteType, culture);
             }
-            object id = base.ConvertTo(perisisteType.IdentifierType.ReturnedClass, culture);
+            object id = _result.ConvertTo(perisisteType.IdentifierType.ReturnedClass, culture);
             return _sessionWrapper.CurrentSession.Get(elementType, id);
         }
 
         private object GetArray(Type elemetType, IClassMetadata classMetadata, CultureInfo culture)
         {
             Array aryType = Array.CreateInstance(classMetadata.IdentifierType.ReturnedClass, 0);
-            var idArray = (object[]) base.ConvertTo(aryType.GetType(), culture);
+            var idArray = (object[])_result.ConvertTo(aryType.GetType(), culture);
             var result = new ArrayList();
 
             foreach (object id in idArray)

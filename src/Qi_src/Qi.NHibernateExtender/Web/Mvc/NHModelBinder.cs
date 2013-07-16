@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
+using NHibernate;
 using NHibernate.Metadata;
 using NHibernate.Type;
 using Qi.NHibernateExtender;
@@ -36,7 +37,10 @@ namespace Qi.Web.Mvc
             _wrapper = context == null ? Initilize(controllerContext) : context.Wrapper;
 
             if (_wrapper == null)
-                return base.BindModel(controllerContext, bindingContext);
+            {
+                var result = base.BindModel(controllerContext, bindingContext);
+                return result;
+            }
 
             bool addSuccess = SetWrapper(controllerContext, _wrapper);
             try
@@ -51,7 +55,7 @@ namespace Qi.Web.Mvc
                 }
             }
         }
-
+        
         /// <summary>
         /// </summary>
         /// <param name="controllerContext"></param>
@@ -135,6 +139,10 @@ namespace Qi.Web.Mvc
                                                    ModelBindingContext bindingContext,
                                                    PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
         {
+            if (!IsPersistentType(bindingContext.ModelType))
+            {
+                return base.GetPropertyValue(controllerContext, bindingContext, propertyDescriptor, propertyBinder);
+            }
             var context = new NHModelBindingContext(bindingContext)
                 {
                     Wrapper = _wrapper
@@ -158,15 +166,16 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
+            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
 
             if (modelType.IsGenericType)
             {
                 types.AddRange(modelType.GetGenericArguments());
             }
-            var sessionFactory = _wrapper != null
-                                     ? _wrapper.SessionFactory
-                                     : SessionManager.Factories[SessionManager.DefaultSessionFactoryKey].SessionFactory;
+            ISessionFactory sessionFactory = _wrapper != null
+                                                 ? _wrapper.SessionFactory
+                                                 : SessionManager.Factories[SessionManager.DefaultSessionFactoryKey]
+                                                       .SessionFactory;
             return
                 types.Any(
                     type => sessionFactory.Statistics.EntityNames.Contains(type.UnderlyingSystemType.FullName));
@@ -270,7 +279,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute)customAttributes[0];
+                var custommAttr = (SessionAttribute) customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -284,13 +293,13 @@ namespace Qi.Web.Mvc
         private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
         {
             object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
+                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof (FounderAttribute), true);
 
             if (customAttributes.Length == 0)
             {
                 return new IdFounderAttribute();
             }
-            return (FounderAttribute)customAttributes[0];
+            return (FounderAttribute) customAttributes[0];
         }
 
         /// <summary>

@@ -302,7 +302,7 @@ namespace Qi
         {
             unchecked
             {
-                return _ticks.GetHashCode()*3;
+                return _ticks.GetHashCode() * 3;
             }
         }
 
@@ -316,10 +316,18 @@ namespace Qi
             bool result = base.Equals(obj);
             if (result)
                 return true;
-            if (obj.GetType() != GetType())
-                return true;
+            Time t;
+            try
+            {
+                t = (Time)obj;
+                return t.Ticks == this.Ticks;
+            }
+            catch
+            {
+                return false;
+            }
 
-            return ((Time) obj) == this;
+
         }
     }
 }

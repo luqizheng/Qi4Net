@@ -5,6 +5,14 @@ namespace Qi
     /// <summary>
     /// 
     /// </summary>
+    public class TimePeriod
+    {
+        public Time? Start { get; set; }
+        public Time? End { get; set; }
+    }
+    /// <summary>
+    /// 
+    /// </summary>
     public struct Time
     {
         private readonly TimeSpan _ticks;

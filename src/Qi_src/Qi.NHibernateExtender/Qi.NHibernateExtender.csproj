@@ -92,6 +92,7 @@
     <Compile Include="NHibernateExtender\Types\TimeStringType.cs" />
     <Compile Include="NHibernateExtender\Types\TimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\Http\SessionAttribute.cs" />
     <Compile Include="Web\Mvc\CreateInstanceHelper.cs" />
     <Compile Include="Web\Mvc\Founders\FounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\HqlFounderAttribute.cs" />

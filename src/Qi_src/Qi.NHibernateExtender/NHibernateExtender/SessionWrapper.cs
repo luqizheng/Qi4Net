@@ -4,6 +4,7 @@ using NHibernate.Cfg;
 using NHibernate.Context;
 using NHibernate.Impl;
 using Qi.SharePools;
+using Qi.Web.Mvc;
 
 namespace Qi.NHibernateExtender
 {
@@ -49,6 +50,12 @@ namespace Qi.NHibernateExtender
         {
             get
             {
+                if (!IsInitSession)
+                {
+                    throw new NHModelBinderException("Please call InitSession first.");
+                }
+
+
                 if (!CurrentSessionContext.HasBind(SessionFactory))
                 {
                     CurrentSessionContext.Bind(SessionFactory.OpenSession());
@@ -66,7 +73,7 @@ namespace Qi.NHibernateExtender
                 object obj = Store.GetData(InitKeyName);
                 if (obj == null)
                     return false;
-                return (bool) obj;
+                return (bool)obj;
             }
             private set { Store.SetData(InitKeyName, value); }
         }

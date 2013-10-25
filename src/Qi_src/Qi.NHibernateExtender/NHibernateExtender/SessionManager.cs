@@ -86,10 +86,14 @@ namespace Qi.NHibernateExtender
         /// <exception cref="ArgumentOutOfRangeException">sessionFactoryName is not exist in session manager</exception>
         public static SessionWrapper GetSessionWrapper(string sessionFactoryName)
         {
+            if (string.IsNullOrEmpty(sessionFactoryName))
+            {
+                throw new ArgumentNullException("sessionFactoryName", "sessionFactoryName can not be null or empty");
+            }
+
             if (!LazyLoadConfig.ContainsKey(sessionFactoryName))
             {
-                throw new ArgumentOutOfRangeException("sessionFactoryName",
-                                                      string.Format("can't find the {0} session factory.",
+                throw new SessionManagerException(string.Format("can't find the {0} session factory.",
                                                                     sessionFactoryName));
             }
             if (!Factories.ContainsKey(sessionFactoryName))

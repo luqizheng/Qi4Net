@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
 using Qi.NHibernateExtender;
@@ -13,12 +14,16 @@ namespace Qi.Domain.NHibernates
     public abstract class DaoBase<TId, TObject> : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
         private readonly SessionWrapper _wrapper;
-
+       
         /// <summary>
         /// </summary>
         /// <param name="sessionFactoryName"></param>
         protected DaoBase(string sessionFactoryName)
         {
+            if (string.IsNullOrEmpty(sessionFactoryName))
+            {
+                throw new ArgumentNullException("sessionFactoryName", "sessionFactoryName can not be null or empty");
+            }
             _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         }
 

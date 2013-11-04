@@ -223,9 +223,9 @@ namespace Qi.Web.Mvc
                 if (valurProvider == null)
                     return null;
                 object postIdValue = valurProvider.ConvertTo(identity.DefaultValue.GetType());
-                if (postIdValue.Equals(identity.DefaultValue))
+                if (postIdValue==null || postIdValue.Equals(identity.DefaultValue))
                 {
-                    return null;
+                    return identity.DefaultValue;
                 }
             }
             var immutableId = perisisteType.IdentifierType as ImmutableType;

@@ -4,6 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace Qi.Net
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class IpAddressExtender
     {
         /// <summary>

@@ -85,6 +85,7 @@
     <Compile Include="ArrayHelper.cs" />
     <Compile Include="ByteHelper.cs" />
     <Compile Include="Draw\ResizePic.cs" />
+    <Compile Include="Net\IpAddressExtender.cs" />
     <Compile Include="SharePools\Stores\CallStore.cs" />
     <Compile Include="SharePools\Stores\HttpStore.cs" />
     <Compile Include="SharePools\IStore.cs" />

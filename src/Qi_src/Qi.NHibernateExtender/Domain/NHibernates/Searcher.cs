@@ -50,15 +50,15 @@ namespace Qi.Domain.NHibernates
 
             total =
                 result.SetProjection(Projections.RowCount())
-                      .GetExecutableCriteria(_wrapper.CurrentSession)
-                      .UniqueResult<int>();
+                    .GetExecutableCriteria(_wrapper.CurrentSession)
+                    .UniqueResult<int>();
 
             result = CreateCriteria();
             IList<TObject> t =
                 result.SetMaxResults(length)
-                      .SetFirstResult(start)
-                      .GetExecutableCriteria(_wrapper.CurrentSession)
-                      .List<TObject>();
+                    .SetFirstResult(start)
+                    .GetExecutableCriteria(_wrapper.CurrentSession)
+                    .List<TObject>();
             return t;
         }
 
@@ -76,8 +76,8 @@ namespace Qi.Domain.NHibernates
                 foreach (SortTarget a in Sort)
                 {
                     result.AddOrder(a.Tag == SortDirect.Asc
-                                        ? Order.Asc(Projections.Property(a.Property))
-                                        : Order.Desc(Projections.Property(a.Property)));
+                        ? Order.Asc(Projections.Property(a.Property))
+                        : Order.Desc(Projections.Property(a.Property)));
                 }
             }
         }

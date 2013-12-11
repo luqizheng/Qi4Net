@@ -105,6 +105,7 @@
     <Compile Include="Web\Mvc\Founders\IdFounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\NHMappingHelper.cs" />
     <Compile Include="Web\Mvc\Founders\PropertyFounderAttribute.cs" />
+    <Compile Include="Web\Mvc\NHibernateMvcRegister.cs" />
     <Compile Include="Web\Mvc\NHModelBinder.cs" />
     <Compile Include="Web\Mvc\NHModelBinderException.cs" />
     <Compile Include="Web\Mvc\NHModelBinderProvider.cs" />

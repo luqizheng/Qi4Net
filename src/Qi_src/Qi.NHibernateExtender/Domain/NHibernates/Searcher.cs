@@ -24,6 +24,8 @@ namespace Qi.Domain.NHibernates
                 throw new ArgumentNullException("sessionFactoryName");
             }
             _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
+            Criteria = DetachedCriteria.For<TObject>();
+            CountCriteria = DetachedCriteria.For<TObject>();
         }
 
         /// <summary>
@@ -33,10 +35,10 @@ namespace Qi.Domain.NHibernates
         {
         }
 
-        /// <summary>
-        ///     Sort Property
-        /// </summary>
-        public virtual SortTarget[] Sort { get; set; }
+        protected DetachedCriteria Criteria { get; set; }
+
+        protected DetachedCriteria CountCriteria { get; set; }
+
 
         /// <summary>
         /// </summary>
@@ -46,40 +48,16 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         public IList<TObject> Find(int start, int length, out int total)
         {
-            DetachedCriteria result = CreateCriteria();
+            CountCriteria.SetProjection(Projections.RowCount());
+            Criteria.SetMaxResults(length).SetFirstResult(start);
 
-            total =
-                result.SetProjection(Projections.RowCount())
-                    .GetExecutableCriteria(_wrapper.CurrentSession)
-                    .UniqueResult<int>();
+            Criteria.GetExecutableCriteria(_wrapper.CurrentSession)
+                .UniqueResult<int>();
 
-            result = CreateCriteria();
-            IList<TObject> t =
-                result.SetMaxResults(length)
-                    .SetFirstResult(start)
-                    .GetExecutableCriteria(_wrapper.CurrentSession)
-                    .List<TObject>();
-            return t;
-        }
 
-        protected virtual DetachedCriteria CreateCriteria()
-        {
-            DetachedCriteria result = DetachedCriteria.For(typeof (TObject));
-            BuildSortProperty(result);
-            return result;
-        }
-
-        protected virtual void BuildSortProperty(DetachedCriteria result)
-        {
-            if (Sort != null && Sort.Length != 0)
-            {
-                foreach (SortTarget a in Sort)
-                {
-                    result.AddOrder(a.Tag == SortDirect.Asc
-                        ? Order.Asc(Projections.Property(a.Property))
-                        : Order.Desc(Projections.Property(a.Property)));
-                }
-            }
+            total = CountCriteria.GetExecutableCriteria(_wrapper.CurrentSession).UniqueResult<int>();
+            return Criteria.GetExecutableCriteria(_wrapper.CurrentSession)
+                .List<TObject>();
         }
     }
 }

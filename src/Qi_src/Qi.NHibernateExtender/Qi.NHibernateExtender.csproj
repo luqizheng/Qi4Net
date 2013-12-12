@@ -94,7 +94,6 @@
     <Compile Include="NHibernateExtender\Types\TimeStringType.cs" />
     <Compile Include="NHibernateExtender\Types\TimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SortDirect.cs" />
     <Compile Include="Wcfs\NHibernateContext.cs" />
     <Compile Include="Wcfs\NHibernateContextExension.cs" />
     <Compile Include="Wcfs\NHibernateContextInitializer.cs" />

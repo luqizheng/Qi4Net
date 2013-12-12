@@ -10,7 +10,7 @@ namespace Qi.NHibernateExtender.Criterion
     {
         private BitwiseFlags(string propertyName, object value, string op) :
             base(new SimpleExpression(propertyName, value, op),
-                 Expression.Sql("?", value, NHibernateUtil.Enum(value.GetType())))
+                Expression.Sql("?", value, NHibernateUtil.Enum(value.GetType())))
         {
         }
 
@@ -23,8 +23,8 @@ namespace Qi.NHibernateExtender.Criterion
         {
             get { return "="; }
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="propertyName"></param>
         /// <param name="flags"></param>
@@ -33,8 +33,8 @@ namespace Qi.NHibernateExtender.Criterion
         {
             return new BitwiseFlags(propertyName, flags, " & ");
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="propertyName"></param>
         /// <param name="flags"></param>

@@ -18,6 +18,7 @@ namespace Qi.Domain.NHibernates
         /// <summary>
         /// </summary>
         /// <param name="sessionFactoryName"></param>
+        /// <exception cref="ArgumentNullException">sessionFactoryName is null or empty</exception>
         protected DaoBase(string sessionFactoryName)
         {
             if (string.IsNullOrEmpty(sessionFactoryName))
@@ -107,7 +108,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         public virtual TId Save(TObject t)
         {
-            return (TId)CurrentSession.Save(t);
+            return (TId) CurrentSession.Save(t);
         }
 
         /// <summary>
@@ -131,7 +132,6 @@ namespace Qi.Domain.NHibernates
         }
 
 
-
         /// <summary>
         /// </summary>
         public void Flush()
@@ -144,9 +144,21 @@ namespace Qi.Domain.NHibernates
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        public int Count()
+        {
+            return
+                CreateDetachedCriteria()
+                    .SetProjection(Projections.RowCount()).SetCacheMode(CacheMode.Get)
+                    .GetExecutableCriteria(CurrentSession)
+                    .UniqueResult<int>();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
         protected DetachedCriteria CreateDetachedCriteria()
         {
-            return DetachedCriteria.For(typeof(TObject));
+            return DetachedCriteria.For(typeof (TObject));
         }
 
         /// <summary>
@@ -154,7 +166,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected virtual ICriteria CreateCriteria()
         {
-            return CurrentSession.CreateCriteria(typeof(TObject));
+            return CurrentSession.CreateCriteria(typeof (TObject));
         }
 
         /// <summary>
@@ -164,22 +176,6 @@ namespace Qi.Domain.NHibernates
         protected virtual IQuery CreateQuery(string query)
         {
             return CurrentSession.CreateQuery(query);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public int Count()
-        {
-            return
-                CreateDetachedCriteria()
-                    .SetProjection(Projections.RowCount())
-                    .GetExecutableCriteria(this.CurrentSession)
-                    .UniqueResult<int>();
-        }
-        protected virtual DetachedCriteria Index(int start, int size)
-        {
-            return CreateDetachedCriteria().SetMaxResults(size).SetFirstResult(start);
         }
     }
 }

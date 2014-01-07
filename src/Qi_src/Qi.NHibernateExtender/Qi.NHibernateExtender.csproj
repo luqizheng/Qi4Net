@@ -84,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\NHibernates\DaoBase.cs" />
-    <Compile Include="Domain\NHibernates\Searcher.cs" />
     <Compile Include="NHibernateExtender\Criterion\BitwiseFlags.cs" />
     <Compile Include="NHibernateExtender\SessionManager.cs" />
     <Compile Include="NHibernateExtender\SessionManagerException.cs" />

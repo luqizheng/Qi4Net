@@ -99,5 +99,10 @@ namespace Qi.Domain
         /// <summary>
         /// </summary>
         void Flush();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        int Count();
     }
 }

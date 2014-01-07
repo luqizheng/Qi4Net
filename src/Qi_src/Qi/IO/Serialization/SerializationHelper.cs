@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -147,5 +148,7 @@ namespace Qi.IO.Serialization
         {
             return (T)DeserializerXml(file, typeof(T));
         }
+
+      
     }
 }

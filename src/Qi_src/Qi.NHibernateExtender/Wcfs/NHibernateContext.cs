@@ -14,12 +14,21 @@ namespace Qi.Wcfs
         private readonly bool _enabledSession;
         private readonly string _sessionFactoryName;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enabledSession"></param>
+        /// <param name="sessionFactoryName"></param>
         public NHibernateContextAttribute(bool enabledSession, string sessionFactoryName)
         {
             _enabledSession = enabledSession;
             _sessionFactoryName = sessionFactoryName;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enabledSession"></param>
         public NHibernateContextAttribute(bool enabledSession)
             : this(enabledSession, SessionManager.DefaultSessionFactoryKey)
         {

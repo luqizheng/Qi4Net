@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
+using Qi.NHibernateExtender;
 using Qi.Web.Mvc.NHMvcExtender;
 
 namespace Qi.Web.Mvc
@@ -15,14 +18,19 @@ namespace Qi.Web.Mvc
         /// <summary>
         /// 
         /// </summary>
-        public static void Regist()
+        public static void Regist(HttpApplication application)
         {
             //NHibernate Extender
             ValueProviderFactories.Factories[1] = new NHFormValueProviderFactory();
             ValueProviderFactories.Factories[3] = new NHRouterDataProviderFactory();
             ValueProviderFactories.Factories[4] = new NHQueryValuePrivoderFactory();
-
             ExtenderModelType();
+            application.EndRequest += application_EndRequest;
+        }
+
+        static void application_EndRequest(object sender, EventArgs e)
+        {
+            SessionManager.ClassAll(true);
         }
 
         private static void ExtenderModelType()

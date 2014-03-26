@@ -97,5 +97,10 @@ namespace Qi.Web.Mvc
                 }
             }
         }
+
+        public override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+            _wrapper.Close(true);
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.ServiceModel.Channels;
 using System.Web.Mvc;
 using NHibernate;
 using NHibernate.Metadata;
@@ -20,6 +21,7 @@ namespace Qi.Web.Mvc
         private const string SessionWrapperContainer = "nhwrapper";
         private SessionWrapper _wrapper;
 
+      
         /// <summary>
         ///     Binds the model by using the specified controller context and binding context.
         /// </summary>
@@ -33,6 +35,10 @@ namespace Qi.Web.Mvc
         /// </exception>
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
+            if (TypeUtility.IsBasicType(bindingContext.ModelType))
+            {
+                return base.BindModel(controllerContext, bindingContext);
+            }
             var context = bindingContext as NHModelBindingContext;
             _wrapper = context == null ? Initilize(controllerContext) : context.Wrapper;
 

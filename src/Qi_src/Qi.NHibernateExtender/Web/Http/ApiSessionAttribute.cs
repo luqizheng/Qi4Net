@@ -44,7 +44,7 @@ namespace Qi.Web.Http
         public ApiSessionAttribute()
             : this(true, SessionManager.DefaultSessionFactoryKey)
         {
-            
+
         }
 
         /// <summary>
@@ -89,13 +89,13 @@ namespace Qi.Web.Http
 
             var task = new Task(s =>
                 {
-                    var trans = (ITransaction) s;
+                    var trans = (ITransaction)s;
                     if (trans != null && trans.IsActive)
                     {
                         trans.Rollback();
                         trans = null;
                     }
-                },_tras);
+                }, _tras);
             return task;
         }
 
@@ -114,6 +114,12 @@ namespace Qi.Web.Http
                 }
             }
             base.OnActionExecuting(actionContext);
-        }     
+        }
+
+        public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
+        {
+            _wrapper.Close(true);
+            base.OnActionExecuted(actionExecutedContext);
+        }
     }
 }

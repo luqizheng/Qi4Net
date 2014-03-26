@@ -146,6 +146,7 @@
     <Compile Include="Secret\EncryptHelper.cs" />
     <Compile Include="Text\NamedFormatterHelper.cs" />
     <Compile Include="Time.cs" />
+    <Compile Include="TypeUtility.cs" />
     <Compile Include="Web\ReflectiveHttpContext.cs" />
   </ItemGroup>
   <ItemGroup>

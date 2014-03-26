@@ -7,6 +7,7 @@ using Qi.NHibernateExtender;
 namespace Qi.Web.Mvc
 {
     /// <summary>
+    /// Open Sesion in Fitter and close it in End_Request.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
@@ -95,14 +96,6 @@ namespace Qi.Web.Mvc
                                 : _wrapper.CurrentSession.BeginTransaction();
                 }
             }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="filterContext"></param>
-        public override void OnResultExecuted(ResultExecutedContext filterContext)
-        {
-            _wrapper.Close(true);
         }
     }
 }

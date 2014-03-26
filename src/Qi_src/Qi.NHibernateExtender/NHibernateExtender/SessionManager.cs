@@ -27,7 +27,7 @@ namespace Qi.NHibernateExtender
         /// </summary>
         public string CurrentSessionFactoryName
         {
-            get { return (string) SharePool.DefaultStore.GetData("session.key.factory."); }
+            get { return (string)SharePool.DefaultStore.GetData("session.key.factory."); }
             set { SharePool.DefaultStore.SetData("session.key.factory.", value); }
         }
 
@@ -124,6 +124,17 @@ namespace Qi.NHibernateExtender
                 throw new SessionManagerException("sessionFacotryName", "Session Factory is regist, please try another.");
             }
             LazyLoadConfig.Add(sessionFacotryName, initConfigLazy);
+        }
+        /// <summary>
+        /// 关闭所有的Session
+        /// </summary>
+        /// <param name="submit"></param>
+        public static void ClassAll(bool submit)
+        {
+            foreach (var a in Factories.Values)
+            {
+                a.Close(submit);
+            }
         }
     }
 }

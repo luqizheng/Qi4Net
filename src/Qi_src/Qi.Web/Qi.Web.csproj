@@ -110,6 +110,7 @@
     <Compile Include="JsonContainers\ListAccesser.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="Mvc\HtmlExtender.cs" />
+    <Compile Include="Mvc\JQueryArrayFilter.cs" />
     <Compile Include="Mvc\JsonContainerFilter.cs" />
     <Compile Include="Mvc\RouterUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

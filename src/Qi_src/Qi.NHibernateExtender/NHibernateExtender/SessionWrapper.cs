@@ -9,6 +9,7 @@ using Qi.Web.Mvc;
 namespace Qi.NHibernateExtender
 {
     /// <summary>
+    /// 
     /// </summary>
     public class SessionWrapper : IDisposable
     {
@@ -123,6 +124,7 @@ namespace Qi.NHibernateExtender
                 ISession session = CurrentSessionContext.Unbind(SessionFactory);
                 HandleUnsaveData(submitData, session);
                 session.Close();
+                IsInitSession = false;
             }
         }
 

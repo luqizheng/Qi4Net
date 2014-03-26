@@ -114,12 +114,6 @@ namespace Qi.Web.Http
                 }
             }
             base.OnActionExecuting(actionContext);
-        }
-
-        public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
-        {
-            base.OnActionExecuted(actionExecutedContext);
-            _wrapper.Close(true);
-        }
+        }     
     }
 }

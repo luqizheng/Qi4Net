@@ -7,7 +7,7 @@ using Qi.NHibernateExtender;
 namespace Qi.Web.Mvc
 {
     /// <summary>
-    /// Open Sesion in Fitter and close it in End_Request.
+    ///     Open Sesion in Fitter and close it in End_Request.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
@@ -92,8 +92,8 @@ namespace Qi.Web.Mvc
                 if (Transaction)
                 {
                     _tras = IsolationLevel != null
-                                ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel.Value)
-                                : _wrapper.CurrentSession.BeginTransaction();
+                        ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel.Value)
+                        : _wrapper.CurrentSession.BeginTransaction();
                 }
             }
         }

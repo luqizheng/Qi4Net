@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHibernate;
 using NHibernate.Cfg;
 using Qi.SharePools;
 
@@ -13,7 +12,9 @@ namespace Qi.NHibernateExtender
     {
         internal static readonly SortedDictionary<string, SessionWrapper> Factories =
             new SortedDictionary<string, SessionWrapper>();
-
+        /// <summary>
+        /// config都是调用的时候再创建
+        /// </summary>
         private static readonly Dictionary<string, Func<Configuration>> LazyLoadConfig =
             new Dictionary<string, Func<Configuration>>();
 
@@ -27,7 +28,7 @@ namespace Qi.NHibernateExtender
         /// </summary>
         public string CurrentSessionFactoryName
         {
-            get { return (string)SharePool.DefaultStore.GetData("session.key.factory."); }
+            get { return (string) SharePool.DefaultStore.GetData("session.key.factory."); }
             set { SharePool.DefaultStore.SetData("session.key.factory.", value); }
         }
 
@@ -55,19 +56,6 @@ namespace Qi.NHibernateExtender
             get { return LazyLoadConfig.Keys.ToArray(); }
         }
 
-        /// <summary>
-        ///     May be null, if you are not set the <see cref="CurrentSessionFactoryName" /> key
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="SessionManagerException"></exception>
-        public ISession GetCurrentSession()
-        {
-            if (CurrentSessionFactoryName == null)
-            {
-                CurrentSessionFactoryName = DefaultSessionFactoryKey;
-            }
-            return GetSessionWrapper(CurrentSessionFactoryName).CurrentSession;
-        }
 
         /// <summary>
         ///     Get the default Session wrapper
@@ -77,6 +65,7 @@ namespace Qi.NHibernateExtender
         {
             return GetSessionWrapper(DefaultSessionFactoryKey);
         }
+
 
         /// <summary>
         ///     gets the session factory by session factory name defined in the configruation file.
@@ -94,7 +83,7 @@ namespace Qi.NHibernateExtender
             if (!LazyLoadConfig.ContainsKey(sessionFactoryName))
             {
                 throw new SessionManagerException(string.Format("can't find the {0} session factory.",
-                                                                    sessionFactoryName));
+                    sessionFactoryName));
             }
             if (!Factories.ContainsKey(sessionFactoryName))
             {
@@ -125,13 +114,14 @@ namespace Qi.NHibernateExtender
             }
             LazyLoadConfig.Add(sessionFacotryName, initConfigLazy);
         }
+
         /// <summary>
-        /// 关闭所有的Session
+        ///     关闭所有的Session
         /// </summary>
         /// <param name="submit"></param>
         public static void ClassAll(bool submit)
         {
-            foreach (var a in Factories.Values)
+            foreach (SessionWrapper a in Factories.Values)
             {
                 a.Close(submit);
             }

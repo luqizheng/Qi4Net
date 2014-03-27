@@ -118,6 +118,7 @@
     <Compile Include="Web\Mvc\NHMvcExtender\NHValueProvider.cs" />
     <Compile Include="Web\Mvc\NHMvcExtender\NHValueProviderResult.cs" />
     <Compile Include="Web\Mvc\SessionAttribute.cs" />
+    <Compile Include="Web\NHSessionHttpModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Qi.Web\Qi.Web.csproj">
@@ -131,6 +132,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NHibernateExtender\Sessions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

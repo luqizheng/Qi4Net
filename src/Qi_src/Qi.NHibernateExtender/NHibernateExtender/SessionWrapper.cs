@@ -2,20 +2,15 @@
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Context;
-using NHibernate.Impl;
-using Qi.SharePools;
 using Qi.Web.Mvc;
 
 namespace Qi.NHibernateExtender
 {
     /// <summary>
-    /// 
     /// </summary>
     public class SessionWrapper : IDisposable
     {
-        private const string InitKeyName = "session.was.inited";
         private ISessionFactory _sessionFactory;
-        private IStore _store;
 
         /// <summary>
         /// </summary>
@@ -33,13 +28,6 @@ namespace Qi.NHibernateExtender
 
         /// <summary>
         /// </summary>
-        public IStore Store
-        {
-            get { return _store ?? (_store = GetStore(SessionFactory)); }
-        }
-
-        /// <summary>
-        /// </summary>
         public ISessionFactory SessionFactory
         {
             get { return _sessionFactory ?? (_sessionFactory = Configuration.BuildSessionFactory()); }
@@ -51,42 +39,32 @@ namespace Qi.NHibernateExtender
         {
             get
             {
-                if (!IsInitSession)
+                if (!CurrentSessionContext.HasBind(SessionFactory))
                 {
                     throw new NHModelBinderException("Please call InitSession first.");
                 }
 
-
-                if (!CurrentSessionContext.HasBind(SessionFactory))
-                {
-                    CurrentSessionContext.Bind(SessionFactory.OpenSession());
-                }
-                return SessionFactory.GetCurrentSession();
+                ISession session = SessionFactory.GetCurrentSession();
+                return session;
             }
         }
 
         /// <summary>
         /// </summary>
+        [Obsolete]
         public bool IsInitSession
         {
-            get
-            {
-                object obj = Store.GetData(InitKeyName);
-                if (obj == null)
-                    return false;
-                return (bool)obj;
-            }
-            private set { Store.SetData(InitKeyName, value); }
+            get { return CurrentSessionContext.HasBind(SessionFactory); }
         }
+
         /// <summary>
-        /// 
         /// </summary>
-        public bool OpenInThisCurrent { get; set; }
+        public bool OpenInThisCurrent { get; private set; }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <remarks>
-        /// <code>
+        ///     <code>
         /// 
         /// </code>
         /// </remarks>
@@ -103,14 +81,13 @@ namespace Qi.NHibernateExtender
         /// <returns></returns>
         public bool InitSession()
         {
-            bool result = false;
-            if (!IsInitSession)
+            if (!CurrentSessionContext.HasBind(SessionFactory))
             {
-                result = true;
-                IsInitSession = true;
+                CurrentSessionContext.Bind(SessionFactory.OpenSession());
+                OpenInThisCurrent = true;
+                return true;
             }
-            OpenInThisCurrent = result;
-            return result;
+            return false;
         }
 
         /// <summary>
@@ -124,7 +101,6 @@ namespace Qi.NHibernateExtender
                 ISession session = CurrentSessionContext.Unbind(SessionFactory);
                 HandleUnsaveData(submitData, session);
                 session.Close();
-                IsInitSession = false;
             }
         }
 
@@ -146,33 +122,6 @@ namespace Qi.NHibernateExtender
                 }
             }
             session.Clear();
-        }
-
-        private static IStore GetStore(ISessionFactory sessionFactory)
-        {
-            var a = sessionFactory as SessionFactoryImpl;
-            ICurrentSessionContext context = a.CurrentSessionContext;
-            if (context is CallSessionContext)
-            {
-                return SharePool.CallContextStore;
-            }
-            if (context is ThreadStaticSessionContext)
-            {
-                return SharePool.ThreadStaticStore;
-            }
-            if (context is WebSessionContext)
-            {
-                return SharePool.HttpStore;
-            }
-            throw new SessionManagerException("Can't create save context base on " + context.GetType().Name);
-        }
-
-        /// <summary>
-        ///     Rebuild the sessionFactory.
-        /// </summary>
-        public void Configure()
-        {
-            _sessionFactory = null;
         }
     }
 }

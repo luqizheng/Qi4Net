@@ -104,8 +104,6 @@ namespace Qi.Web.Http
             if (Enable)
             {
                 _wrapper.InitSession();
-                SessionManager.Instance.CurrentSessionFactoryName = SessionFactoryName;
-
                 if (Transaction)
                 {
                     _tras = IsolationLevel != null

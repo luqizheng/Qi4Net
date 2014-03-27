@@ -19,20 +19,21 @@ namespace Qi.Domain.NHibernates
         /// </summary>
         /// <param name="sessionFactoryName"></param>
         /// <exception cref="ArgumentNullException">sessionFactoryName is null or empty</exception>
-        protected DaoBase(string sessionFactoryName)
-        {
-            if (string.IsNullOrEmpty(sessionFactoryName))
-            {
-                throw new ArgumentNullException("sessionFactoryName", "sessionFactoryName can not be null or empty");
-            }
-            _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
-        }
+
+        //protected DaoBase(string sessionFactoryName)
+        //{
+        //    if (string.IsNullOrEmpty(sessionFactoryName))
+        //    {
+        //        throw new ArgumentNullException("sessionFactoryName", "sessionFactoryName can not be null or empty");
+        //    }
+        //    _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
+        //}
 
         /// <summary>
         /// </summary>
         protected DaoBase()
-            : this(SessionManager.Instance.CurrentSessionFactoryName ?? SessionManager.DefaultSessionFactoryKey)
         {
+            _wrapper = SessionManager.GetSessionWrapper();
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         public virtual TId Save(TObject t)
         {
-            return (TId) CurrentSession.Save(t);
+            return (TId)CurrentSession.Save(t);
         }
 
         /// <summary>
@@ -158,7 +159,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected DetachedCriteria CreateDetachedCriteria()
         {
-            return DetachedCriteria.For(typeof (TObject));
+            return DetachedCriteria.For(typeof(TObject));
         }
 
         /// <summary>
@@ -166,7 +167,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected virtual ICriteria CreateCriteria()
         {
-            return CurrentSession.CreateCriteria(typeof (TObject));
+            return CurrentSession.CreateCriteria(typeof(TObject));
         }
 
         /// <summary>

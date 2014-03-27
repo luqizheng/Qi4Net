@@ -20,6 +20,14 @@ namespace Qi.NHibernateExtender
             if (configruation == null)
                 throw new ArgumentNullException("configruation");
             Configuration = configruation;
+
+            using (var wrapping = SessionManager.GetSessionWrapper("edit"))
+            {
+                using (var wrapper = SessionManager.GetSessionWrapper("ccddff"))
+                {
+                    
+                }
+            }
         }
 
         /// <summary>
@@ -54,7 +62,10 @@ namespace Qi.NHibernateExtender
         [Obsolete]
         public bool IsInitSession
         {
-            get { return CurrentSessionContext.HasBind(SessionFactory); }
+            get
+            {
+                return CurrentSessionContext.HasBind(SessionFactory);
+            }
         }
 
         /// <summary>

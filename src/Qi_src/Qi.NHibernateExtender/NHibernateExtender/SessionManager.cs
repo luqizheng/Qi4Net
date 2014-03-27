@@ -2,18 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Cfg;
-using Qi.SharePools;
 
 namespace Qi.NHibernateExtender
 {
+    public class SessionFactoryProxy
+    {
+        public SessionFactoryProxy(Configuration configuration, string name)
+        {
+            Configuration = configuration;
+            Name = name;
+        }
+
+        public Configuration Configuration { get; private set; }
+        public string Name { get; private set; }
+
+        public SessionWrapper Create()
+        {
+            return new SessionWrapper(Configuration);
+        }
+    }
+
     /// <summary>
     /// </summary>
     public class SessionManager
     {
-        internal static readonly SortedDictionary<string, SessionWrapper> Factories =
-            new SortedDictionary<string, SessionWrapper>();
+        internal static readonly SortedDictionary<string, SessionFactoryProxy> Factories =
+            new SortedDictionary<string, SessionFactoryProxy>();
+
         /// <summary>
-        /// config都是调用的时候再创建
+        ///     config都是调用的时候再创建
         /// </summary>
         private static readonly Dictionary<string, Func<Configuration>> LazyLoadConfig =
             new Dictionary<string, Func<Configuration>>();
@@ -23,14 +40,6 @@ namespace Qi.NHibernateExtender
         /// <summary>
         /// </summary>
         public static readonly SessionManager Instance = new SessionManager();
-
-        /// <summary>
-        /// </summary>
-        public string CurrentSessionFactoryName
-        {
-            get { return (string) SharePool.DefaultStore.GetData("session.key.factory."); }
-            set { SharePool.DefaultStore.SetData("session.key.factory.", value); }
-        }
 
         /// <summary>
         ///     default sesison factory key in the configruation file.
@@ -88,16 +97,16 @@ namespace Qi.NHibernateExtender
             if (!Factories.ContainsKey(sessionFactoryName))
             {
                 Configuration config = LazyLoadConfig[sessionFactoryName].Invoke();
-                var sessionwrapper = new SessionWrapper(config);
+                var factory = new SessionFactoryProxy(config, sessionFactoryName);
                 lock (Factories)
                 {
                     if (!Factories.ContainsKey(sessionFactoryName))
                     {
-                        Factories.Add(sessionFactoryName, sessionwrapper);
+                        Factories.Add(sessionFactoryName, factory);
                     }
                 }
             }
-            return Factories[sessionFactoryName];
+            return Factories[sessionFactoryName].Create();
         }
 
         /// <summary>
@@ -113,18 +122,6 @@ namespace Qi.NHibernateExtender
                 throw new SessionManagerException("sessionFacotryName", "Session Factory is regist, please try another.");
             }
             LazyLoadConfig.Add(sessionFacotryName, initConfigLazy);
-        }
-
-        /// <summary>
-        ///     关闭所有的Session
-        /// </summary>
-        /// <param name="submit"></param>
-        public static void ClassAll(bool submit)
-        {
-            foreach (SessionWrapper a in Factories.Values)
-            {
-                a.Close(submit);
-            }
         }
     }
 }

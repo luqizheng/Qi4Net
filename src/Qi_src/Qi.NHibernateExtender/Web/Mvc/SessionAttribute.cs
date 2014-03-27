@@ -87,7 +87,6 @@ namespace Qi.Web.Mvc
             if (Enable)
             {
                 _wrapper.InitSession();
-                SessionManager.Instance.CurrentSessionFactoryName = SessionFactoryName;
 
                 if (Transaction)
                 {

@@ -10,24 +10,18 @@ namespace Qi.NHibernateExtender
     /// </summary>
     public class SessionWrapper : IDisposable
     {
-        private ISessionFactory _sessionFactory;
-
+        private readonly ISessionFactory _sessionFactory;
+        private ISession _session;
         /// <summary>
         /// </summary>
         /// <param name="configruation"></param>
-        public SessionWrapper(Configuration configruation)
+        /// <param name="sessionFactory"></param>
+        public SessionWrapper(Configuration configruation, ISessionFactory sessionFactory)
         {
             if (configruation == null)
                 throw new ArgumentNullException("configruation");
             Configuration = configruation;
-
-            using (var wrapping = SessionManager.GetSessionWrapper("edit"))
-            {
-                using (var wrapper = SessionManager.GetSessionWrapper("ccddff"))
-                {
-                    
-                }
-            }
+            _sessionFactory = sessionFactory;
         }
 
         /// <summary>
@@ -38,7 +32,7 @@ namespace Qi.NHibernateExtender
         /// </summary>
         public ISessionFactory SessionFactory
         {
-            get { return _sessionFactory ?? (_sessionFactory = Configuration.BuildSessionFactory()); }
+            get { return _sessionFactory; }
         }
 
         /// <summary>
@@ -94,11 +88,33 @@ namespace Qi.NHibernateExtender
         {
             if (!CurrentSessionContext.HasBind(SessionFactory))
             {
-                CurrentSessionContext.Bind(SessionFactory.OpenSession());
+                _session = new MultiSession(SessionFactory.OpenSession());
+                CurrentSessionContext.Bind(_session);
                 OpenInThisCurrent = true;
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool InitNewSession()
+        {
+            if (!CurrentSessionContext.HasBind(SessionFactory))
+            {
+                CurrentSessionContext.Bind(SessionFactory.OpenSession());
+                OpenInThisCurrent = true;
+                return true;
+            }
+            else
+            {
+                
+                var session = SessionFactory.OpenSession()
+                session.
+            }
+            
         }
 
         /// <summary>

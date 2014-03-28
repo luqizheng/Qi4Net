@@ -1,24 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHibernate;
 using NHibernate.Cfg;
+using NHibernate.Context;
 
 namespace Qi.NHibernateExtender
 {
     public class SessionFactoryProxy
     {
+        private readonly ISessionFactory _sessionFactory;
+
         public SessionFactoryProxy(Configuration configuration, string name)
         {
             Configuration = configuration;
+            _sessionFactory = configuration.BuildSessionFactory();
             Name = name;
         }
 
         public Configuration Configuration { get; private set; }
+
+        public ISessionFactory SessionFactory
+        {
+            get { return _sessionFactory; }
+        }
+
         public string Name { get; private set; }
 
         public SessionWrapper Create()
         {
-            return new SessionWrapper(Configuration);
+            if (!CurrentSessionContext.HasBind(SessionFactory))
+            {
+                var proxy = new SessionProxy(SessionFactory.OpenSession());
+                return new SessionWrapper(proxy, SessionFactory);
+            }
+            var parent = SessionFactory.GetCurrentSession() as SessionProxy;
+            var current = new SessionProxy(SessionFactory.OpenSession(), parent);
+            return new SessionWrapper(current, SessionFactory);
+        }
+
+        public SessionWrapper GetWrapper()
+        {
+            if (!CurrentSessionContext.HasBind(SessionFactory))
+            {
+                return Create();
+            }
+            return new SessionWrapper((SessionProxy) SessionFactory.GetCurrentSession(), SessionFactory);
         }
     }
 
@@ -75,6 +102,32 @@ namespace Qi.NHibernateExtender
             return GetSessionWrapper(DefaultSessionFactoryKey);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="factroyName"></param>
+        /// <returns></returns>
+        public static SessionWrapper GetSessionWrapper(string factroyName)
+        {
+            return GetSessionWrapperFactory(factroyName).GetWrapper();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public static SessionWrapper OpenNewSessionWrappeer()
+        {
+            return GetSessionWrapperFactory(DefaultSessionFactoryKey).Create();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="factroyName"></param>
+        /// <returns></returns>
+        public static SessionWrapper OpenNewSessionWrappeer(string factroyName)
+        {
+            return GetSessionWrapperFactory(factroyName).Create();
+        }
+
 
         /// <summary>
         ///     gets the session factory by session factory name defined in the configruation file.
@@ -82,7 +135,7 @@ namespace Qi.NHibernateExtender
         /// <param name="sessionFactoryName"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">sessionFactoryName is not exist in session manager</exception>
-        public static SessionWrapper GetSessionWrapper(string sessionFactoryName)
+        public static SessionFactoryProxy GetSessionWrapperFactory(string sessionFactoryName)
         {
             if (string.IsNullOrEmpty(sessionFactoryName))
             {
@@ -106,7 +159,7 @@ namespace Qi.NHibernateExtender
                     }
                 }
             }
-            return Factories[sessionFactoryName].Create();
+            return Factories[sessionFactoryName];
         }
 
         /// <summary>

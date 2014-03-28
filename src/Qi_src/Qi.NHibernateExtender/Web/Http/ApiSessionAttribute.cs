@@ -17,8 +17,8 @@ namespace Qi.Web.Http
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class ApiSessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        private readonly SessionWrapper _wrapper;
         private ITransaction _tras;
+        private SessionWrapper _wrapper;
 
         /// <summary>
         /// </summary>
@@ -28,7 +28,6 @@ namespace Qi.Web.Http
         {
             Enable = enabled;
             SessionFactoryName = sessionFactoryName;
-            _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         }
 
         /// <summary>
@@ -44,7 +43,6 @@ namespace Qi.Web.Http
         public ApiSessionAttribute()
             : this(true, SessionManager.DefaultSessionFactoryKey)
         {
-
         }
 
         /// <summary>
@@ -84,18 +82,17 @@ namespace Qi.Web.Http
         #endregion
 
         public Task ExecuteExceptionFilterAsync(HttpActionExecutedContext actionExecutedContext,
-                                                CancellationToken cancellationToken)
+            CancellationToken cancellationToken)
         {
-
             var task = new Task(s =>
+            {
+                var trans = (ITransaction) s;
+                if (trans != null && trans.IsActive)
                 {
-                    var trans = (ITransaction)s;
-                    if (trans != null && trans.IsActive)
-                    {
-                        trans.Rollback();
-                        trans = null;
-                    }
-                }, _tras);
+                    trans.Rollback();
+                    trans = null;
+                }
+            }, _tras);
             return task;
         }
 
@@ -103,12 +100,12 @@ namespace Qi.Web.Http
         {
             if (Enable)
             {
-                _wrapper.InitSession();
+                _wrapper = SessionManager.GetSessionWrapper(SessionFactoryName);
                 if (Transaction)
                 {
                     _tras = IsolationLevel != null
-                                ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel.Value)
-                                : _wrapper.CurrentSession.BeginTransaction();
+                        ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel.Value)
+                        : _wrapper.CurrentSession.BeginTransaction();
                 }
             }
             base.OnActionExecuting(actionContext);

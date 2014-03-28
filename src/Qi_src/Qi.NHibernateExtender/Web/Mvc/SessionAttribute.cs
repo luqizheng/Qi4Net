@@ -12,7 +12,7 @@ namespace Qi.Web.Mvc
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        private readonly SessionWrapper _wrapper;
+        private SessionWrapper _wrapper;
         private ITransaction _tras;
 
         /// <summary>
@@ -24,7 +24,6 @@ namespace Qi.Web.Mvc
             Order = 0;
             Enable = enabled;
             SessionFactoryName = sessionFactoryName;
-            _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         }
 
         /// <summary>
@@ -86,8 +85,7 @@ namespace Qi.Web.Mvc
         {
             if (Enable)
             {
-                _wrapper.InitSession();
-
+                _wrapper = SessionManager.GetSessionWrapper();
                 if (Transaction)
                 {
                     _tras = IsolationLevel != null

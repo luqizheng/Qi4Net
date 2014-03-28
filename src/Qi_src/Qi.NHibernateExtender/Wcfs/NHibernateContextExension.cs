@@ -43,8 +43,6 @@ namespace Qi.Wcfs
         public void Attach(InstanceContext owner)
         {
             _sessionWrapper = SessionManager.GetSessionWrapper(_sessionfactoryName);
-
-            _sessionWrapper.InitSession();
             if (_enabledTransaction)
             {
                 _trans = _sessionWrapper.CurrentSession.BeginTransaction();

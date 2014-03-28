@@ -290,7 +290,6 @@ namespace Qi.Web.Mvc
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
-                    wrapper.InitSession();
                     return true;
                 }
             }

@@ -10,6 +10,7 @@ namespace Qi.Web
 {
     public class NHSessionHttpModule : IHttpModule
     {
+        private SessionWrapper _wrapper;
         public void Init(HttpApplication context)
         {
             context.BeginRequest += context_BeginRequest;
@@ -18,12 +19,12 @@ namespace Qi.Web
 
         void context_EndRequest(object sender, EventArgs e)
         {
-            SessionManager.ClassAll(true);
+            _wrapper.Close(true);
         }
 
         void context_BeginRequest(object sender, EventArgs e)
         {
-            SessionManager.GetSessionWrapper().InitSession();
+            _wrapper = SessionManager.GetSessionWrapper();
         }
 
         public void Dispose()

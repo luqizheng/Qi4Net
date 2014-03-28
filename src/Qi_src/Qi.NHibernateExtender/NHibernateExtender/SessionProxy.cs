@@ -8,16 +8,23 @@ using NHibernate.Type;
 
 namespace Qi.NHibernateExtender
 {
-    internal class MultiSession : ISession
+    internal class SessionProxy : ISession
     {
         private readonly ISession _session;
-
-        #region
-
-        public MultiSession(ISession session)
+        //private readonly Stack<ISession> _sessions = new Stack<ISession>();
+        public SessionProxy(ISession session, SessionProxy parent)
+            : this(session)
         {
+            Parent = parent;
+        }
+
+        public SessionProxy(ISession session)
+        {
+            //_sessions.Push(session);
             _session = session;
         }
+
+        #region
 
         public void Dispose()
         {
@@ -470,5 +477,7 @@ namespace Qi.NHibernateExtender
         }
 
         #endregion
+
+        public SessionProxy Parent { get; set; }
     }
 }

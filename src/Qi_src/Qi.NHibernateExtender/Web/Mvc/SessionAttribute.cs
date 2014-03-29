@@ -97,7 +97,11 @@ namespace Qi.Web.Mvc
 
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            _wrapper.Close(true);
+            if (_wrapper != null)
+            {
+                _wrapper.Close(true);
+                SessionManager.CloseAll(true);
+            }
         }
     }
 }

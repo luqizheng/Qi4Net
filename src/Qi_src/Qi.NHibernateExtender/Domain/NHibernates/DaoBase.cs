@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
 using Qi.NHibernateExtender;
+using Qi.Web.Mvc;
 
 namespace Qi.Domain.NHibernates
 {
@@ -13,7 +14,7 @@ namespace Qi.Domain.NHibernates
     /// <typeparam name="TObject"></typeparam>
     public abstract class DaoBase<TId, TObject> : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
-        private readonly SessionWrapper _wrapper;
+        private SessionWrapper _wrapper;
 
         /// <summary>
         /// </summary>
@@ -33,14 +34,35 @@ namespace Qi.Domain.NHibernates
         /// </summary>
         protected DaoBase()
         {
-            _wrapper = SessionManager.GetSessionWrapper();
+        }
+         
+        /// <summary>
+        /// Session Wrapper
+        /// </summary>
+        protected SessionWrapper SessionWrapper
+        {
+            get
+            {
+                if (SessionManager.IsOpen())
+                {
+                    _wrapper = SessionManager.GetSessionWrapper();
+                }
+                else
+                {
+                      throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
+                }
+                return _wrapper;
+            }
         }
 
         /// <summary>
         /// </summary>
         protected ISession CurrentSession
         {
-            get { return _wrapper.CurrentSession; }
+            get
+            {
+                return SessionWrapper.CurrentSession;
+            }
         }
 
         #region IDao<TId,TObject> Members

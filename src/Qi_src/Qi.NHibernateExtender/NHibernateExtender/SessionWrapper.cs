@@ -8,24 +8,45 @@ namespace Qi.NHibernateExtender
     /// </summary>
     public class SessionWrapper : IDisposable
     {
-        private readonly SessionProxy _session;
 
-        internal SessionWrapper(SessionProxy session, ISessionFactory sessionFactory)
+
+        internal SessionWrapper(ISessionFactory sessionFactory)
         {
             SessionFactory = sessionFactory;
-            _session = session;
+
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public ISessionFactory SessionFactory { get; private set; }
+
+        public bool OpenInThisContext
+        {
+            get
+            {
+                if (CurrentSessionProxy.Parent == null) //如果没有Parent，那么需要自己关闭
+                {
+                    return true;
+                }
+                if (CurrentSessionProxy.NHSession != CurrentSessionProxy.Parent.NHSession) //如果NHSession 和 Parent不是同一个
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
 
 
         /// <summary>
         /// </summary>
         public ISession CurrentSession
         {
-            get { return _session; }
+            get { return CurrentSessionProxy; }
+        }
+
+        internal SessionProxy CurrentSessionProxy
+        {
+            get { return (SessionProxy)this.SessionFactory.GetCurrentSession(); }
         }
 
 
@@ -33,11 +54,11 @@ namespace Qi.NHibernateExtender
         {
             Close(false);
             CurrentSessionContext.Unbind(SessionFactory);
-            if (_session.Parent != null)
+            if (CurrentSessionProxy.Parent != null)
             {
-                CurrentSessionContext.Bind(_session.Parent);
+                CurrentSessionContext.Bind(CurrentSessionProxy.Parent);
             }
-            _session.Dispose();
+            CurrentSessionProxy.Dispose();
         }
 
         private static void HandleUnsaveData(bool submitData, ISession session)
@@ -59,8 +80,8 @@ namespace Qi.NHibernateExtender
             }
             session.Clear();
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="submit"></param>
         public void Close(bool submit)

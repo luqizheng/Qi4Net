@@ -1,57 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Context;
 
 namespace Qi.NHibernateExtender
 {
-    public class SessionFactoryProxy
-    {
-        private readonly ISessionFactory _sessionFactory;
-
-        public SessionFactoryProxy(Configuration configuration, string name)
-        {
-            Configuration = configuration;
-            _sessionFactory = configuration.BuildSessionFactory();
-            Name = name;
-        }
-
-        public Configuration Configuration { get; private set; }
-
-        public ISessionFactory SessionFactory
-        {
-            get { return _sessionFactory; }
-        }
-
-        public string Name { get; private set; }
-
-        public SessionWrapper Create()
-        {
-            if (!CurrentSessionContext.HasBind(SessionFactory))
-            {
-                var proxy = new SessionProxy(SessionFactory.OpenSession());
-                return new SessionWrapper(proxy, SessionFactory);
-            }
-            var parent = SessionFactory.GetCurrentSession() as SessionProxy;
-            var current = new SessionProxy(SessionFactory.OpenSession(), parent);
-            return new SessionWrapper(current, SessionFactory);
-        }
-
-        public SessionWrapper GetWrapper()
-        {
-            if (!CurrentSessionContext.HasBind(SessionFactory))
-            {
-                return Create();
-            }
-            return new SessionWrapper((SessionProxy) SessionFactory.GetCurrentSession(), SessionFactory);
-        }
-    }
-
     /// <summary>
     /// </summary>
-    public class SessionManager
+    public static class SessionManager
     {
         internal static readonly SortedDictionary<string, SessionFactoryProxy> Factories =
             new SortedDictionary<string, SessionFactoryProxy>();
@@ -64,9 +21,6 @@ namespace Qi.NHibernateExtender
 
         private static string _defaultSessionFactoryKey = String.Empty;
 
-        /// <summary>
-        /// </summary>
-        public static readonly SessionManager Instance = new SessionManager();
 
         /// <summary>
         ///     default sesison factory key in the configruation file.
@@ -104,6 +58,23 @@ namespace Qi.NHibernateExtender
 
         /// <summary>
         /// </summary>
+        /// <returns></returns>
+        public static bool IsOpen()
+        {
+            return Factories.Keys.Any(IsOpen);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="sessionFactoryName"></param>
+        /// <returns></returns>
+        public static bool IsOpen(string sessionFactoryName)
+        {
+            return CurrentSessionContext.HasBind(GetSessionWrapperFactory(sessionFactoryName).SessionFactory);
+        }
+
+        /// <summary>
+        /// </summary>
         /// <param name="factroyName"></param>
         /// <returns></returns>
         public static SessionWrapper GetSessionWrapper(string factroyName)
@@ -116,7 +87,7 @@ namespace Qi.NHibernateExtender
         /// <returns></returns>
         public static SessionWrapper OpenNewSessionWrappeer()
         {
-            return GetSessionWrapperFactory(DefaultSessionFactoryKey).Create();
+            return GetSessionWrapperFactory(DefaultSessionFactoryKey).CreateNewWrapper();
         }
 
         /// <summary>
@@ -125,7 +96,7 @@ namespace Qi.NHibernateExtender
         /// <returns></returns>
         public static SessionWrapper OpenNewSessionWrappeer(string factroyName)
         {
-            return GetSessionWrapperFactory(factroyName).Create();
+            return GetSessionWrapperFactory(factroyName).CreateNewWrapper();
         }
 
 
@@ -175,6 +146,25 @@ namespace Qi.NHibernateExtender
                 throw new SessionManagerException("sessionFacotryName", "Session Factory is regist, please try another.");
             }
             LazyLoadConfig.Add(sessionFacotryName, initConfigLazy);
+        }
+
+        /// <summary>
+        ///     关闭所有的Session
+        /// </summary>
+        /// <param name="submit"></param>
+        public static void CloseAll(bool submit)
+        {
+            foreach (SessionFactoryProxy key in Factories.Values)
+            {
+                if (CurrentSessionContext.HasBind(key.SessionFactory))
+                {
+                    var session = CurrentSessionContext.Unbind(key.SessionFactory) as SessionProxy;
+                    if (session != null)
+                    {
+                        session.CloseCascade();
+                    }
+                }
+            }
         }
     }
 }

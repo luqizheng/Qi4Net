@@ -478,6 +478,22 @@ namespace Qi.NHibernateExtender
 
         #endregion
 
+        public ISession NHSession
+        {
+            get { return _session; }
+        }
+
         public SessionProxy Parent { get; set; }
+
+        public void CloseCascade()
+        {
+            SessionProxy current = this;
+            while (current != null)
+            {
+                current.Close();
+                current = current.Parent;
+            }
+
+        }
     }
 }

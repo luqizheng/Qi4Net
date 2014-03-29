@@ -113,8 +113,10 @@ namespace Qi.Web.Http
 
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
-            _wrapper.Close(true);
-            base.OnActionExecuted(actionExecutedContext);
+            if (_wrapper != null)
+            {
+                _wrapper.Close(true);
+            }
         }
     }
 }

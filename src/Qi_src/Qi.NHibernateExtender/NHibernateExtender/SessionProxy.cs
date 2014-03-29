@@ -490,10 +490,12 @@ namespace Qi.NHibernateExtender
             SessionProxy current = this;
             while (current != null)
             {
-                current.Close();
+                if (current.IsOpen )
+                {
+                    current.Close();
+                }
                 current = current.Parent;
             }
-
         }
     }
 }

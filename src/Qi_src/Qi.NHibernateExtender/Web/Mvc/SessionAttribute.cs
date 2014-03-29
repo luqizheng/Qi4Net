@@ -100,7 +100,7 @@ namespace Qi.Web.Mvc
             if (_wrapper != null)
             {
                 _wrapper.Close(true);
-                SessionManager.CloseAll(true);
+                SessionManager.Close(true);
             }
         }
     }

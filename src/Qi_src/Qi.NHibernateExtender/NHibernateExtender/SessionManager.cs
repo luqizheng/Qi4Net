@@ -85,7 +85,7 @@ namespace Qi.NHibernateExtender
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public static SessionWrapper OpenNewSessionWrappeer()
+        public static SessionWrapper OpenNewSessionWrapper()
         {
             return GetSessionWrapperFactory(DefaultSessionFactoryKey).CreateNewWrapper();
         }
@@ -94,7 +94,7 @@ namespace Qi.NHibernateExtender
         /// </summary>
         /// <param name="factroyName"></param>
         /// <returns></returns>
-        public static SessionWrapper OpenNewSessionWrappeer(string factroyName)
+        public static SessionWrapper OpenNewSessionWrapper(string factroyName)
         {
             return GetSessionWrapperFactory(factroyName).CreateNewWrapper();
         }
@@ -134,9 +134,10 @@ namespace Qi.NHibernateExtender
         }
 
         /// <summary>
+        /// 注册一个Configuration。
         /// </summary>
-        /// <param name="sessionFacotryName"></param>
-        /// <param name="initConfigLazy"></param>
+        /// <param name="sessionFacotryName">SessionFactory的名字，会用或则个名字管理多个SessionFactory</param>
+        /// <param name="initConfigLazy">初始化Confiuratgion的方一个代理方法</param>
         /// <exception cref="ArgumentNullException">sessionFacotryName or configruation is null</exception>
         /// <exception cref="SessionManagerException">SessionManager has this sessionFacotryName</exception>
         public static void Regist(string sessionFacotryName, Func<Configuration> initConfigLazy)
@@ -152,7 +153,7 @@ namespace Qi.NHibernateExtender
         ///     关闭所有的Session
         /// </summary>
         /// <param name="submit"></param>
-        public static void CloseAll(bool submit)
+        public static void Close(bool submit)
         {
             foreach (SessionFactoryProxy key in Factories.Values)
             {

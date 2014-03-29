@@ -134,7 +134,7 @@ namespace Qi.NHibernateExtender
         }
 
         /// <summary>
-        /// 注册一个Configuration。
+        ///     注册一个Configuration。
         /// </summary>
         /// <param name="sessionFacotryName">SessionFactory的名字，会用或则个名字管理多个SessionFactory</param>
         /// <param name="initConfigLazy">初始化Confiuratgion的方一个代理方法</param>

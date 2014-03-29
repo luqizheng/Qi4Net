@@ -43,18 +43,20 @@ namespace Qi.NHibernateExtender
         public SessionWrapper CreateNewWrapper()
         {
             SessionProxy session = null;
+            bool openInthisContxt = true;
             if (!CurrentSessionContext.HasBind(SessionFactory))
             {
                 session = new SessionProxy(SessionFactory.OpenSession());
             }
             else
             {
-                var parent = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
+                var parent = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
                 session = new SessionProxy(SessionFactory.OpenSession(), parent);
+                openInthisContxt = false;
             }
 
             CurrentSessionContext.Bind(session);
-            return new SessionWrapper(SessionFactory);
+            return new SessionWrapper(SessionFactory, openInthisContxt);
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace Qi.NHibernateExtender
             {
                 return CreateNewWrapper();
             }
-            return new SessionWrapper(SessionFactory);
+            return new SessionWrapper(SessionFactory, false);
         }
     }
 }

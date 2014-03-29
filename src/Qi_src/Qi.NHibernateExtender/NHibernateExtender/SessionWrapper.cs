@@ -8,9 +8,10 @@ namespace Qi.NHibernateExtender
     /// </summary>
     public class SessionWrapper : IDisposable
     {
-        internal SessionWrapper(ISessionFactory sessionFactory)
+        internal SessionWrapper(ISessionFactory sessionFactory, bool openInThisContext)
         {
             SessionFactory = sessionFactory;
+            OpenInThisContext = openInThisContext;
         }
 
         /// <summary>
@@ -22,18 +23,9 @@ namespace Qi.NHibernateExtender
         /// </summary>
         public bool OpenInThisContext
         {
-            get
-            {
-                if (CurrentSessionProxy.Parent == null) //如果没有Parent，那么需要自己关闭
-                {
-                    return true;
-                }
-                if (CurrentSessionProxy.NHSession != CurrentSessionProxy.Parent.NHSession) //如果NHSession 和 Parent不是同一个
-                {
-                    return true;
-                }
-                return false;
-            }
+            get;
+            private set;
+
         }
 
 
@@ -46,7 +38,7 @@ namespace Qi.NHibernateExtender
 
         internal SessionProxy CurrentSessionProxy
         {
-            get { return (SessionProxy) SessionFactory.GetCurrentSession(); }
+            get { return (SessionProxy)SessionFactory.GetCurrentSession(); }
         }
 
 
@@ -91,10 +83,11 @@ namespace Qi.NHibernateExtender
         /// <param name="submit"></param>
         public bool Close(bool submit)
         {
+
             SessionProxy session = CurrentSessionProxy;
             if (OpenInThisContext)
             {
-                session = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
+                session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
                 if (session.Parent != null)
                 {
                     CurrentSessionContext.Bind(session.Parent);

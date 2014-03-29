@@ -8,18 +8,18 @@ namespace Qi.NHibernateExtender
     /// </summary>
     public class SessionWrapper : IDisposable
     {
-
-
         internal SessionWrapper(ISessionFactory sessionFactory)
         {
             SessionFactory = sessionFactory;
-
         }
 
         /// <summary>
         /// </summary>
         public ISessionFactory SessionFactory { get; private set; }
 
+        /// <summary>
+        ///     这个Wrapper是不是在这里关闭
+        /// </summary>
         public bool OpenInThisContext
         {
             get
@@ -46,15 +46,18 @@ namespace Qi.NHibernateExtender
 
         internal SessionProxy CurrentSessionProxy
         {
-            get { return (SessionProxy)this.SessionFactory.GetCurrentSession(); }
+            get { return (SessionProxy) SessionFactory.GetCurrentSession(); }
         }
 
 
         public void Dispose()
         {
             Close(false);
-            CurrentSessionContext.Unbind(SessionFactory);
-            if (CurrentSessionProxy.Parent != null)
+            if (OpenInThisContext)
+            {
+                CurrentSessionContext.Unbind(SessionFactory);
+            }
+            else if (CurrentSessionProxy.Parent != null)
             {
                 CurrentSessionContext.Bind(CurrentSessionProxy.Parent);
             }
@@ -82,11 +85,23 @@ namespace Qi.NHibernateExtender
         }
 
         /// <summary>
+        ///     关闭这个Wrapper，但是不一定关闭NSession，如果这个Session
+        ///     并不是是在这里开启的，那么这个Close方法指挥提交数据，而不是关闭Session
         /// </summary>
         /// <param name="submit"></param>
-        public void Close(bool submit)
+        public bool Close(bool submit)
         {
-            HandleUnsaveData(submit, CurrentSession);
+            SessionProxy session = CurrentSessionProxy;
+            if (OpenInThisContext)
+            {
+                session = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
+                if (session.Parent != null)
+                {
+                    CurrentSessionContext.Bind(session.Parent);
+                }
+            }
+            HandleUnsaveData(submit, session);
+            return false;
         }
     }
 }

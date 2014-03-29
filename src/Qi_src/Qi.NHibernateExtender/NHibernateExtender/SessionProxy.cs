@@ -15,6 +15,14 @@ namespace Qi.NHibernateExtender
         public SessionProxy(ISession session, SessionProxy parent)
             : this(session)
         {
+#if DEBUG
+            if (parent == null)
+                throw new ArgumentNullException("parent");
+            if (session == parent._session)
+            {
+                throw new SessionManagerException("Parent's session is same as this session.It should be diff ");
+            }
+#endif
             Parent = parent;
         }
 
@@ -483,14 +491,14 @@ namespace Qi.NHibernateExtender
             get { return _session; }
         }
 
-        public SessionProxy Parent { get; set; }
+        public SessionProxy Parent { get; private set; }
 
         public void CloseCascade()
         {
             SessionProxy current = this;
             while (current != null)
             {
-                if (current.IsOpen )
+                if (current.IsOpen)
                 {
                     current.Close();
                 }

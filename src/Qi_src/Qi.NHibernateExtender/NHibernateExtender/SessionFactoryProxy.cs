@@ -5,13 +5,12 @@ using NHibernate.Context;
 namespace Qi.NHibernateExtender
 {
     /// <summary>
-    /// 
     /// </summary>
     public class SessionFactoryProxy
     {
         private readonly ISessionFactory _sessionFactory;
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="name"></param>
@@ -21,19 +20,19 @@ namespace Qi.NHibernateExtender
             _sessionFactory = configuration.BuildSessionFactory();
             Name = name;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public Configuration Configuration { get; private set; }
+
         /// <summary>
-        /// 
         /// </summary>
         public ISessionFactory SessionFactory
         {
             get { return _sessionFactory; }
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public string Name { get; private set; }
 
@@ -43,16 +42,22 @@ namespace Qi.NHibernateExtender
         /// <returns></returns>
         public SessionWrapper CreateNewWrapper()
         {
+            SessionProxy session = null;
             if (!CurrentSessionContext.HasBind(SessionFactory))
             {
-                var proxy = new SessionProxy(SessionFactory.OpenSession());
-                CurrentSessionContext.Bind(proxy);
-                return new SessionWrapper(SessionFactory);
+                session = new SessionProxy(SessionFactory.OpenSession());
             }
+            else
+            {
+                var parent = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
+                session = new SessionProxy(SessionFactory.OpenSession(), parent);
+            }
+
+            CurrentSessionContext.Bind(session);
             return new SessionWrapper(SessionFactory);
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         public SessionWrapper GetWrapper()

@@ -26,6 +26,7 @@ namespace Qi.Web.Mvc
             SessionFactoryName = sessionFactoryName;
         }
 
+        public string Tag { get; set; }
         /// <summary>
         /// </summary>
         /// <param name="enabled"></param>
@@ -100,7 +101,6 @@ namespace Qi.Web.Mvc
             if (_wrapper != null)
             {
                 _wrapper.Close(true);
-                SessionManager.Close(true);
             }
         }
     }

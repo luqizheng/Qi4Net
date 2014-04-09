@@ -34,7 +34,7 @@ namespace Qi.NHibernateExtender
 
         internal SessionProxy CurrentSessionProxy
         {
-            get { return (SessionProxy) SessionFactory.GetCurrentSession(); }
+            get { return (SessionProxy)SessionFactory.GetCurrentSession(); }
         }
 
 
@@ -70,16 +70,23 @@ namespace Qi.NHibernateExtender
         /// <param name="submit"></param>
         public bool Close(bool submit)
         {
-            SessionProxy session = CurrentSessionProxy;
-            if (OpenInThisContext)
+            if (CurrentSessionContext.HasBind(SessionFactory))
             {
-                session = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
-                if (session.Parent != null)
+
+                SessionProxy session = CurrentSessionProxy;
+                if (OpenInThisContext)
                 {
-                    CurrentSessionContext.Bind(session.Parent);
+                    session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
+                    if (session.Parent != null)
+                    {
+                        CurrentSessionContext.Bind(session.Parent);
+                    }
+                    HandleUnsaveData(submit, session);
+                    return true;
                 }
+                HandleUnsaveData(submit, session);
+                return false;
             }
-            HandleUnsaveData(submit, session);
             return false;
         }
     }

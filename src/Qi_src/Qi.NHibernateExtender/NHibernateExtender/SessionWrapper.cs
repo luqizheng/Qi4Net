@@ -70,24 +70,26 @@ namespace Qi.NHibernateExtender
         /// <param name="submit"></param>
         public bool Close(bool submit)
         {
-            if (CurrentSessionContext.HasBind(SessionFactory))
+            if (!CurrentSessionContext.HasBind(SessionFactory))
             {
-
-                SessionProxy session = CurrentSessionProxy;
-                if (OpenInThisContext)
-                {
-                    session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
-                    if (session.Parent != null)
-                    {
-                        CurrentSessionContext.Bind(session.Parent);
-                    }
-                    HandleUnsaveData(submit, session);
-                    return true;
-                }
-                HandleUnsaveData(submit, session);
                 return false;
             }
+
+            SessionProxy session = CurrentSessionProxy;
+            if (OpenInThisContext)
+            {
+                session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
+                if (session.Parent != null)
+                {
+                    CurrentSessionContext.Bind(session.Parent);
+                }
+                HandleUnsaveData(submit, session);
+                session.Close();
+                return true;
+            }
+            HandleUnsaveData(submit, session);
             return false;
+
         }
     }
 }

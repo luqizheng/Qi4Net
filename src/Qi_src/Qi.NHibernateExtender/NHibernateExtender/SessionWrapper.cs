@@ -79,12 +79,12 @@ namespace Qi.NHibernateExtender
             if (OpenInThisContext)
             {
                 session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
+                HandleUnsaveData(submit, session);
+                session.Close();
                 if (session.Parent != null)
                 {
                     CurrentSessionContext.Bind(session.Parent);
                 }
-                HandleUnsaveData(submit, session);
-                session.Close();
                 return true;
             }
             HandleUnsaveData(submit, session);

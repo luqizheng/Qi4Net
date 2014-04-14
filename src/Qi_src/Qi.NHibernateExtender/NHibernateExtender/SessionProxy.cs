@@ -243,7 +243,7 @@ namespace Qi.NHibernateExtender
 
         public int Delete(string query, object value, IType type)
         {
-            return _session.Delete(query);
+            return _session.Delete(query, value, type);
         }
 
         public int Delete(string query, object[] values, IType[] types)

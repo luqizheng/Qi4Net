@@ -26,7 +26,7 @@ namespace Qi.Web.Mvc
             SessionFactoryName = sessionFactoryName;
         }
 
-        public string Tag { get; set; }
+      
         /// <summary>
         /// </summary>
         /// <param name="enabled"></param>

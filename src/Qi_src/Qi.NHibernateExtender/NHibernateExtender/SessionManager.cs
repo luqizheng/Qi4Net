@@ -89,6 +89,24 @@ namespace Qi.NHibernateExtender
         {
             return GetSessionWrapperFactory(DefaultSessionFactoryKey).CreateNewWrapper();
         }
+        /// <summary>
+        /// 并不会编订到SessionContext
+        /// </summary>
+        /// <returns></returns>
+        public static SessionWrapper OpneManagerSelfSessionWrapper()
+        {
+            return OpneManagerSelfSessionWrapper(DefaultSessionFactoryKey);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionFactoryKey"></param>
+        /// <returns></returns>
+        public static SessionWrapper OpneManagerSelfSessionWrapper(string sessionFactoryKey)
+        {
+            return GetSessionWrapperFactory(DefaultSessionFactoryKey).CreateIndependentSession();
+        }
 
         /// <summary>
         /// </summary>
@@ -101,7 +119,7 @@ namespace Qi.NHibernateExtender
 
 
         /// <summary>
-        ///     gets the session factory by session factory name defined in the configruation file.
+        ///     gets the session factory by session factory name defined in the configuration file.
         /// </summary>
         /// <param name="sessionFactoryName"></param>
         /// <returns></returns>

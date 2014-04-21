@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHibernate;
+using NHibernate.Context;
 using NHibernate.Criterion;
 using Qi.NHibernateExtender;
 using Qi.Web.Mvc;
@@ -12,15 +13,15 @@ namespace Qi.Domain.NHibernates
     /// </summary>
     /// <typeparam name="TId"></typeparam>
     /// <typeparam name="TObject"></typeparam>
-    public abstract class DaoBase<TId, TObject> : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
+    public abstract class DaoBase<TId, TObject>
+        : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
         private SessionWrapper _wrapper;
-
         /// <summary>
         /// </summary>
         /// <param name="sessionFactoryName"></param>
+        /// <param name="sessionWrapper"></param>
         /// <exception cref="ArgumentNullException">sessionFactoryName is null or empty</exception>
-
         //protected DaoBase(string sessionFactoryName)
         //{
         //    if (string.IsNullOrEmpty(sessionFactoryName))
@@ -29,13 +30,19 @@ namespace Qi.Domain.NHibernates
         //    }
         //    _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         //}
+        protected DaoBase(SessionWrapper sessionWrapper)
+        {
+            if (sessionWrapper == null)
+                throw new ArgumentNullException("sessionWrapper");
+            _wrapper = sessionWrapper;
+        }
 
         /// <summary>
         /// </summary>
         protected DaoBase()
         {
         }
-         
+
         /// <summary>
         /// Session Wrapper
         /// </summary>
@@ -43,18 +50,25 @@ namespace Qi.Domain.NHibernates
         {
             get
             {
-                if (SessionManager.IsOpen())
+                if (_wrapper == null)
                 {
-                    _wrapper = SessionManager.GetSessionWrapper();
-                }
-                else
-                {
-                      throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
+                    if (SessionManager.IsOpen())
+                    {
+                        _wrapper = SessionManager.GetSessionWrapper();
+                    }
+                    else
+                    {
+                        throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
+                    }
                 }
                 return _wrapper;
             }
         }
 
+        public void Dispose()
+        {
+            TryClose(false);
+        }
         /// <summary>
         /// </summary>
         protected ISession CurrentSession
@@ -174,6 +188,11 @@ namespace Qi.Domain.NHibernates
                     .SetProjection(Projections.RowCount()).SetCacheMode(CacheMode.Get)
                     .GetExecutableCriteria(CurrentSession)
                     .UniqueResult<int>();
+        }
+
+        public bool TryClose(bool submit)
+        {
+            return this.SessionWrapper.Close(submit);
         }
 
         /// <summary>

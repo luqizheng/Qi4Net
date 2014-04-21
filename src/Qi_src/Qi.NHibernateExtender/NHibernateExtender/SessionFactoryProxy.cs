@@ -60,6 +60,16 @@ namespace Qi.NHibernateExtender
         }
 
         /// <summary>
+        ///     Open it and close itself. It do not bind in ths SessionContext;
+        /// </summary>
+        /// <returns></returns>
+        public SessionWrapper CreateIndependentSession()
+        {
+            var session = new SessionProxy(SessionFactory.OpenSession());
+            return new SessionWrapper(session);
+        }
+
+        /// <summary>
         /// </summary>
         /// <returns></returns>
         public SessionWrapper GetWrapper()

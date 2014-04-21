@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Qi.Domain
@@ -8,7 +9,7 @@ namespace Qi.Domain
     ///     Id of the TReturn;
     /// </typeparam>
     /// <typeparam name="TReturn">Domain object's typel</typeparam>
-    public interface IDao<TId, TReturn> where TReturn : DomainObject<TReturn, TId>
+    public interface IDao<TId, TReturn> : IDisposable where TReturn : DomainObject<TReturn, TId>
     {
         /// <summary>
         ///     Get All object
@@ -17,7 +18,9 @@ namespace Qi.Domain
         IList<TReturn> GetAll();
 
         /// <summary>
-        ///     Return the persistent instance of the given entity class with the given identifier, or null if there is no such persistent instance. (If the instance, or a proxy for the instance, is already associated with the session, return that instance or proxy.)
+        ///     Return the persistent instance of the given entity class with the given identifier, or null if there is no such
+        ///     persistent instance. (If the instance, or a proxy for the instance, is already associated with the session, return
+        ///     that instance or proxy.)
         /// </summary>
         /// <param name="id">
         /// </param>
@@ -27,7 +30,8 @@ namespace Qi.Domain
         TReturn Get(TId id);
 
         /// <summary>
-        ///     Return the persistent instance of the given entity class with the given identifier, assuming that the instance exists.
+        ///     Return the persistent instance of the given entity class with the given identifier, assuming that the instance
+        ///     exists.
         /// </summary>
         /// <param name="id">
         /// </param>
@@ -35,7 +39,9 @@ namespace Qi.Domain
         ///     The persistent instance or proxy
         /// </returns>
         /// <remarks>
-        ///     You should not use this method to determine if an instance exists (use a query or NHibernate.ISession.Get(System.Type,System.Object) instead). Use this only to retrieve an instance that you assume exists, where non-existence would be an actual error.
+        ///     You should not use this method to determine if an instance exists (use a query or
+        ///     NHibernate.ISession.Get(System.Type,System.Object) instead). Use this only to retrieve an instance that you assume
+        ///     exists, where non-existence would be an actual error.
         /// </remarks>
         TReturn Load(TId id);
 
@@ -99,10 +105,17 @@ namespace Qi.Domain
         /// <summary>
         /// </summary>
         void Flush();
+
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         int Count();
+
+        /// <summary>
+        ///     ≥¢ ‘
+        /// </summary>
+        /// <param name="submit"></param>
+        /// <returns></returns>
+        bool TryClose(bool submit);
     }
 }

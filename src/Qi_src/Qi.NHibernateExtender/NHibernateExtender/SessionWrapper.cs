@@ -8,6 +8,13 @@ namespace Qi.NHibernateExtender
     /// </summary>
     public class SessionWrapper : IDisposable
     {
+        private readonly ISession _session;
+
+        internal SessionWrapper(ISession session)
+        {
+            _session = session;
+            OpenInThisContext = true;
+        }
 
         internal SessionWrapper(ISessionFactory sessionFactory, bool openInThisContext)
         {
@@ -34,7 +41,14 @@ namespace Qi.NHibernateExtender
 
         internal SessionProxy CurrentSessionProxy
         {
-            get { return (SessionProxy)SessionFactory.GetCurrentSession(); }
+            get
+            {
+                if (_session == null && SessionFactory != null)
+                {
+                    return (SessionProxy)SessionFactory.GetCurrentSession();
+                }
+                return (SessionProxy)_session;
+            }
         }
 
 
@@ -70,18 +84,30 @@ namespace Qi.NHibernateExtender
         /// <param name="submit"></param>
         public bool Close(bool submit)
         {
-            if (!CurrentSessionContext.HasBind(SessionFactory))
+            if (!CurrentSessionProxy.IsOpen || CurrentSessionProxy.IsConnected)
+                return false;
+            if (SessionFactory != null && !CurrentSessionContext.HasBind(SessionFactory))
             {
+#if DEBUG
+                Console.WriteLine("Not Bind");
+#endif
                 return false;
             }
 
             SessionProxy session = CurrentSessionProxy;
             if (OpenInThisContext)
             {
-                session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
+                if (SessionFactory != null && CurrentSessionContext.HasBind(SessionFactory))
+                {
+#if DEBUG
+                    Console.WriteLine("CurrentSessionContext UnBind.");
+#endif
+                    session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
+                }
+
                 HandleUnsaveData(submit, session);
                 session.Close();
-                if (session.Parent != null)
+                if (session.Parent != null && SessionFactory != null)
                 {
                     CurrentSessionContext.Bind(session.Parent);
                 }
@@ -89,7 +115,6 @@ namespace Qi.NHibernateExtender
             }
             HandleUnsaveData(submit, session);
             return false;
-
         }
     }
 }

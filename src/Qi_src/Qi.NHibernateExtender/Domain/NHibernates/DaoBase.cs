@@ -15,15 +15,10 @@ namespace Qi.Domain.NHibernates
     public abstract class DaoBase<TId, TObject>
         : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
+        private readonly string _sessionFactoryName;
         private readonly SessionWrapper _wrapper;
-        //protected DaoBase(string sessionFactoryName)
-        //{
-        //    if (string.IsNullOrEmpty(sessionFactoryName))
-        //    {
-        //        throw new ArgumentNullException("sessionFactoryName", "sessionFactoryName can not be null or empty");
-        //    }
-        //    _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
-        //}
+        private readonly bool _managerBySelf = false;
+
         /// <summary>
         /// </summary>
         /// <param name="sessionWrapper"></param>
@@ -31,14 +26,23 @@ namespace Qi.Domain.NHibernates
         {
             if (sessionWrapper == null)
                 throw new ArgumentNullException("sessionWrapper");
+            _managerBySelf = true;
             _wrapper = sessionWrapper;
+        }
+
+        protected DaoBase(string sessionFactoryName)
+        {
+            if (String.IsNullOrEmpty(sessionFactoryName))
+                throw new ArgumentNullException("sessionFactoryName");
+            _sessionFactoryName = sessionFactoryName;
         }
 
         /// <summary>
         /// </summary>
         protected DaoBase()
+            : this(SessionManager.DefaultSessionFactoryKey)
         {
-            _wrapper = SessionManager.GetSessionWrapper();
+
         }
 
         /// <summary>
@@ -48,9 +52,14 @@ namespace Qi.Domain.NHibernates
         {
             get
             {
-                if (!_wrapper.CurrentSession.IsOpen)
+                if (_managerBySelf)
+                {
+                    return _wrapper;
+                }
+                var session = SessionManager.GetSessionWrapper(_sessionFactoryName);
+                if (!session.CurrentSession.IsOpen)
                     throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
-                return _wrapper;
+                return session;
             }
         }
 

@@ -172,15 +172,26 @@ namespace Qi.NHibernateExtender
         /// <returns></returns>
         public bool Close()
         {
+            SessionProxy session = CurrentSessionProxy;
             if (OpenInThisContext)
             {
-                SessionProxy session = CurrentSessionProxy;
-                if (BindToSessionContext &&  CurrentSessionContext.HasBind(SessionFactory))
+                if (BindToSessionContext)
                 {
-                    session = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
+                    if (CurrentSessionContext.HasBind(SessionFactory))
+                    {
+                        session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
+                    }
+                    if (session.Parent != null && SessionFactory != null)
+                    {
+                        CurrentSessionContext.Bind(session.Parent);
+                    }
                 }
-                session.Close();
-                return true;
+                if (session.IsOpen)
+                {
+                    session.Close();
+                    return true;
+                }
+              
             }
             return false;
         }

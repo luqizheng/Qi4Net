@@ -103,14 +103,14 @@ namespace Qi.NHibernateExtender
         /// <param name="isolationLevel"></param>
         public void BeginTransaction(IsolationLevel isolationLevel)
         {
-            _session.BeginTransaction(IsolationLevel.ReadCommitted);
+            CurrentSession.BeginTransaction(IsolationLevel.ReadCommitted);
         }
 
         /// <summary>
         /// </summary>
         public void BeginTransaction()
         {
-            _session.BeginTransaction();
+            CurrentSession.BeginTransaction();
         }
 
         /// <summary>
@@ -175,11 +175,12 @@ namespace Qi.NHibernateExtender
             if (OpenInThisContext)
             {
                 SessionProxy session = CurrentSessionProxy;
-                if (CurrentSessionContext.HasBind(SessionFactory))
+                if (BindToSessionContext &&  CurrentSessionContext.HasBind(SessionFactory))
                 {
                     session = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
                 }
                 session.Close();
+                return true;
             }
             return false;
         }

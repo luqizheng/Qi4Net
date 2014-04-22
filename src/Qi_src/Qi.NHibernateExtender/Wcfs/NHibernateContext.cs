@@ -41,7 +41,11 @@ namespace Qi.Wcfs
             : this(false)
         {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contractDescription"></param>
+        /// <param name="endpoint"></param>
         public void Validate(ContractDescription contractDescription, ServiceEndpoint endpoint)
         {
         }
@@ -57,12 +61,22 @@ namespace Qi.Wcfs
             dispatchRuntime.InstanceContextInitializers.Add(new NHibernateContextInitializer(_sessionFactoryName,
                 _enabledSession));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contractDescription"></param>
+        /// <param name="endpoint"></param>
+        /// <param name="clientRuntime"></param>
         public void ApplyClientBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint,
             ClientRuntime clientRuntime)
         {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contractDescription"></param>
+        /// <param name="endpoint"></param>
+        /// <param name="bindingParameters"></param>
         public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint,
             BindingParameterCollection bindingParameters)
         {

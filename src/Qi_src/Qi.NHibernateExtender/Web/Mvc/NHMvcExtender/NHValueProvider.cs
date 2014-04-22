@@ -21,7 +21,11 @@ namespace Qi.Web.Mvc.NHMvcExtender
             _controllerContext = controllerContext;
         }
 
-
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="key"></param>
+       /// <returns></returns>
         public override ValueProviderResult GetValue(string key)
         {
             ValueProviderResult result = base.GetValue(key);
@@ -31,7 +35,12 @@ namespace Qi.Web.Mvc.NHMvcExtender
                                              NHModelBinder.GetWrapper(_controllerContext));
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="skipValidation"></param>
+        /// <returns></returns>
         public override ValueProviderResult GetValue(string key, bool skipValidation)
         {
             ValueProviderResult result = base.GetValue(key, skipValidation);

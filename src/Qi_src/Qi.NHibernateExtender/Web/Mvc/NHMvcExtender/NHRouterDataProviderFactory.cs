@@ -8,6 +8,11 @@ namespace Qi.Web.Mvc.NHMvcExtender
     /// </summary>
     public class NHRouterDataProviderFactory : ValueProviderFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="controllerContext"></param>
+        /// <returns></returns>
         public override IValueProvider GetValueProvider(ControllerContext controllerContext)
         {
             if (controllerContext == null)

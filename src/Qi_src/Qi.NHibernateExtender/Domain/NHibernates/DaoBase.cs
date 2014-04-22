@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHibernate;
-using NHibernate.Context;
 using NHibernate.Criterion;
 using Qi.NHibernateExtender;
-using Qi.Web.Mvc;
 
 namespace Qi.Domain.NHibernates
 {
@@ -16,12 +14,7 @@ namespace Qi.Domain.NHibernates
     public abstract class DaoBase<TId, TObject>
         : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
-        private SessionWrapper _wrapper;
-        /// <summary>
-        /// </summary>
-        /// <param name="sessionFactoryName"></param>
-        /// <param name="sessionWrapper"></param>
-        /// <exception cref="ArgumentNullException">sessionFactoryName is null or empty</exception>
+        private readonly SessionWrapper _wrapper;
         //protected DaoBase(string sessionFactoryName)
         //{
         //    if (string.IsNullOrEmpty(sessionFactoryName))
@@ -30,6 +23,9 @@ namespace Qi.Domain.NHibernates
         //    }
         //    _wrapper = SessionManager.GetSessionWrapper(sessionFactoryName);
         //}
+        /// <summary>
+        /// </summary>
+        /// <param name="sessionWrapper"></param>
         protected DaoBase(SessionWrapper sessionWrapper)
         {
             if (sessionWrapper == null)
@@ -41,42 +37,29 @@ namespace Qi.Domain.NHibernates
         /// </summary>
         protected DaoBase()
         {
-        }
-
-        /// <summary>
-        /// Session Wrapper
-        /// </summary>
-        protected SessionWrapper SessionWrapper
-        {
-            get
+            if (SessionManager.IsOpen())
             {
-                if (_wrapper == null)
-                {
-                    if (SessionManager.IsOpen())
-                    {
-                        _wrapper = SessionManager.GetSessionWrapper();
-                    }
-                    else
-                    {
-                        throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
-                    }
-                }
-                return _wrapper;
+                _wrapper = SessionManager.GetSessionWrapper();
+            }
+            else
+            {
+                throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
             }
         }
 
-        public void Dispose()
+        /// <summary>
+        ///     Session Wrapper
+        /// </summary>
+        protected SessionWrapper SessionWrapper
         {
-            TryClose(false);
+            get { return _wrapper; }
         }
+
         /// <summary>
         /// </summary>
         protected ISession CurrentSession
         {
-            get
-            {
-                return SessionWrapper.CurrentSession;
-            }
+            get { return SessionWrapper.CurrentSession; }
         }
 
         #region IDao<TId,TObject> Members
@@ -145,7 +128,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         public virtual TId Save(TObject t)
         {
-            return (TId)CurrentSession.Save(t);
+            return (TId) CurrentSession.Save(t);
         }
 
         /// <summary>
@@ -177,6 +160,13 @@ namespace Qi.Domain.NHibernates
         }
 
         #endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            TryClose(false);
+        }
 
         /// <summary>
         /// </summary>
@@ -189,10 +179,15 @@ namespace Qi.Domain.NHibernates
                     .GetExecutableCriteria(CurrentSession)
                     .UniqueResult<int>();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="submit"></param>
+        /// <returns></returns>
+        [Obsolete]
         public bool TryClose(bool submit)
         {
-            return this.SessionWrapper.Close(submit);
+            return SessionWrapper.Close(submit);
         }
 
         /// <summary>
@@ -200,7 +195,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected DetachedCriteria CreateDetachedCriteria()
         {
-            return DetachedCriteria.For(typeof(TObject));
+            return DetachedCriteria.For(typeof (TObject));
         }
 
         /// <summary>
@@ -208,7 +203,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected virtual ICriteria CreateCriteria()
         {
-            return CurrentSession.CreateCriteria(typeof(TObject));
+            return CurrentSession.CreateCriteria(typeof (TObject));
         }
 
         /// <summary>

@@ -95,12 +95,15 @@ namespace Qi.Web.Mvc
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
             if (_wrapper != null)
             {
-                _wrapper.Close(true);
+                _wrapper.Close();
             }
         }
     }

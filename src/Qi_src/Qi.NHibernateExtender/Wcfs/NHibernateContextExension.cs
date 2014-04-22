@@ -28,18 +28,30 @@ namespace Qi.Wcfs
             _enabledTransaction = enabledTransaction;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="error"></param>
+        /// <param name="version"></param>
+        /// <param name="fault"></param>
         public void ProvideFault(Exception error, MessageVersion version, ref Message fault)
         {
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="error"></param>
+        /// <returns></returns>
         public bool HandleError(Exception error)
         {
             _trans.Rollback();
             return true;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="owner"></param>
         public void Attach(InstanceContext owner)
         {
             _sessionWrapper = SessionManager.GetSessionWrapper(_sessionfactoryName);

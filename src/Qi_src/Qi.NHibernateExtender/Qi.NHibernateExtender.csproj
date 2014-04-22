@@ -100,7 +100,6 @@
     <Compile Include="Wcfs\NHibernateContextInitializer.cs" />
     <Compile Include="Web\Http\ApiSessionAttribute.cs" />
     <Compile Include="Web\Mvc\CreateInstanceHelper.cs" />
-    <Compile Include="Web\Mvc\Criterions\Property.cs" />
     <Compile Include="Web\Mvc\Founders\FounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\HqlFounderAttribute.cs" />
     <Compile Include="Web\Mvc\Founders\IdFounderAttribute.cs" />

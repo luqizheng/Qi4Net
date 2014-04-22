@@ -22,10 +22,12 @@ namespace Qi.NHibernateExtender
         }
 
         /// <summary>
+        /// 
         /// </summary>
         public Configuration Configuration { get; private set; }
 
         /// <summary>
+        /// 
         /// </summary>
         public ISessionFactory SessionFactory
         {

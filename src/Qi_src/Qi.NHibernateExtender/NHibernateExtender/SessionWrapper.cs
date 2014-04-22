@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using NHibernate;
 using NHibernate.Context;
 
@@ -9,22 +10,58 @@ namespace Qi.NHibernateExtender
     public class SessionWrapper : IDisposable
     {
         private readonly ISession _session;
+        private ISessionFactory _sessionFactory;
 
+
+        /// <summary>
+        /// </summary>
+        /// <param name="session"></param>
         internal SessionWrapper(ISession session)
         {
+            if (session == null)
+            {
+                throw new ArgumentNullException("session");
+            }
             _session = session;
             OpenInThisContext = true;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="sessionFactory"></param>
+        /// <param name="openInThisContext"></param>
         internal SessionWrapper(ISessionFactory sessionFactory, bool openInThisContext)
         {
+            if (sessionFactory == null)
+            {
+                throw new ArgumentNullException("sessionFactory");
+            }
             SessionFactory = sessionFactory;
             OpenInThisContext = openInThisContext;
         }
 
         /// <summary>
+        ///     个Wrapper是不是使用SessionContext进行bind。
         /// </summary>
-        public ISessionFactory SessionFactory { get; private set; }
+        public bool BindToSessionContext
+        {
+            get { return _sessionFactory != null; }
+        }
+
+        /// <summary>
+        /// </summary>
+        public ISessionFactory SessionFactory
+        {
+            get
+            {
+                if (BindToSessionContext)
+                {
+                    return _sessionFactory;
+                }
+                return _session.SessionFactory;
+            }
+            private set { _sessionFactory = value; }
+        }
 
         /// <summary>
         ///     这个Wrapper是不是在这里关闭
@@ -43,20 +80,43 @@ namespace Qi.NHibernateExtender
         {
             get
             {
-                if (_session == null && SessionFactory != null)
+                if (BindToSessionContext)
                 {
-                    return (SessionProxy)SessionFactory.GetCurrentSession();
+                    return (SessionProxy) SessionFactory.GetCurrentSession();
                 }
-                return (SessionProxy)_session;
+                return (SessionProxy) _session;
             }
         }
 
-
+        /// <summary>
+        /// </summary>
         public void Dispose()
         {
-            Close(false);
+            if (CurrentSessionProxy.IsOpen)
+            {
+                Close();
+            }
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="isolationLevel"></param>
+        public void BeginTransaction(IsolationLevel isolationLevel)
+        {
+            _session.BeginTransaction(IsolationLevel.ReadCommitted);
+        }
+
+        /// <summary>
+        /// </summary>
+        public void BeginTransaction()
+        {
+            _session.BeginTransaction();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="submitData"></param>
+        /// <param name="session"></param>
         private static void HandleUnsaveData(bool submitData, ISession session)
         {
             if (submitData)
@@ -82,39 +142,72 @@ namespace Qi.NHibernateExtender
         ///     并不是是在这里开启的，那么这个Close方法指挥提交数据，而不是关闭Session
         /// </summary>
         /// <param name="submit"></param>
+        [Obsolete]
         public bool Close(bool submit)
         {
-            if (!CurrentSessionProxy.IsOpen || CurrentSessionProxy.IsConnected)
-                return false;
-            if (SessionFactory != null && !CurrentSessionContext.HasBind(SessionFactory))
-            {
-#if DEBUG
-                Console.WriteLine("Not Bind");
-#endif
-                return false;
-            }
-
             SessionProxy session = CurrentSessionProxy;
             if (OpenInThisContext)
             {
-                if (SessionFactory != null && CurrentSessionContext.HasBind(SessionFactory))
+                if (BindToSessionContext)
                 {
-#if DEBUG
-                    Console.WriteLine("CurrentSessionContext UnBind.");
-#endif
-                    session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
+                    if (CurrentSessionContext.HasBind(SessionFactory))
+                    {
+                        session = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
+                    }
+                    if (session.Parent != null && SessionFactory != null)
+                    {
+                        CurrentSessionContext.Bind(session.Parent);
+                    }
                 }
-
                 HandleUnsaveData(submit, session);
                 session.Close();
-                if (session.Parent != null && SessionFactory != null)
-                {
-                    CurrentSessionContext.Bind(session.Parent);
-                }
                 return true;
             }
             HandleUnsaveData(submit, session);
             return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool Close()
+        {
+            if (OpenInThisContext)
+            {
+                SessionProxy session = CurrentSessionProxy;
+                if (CurrentSessionContext.HasBind(SessionFactory))
+                {
+                    session = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
+                }
+                session.Close();
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// </summary>
+        public void SubmitData()
+        {
+            CurrentSessionProxy.Flush();
+
+            if (CurrentSession.Transaction != null
+                && CurrentSession.Transaction.IsActive
+                && !CurrentSession.Transaction.WasCommitted)
+            {
+                CurrentSession.Transaction.Commit();
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        public void Rollback()
+        {
+            if (CurrentSession.Transaction != null
+                && CurrentSession.Transaction.IsActive
+                && !CurrentSession.Transaction.WasRolledBack)
+            {
+                CurrentSession.Transaction.Rollback();
+            }
         }
     }
 }

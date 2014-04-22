@@ -18,7 +18,9 @@ namespace Qi.NHibernateExtender.Criterion
             : base(lhs, rhs)
         {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected override string Op
         {
             get { return "="; }

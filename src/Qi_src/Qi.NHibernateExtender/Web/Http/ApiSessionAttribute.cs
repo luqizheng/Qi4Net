@@ -80,7 +80,12 @@ namespace Qi.Web.Http
         }
 
         #endregion
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task ExecuteExceptionFilterAsync(HttpActionExecutedContext actionExecutedContext,
             CancellationToken cancellationToken)
         {
@@ -95,7 +100,10 @@ namespace Qi.Web.Http
             }, _tras);
             return task;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actionContext"></param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             if (Enable)
@@ -110,12 +118,16 @@ namespace Qi.Web.Http
             }
             base.OnActionExecuting(actionContext);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
             if (_wrapper != null)
             {
-                _wrapper.Close(true);
+                _wrapper.SubmitData();
+                _wrapper.Close();
             }
         }
     }

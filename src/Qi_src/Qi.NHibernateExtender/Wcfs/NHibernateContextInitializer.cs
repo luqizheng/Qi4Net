@@ -22,7 +22,11 @@ namespace Qi.Wcfs
             _sessionfactoryName = sessionfactoryName;
             _enabledTransaction = enabledTransaction;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceContext"></param>
+        /// <param name="message"></param>
         public void Initialize(InstanceContext instanceContext, Message message)
         {
             instanceContext.Extensions.Add(new NHibernateContextExension(_sessionfactoryName, _enabledTransaction));

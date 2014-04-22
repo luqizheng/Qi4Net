@@ -38,14 +38,7 @@ namespace Qi.Domain.NHibernates
         /// </summary>
         protected DaoBase()
         {
-            if (SessionManager.IsOpen())
-            {
-                _wrapper = SessionManager.GetSessionWrapper();
-            }
-            else
-            {
-                throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
-            }
+            _wrapper = SessionManager.GetSessionWrapper();
         }
 
         /// <summary>
@@ -53,7 +46,12 @@ namespace Qi.Domain.NHibernates
         /// </summary>
         protected SessionWrapper SessionWrapper
         {
-            get { return _wrapper; }
+            get
+            {
+                if (!_wrapper.CurrentSession.IsOpen)
+                    throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
+                return _wrapper;
+            }
         }
 
         /// <summary>

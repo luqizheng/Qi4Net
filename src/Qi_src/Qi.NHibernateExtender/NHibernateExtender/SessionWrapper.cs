@@ -186,7 +186,7 @@ namespace Qi.NHibernateExtender
 
         /// <summary>
         /// </summary>
-        public void SubmitData()
+        public void Commit()
         {
             CurrentSessionProxy.Flush();
 

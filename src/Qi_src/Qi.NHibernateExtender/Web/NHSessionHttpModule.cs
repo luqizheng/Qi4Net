@@ -30,7 +30,7 @@ namespace Qi.Web
         /// <param name="e"></param>
         void context_EndRequest(object sender, EventArgs e)
         {
-            _wrapper.SubmitData();
+            _wrapper.Commit();
             _wrapper.Close();
         }
         /// <summary>

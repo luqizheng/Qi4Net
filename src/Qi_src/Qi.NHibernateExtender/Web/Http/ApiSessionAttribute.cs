@@ -91,7 +91,7 @@ namespace Qi.Web.Http
         {
             var task = new Task(s =>
             {
-                var trans = (ITransaction) s;
+                var trans = (ITransaction)s;
                 if (trans != null && trans.IsActive)
                 {
                     trans.Rollback();
@@ -126,7 +126,7 @@ namespace Qi.Web.Http
         {
             if (_wrapper != null)
             {
-                _wrapper.SubmitData();
+                _wrapper.Commit();
                 _wrapper.Close();
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using NHibernate;
 using NHibernate.Criterion;
 using Qi.NHibernateExtender;
@@ -128,7 +129,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         public virtual TId Save(TObject t)
         {
-            return (TId) CurrentSession.Save(t);
+            return (TId)CurrentSession.Save(t);
         }
 
         /// <summary>
@@ -160,12 +161,12 @@ namespace Qi.Domain.NHibernates
         }
 
         #endregion
+
         /// <summary>
-        /// 
         /// </summary>
         public void Dispose()
         {
-            TryClose(false);
+            SessionWrapper.Close();
         }
 
         /// <summary>
@@ -182,12 +183,40 @@ namespace Qi.Domain.NHibernates
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="submit"></param>
-        /// <returns></returns>
-        [Obsolete]
-        public bool TryClose(bool submit)
+        public void BeginTransaction()
         {
-            return SessionWrapper.Close(submit);
+            SessionWrapper.BeginTransaction();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isolationLevel"></param>
+        public void BeginTransaction(IsolationLevel isolationLevel)
+        {
+            SessionWrapper.BeginTransaction(isolationLevel);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Commit()
+        {
+            SessionWrapper.Commit();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void RollBack()
+        {
+            SessionWrapper.Rollback();
+
+        }
+        /// <summary>
+        /// 关闭链接
+        /// </summary>
+        /// <returns></returns>
+        public bool Close()
+        {
+            return SessionWrapper.Close();
         }
 
         /// <summary>
@@ -195,7 +224,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected DetachedCriteria CreateDetachedCriteria()
         {
-            return DetachedCriteria.For(typeof (TObject));
+            return DetachedCriteria.For(typeof(TObject));
         }
 
         /// <summary>
@@ -203,7 +232,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected virtual ICriteria CreateCriteria()
         {
-            return CurrentSession.CreateCriteria(typeof (TObject));
+            return CurrentSession.CreateCriteria(typeof(TObject));
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace Qi.Domain
 {
@@ -112,10 +113,30 @@ namespace Qi.Domain
         int Count();
 
         /// <summary>
-        ///     ≥¢ ‘
+        /// 
         /// </summary>
-        /// <param name="submit"></param>
+        void BeginTransaction();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isolationLevel"></param>
+        void BeginTransaction(IsolationLevel isolationLevel);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void Commit();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void RollBack();
+
+        /// <summary>
+        /// πÿ±’¡¥Ω”
+        /// </summary>
         /// <returns></returns>
-        bool TryClose(bool submit);
+        bool Close();
     }
 }

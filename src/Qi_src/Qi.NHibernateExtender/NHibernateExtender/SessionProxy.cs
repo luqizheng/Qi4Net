@@ -8,7 +8,7 @@ using NHibernate.Type;
 
 namespace Qi.NHibernateExtender
 {
-    internal class SessionProxy : ISession
+    public class SessionProxy : ISession
     {
         private readonly ISession _session;
         //private readonly Stack<ISession> _sessions = new Stack<ISession>();

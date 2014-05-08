@@ -61,7 +61,7 @@ namespace Qi.Web.Mvc
         /// <summary>
         ///     Gets or sets the IsolationLevel, default use the config setting.
         /// </summary>
-        public IsolationLevel? IsolationLevel { get; set; }
+        public IsolationLevel IsolationLevel { get; set; }
 
         #region IExceptionFilter Members
 

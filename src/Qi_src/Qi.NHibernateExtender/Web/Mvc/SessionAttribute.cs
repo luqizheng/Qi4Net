@@ -12,8 +12,10 @@ namespace Qi.Web.Mvc
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        private SessionWrapper _wrapper;
+        private bool SetIsoloatve;
+        private IsolationLevel _isolationLevel;
         private ITransaction _tras;
+        private SessionWrapper _wrapper;
 
         /// <summary>
         /// </summary>
@@ -61,7 +63,15 @@ namespace Qi.Web.Mvc
         /// <summary>
         ///     Gets or sets the IsolationLevel, default use the config setting.
         /// </summary>
-        public IsolationLevel IsolationLevel { get; set; }
+        public IsolationLevel IsolationLevel
+        {
+            get { return _isolationLevel; }
+            set
+            {
+                SetIsoloatve = true;
+                _isolationLevel = value;
+            }
+        }
 
         #region IExceptionFilter Members
 
@@ -89,14 +99,14 @@ namespace Qi.Web.Mvc
                 _wrapper = SessionManager.GetSessionWrapper();
                 if (Transaction)
                 {
-                    _tras = IsolationLevel != null
-                        ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel.Value)
+                    _tras = SetIsoloatve
+                        ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel)
                         : _wrapper.CurrentSession.BeginTransaction();
                 }
             }
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="filterContext"></param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)

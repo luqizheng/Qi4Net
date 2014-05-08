@@ -19,6 +19,8 @@ namespace Qi.Web.Http
     {
         private ITransaction _tras;
         private SessionWrapper _wrapper;
+        private bool _setIsolative;
+        private IsolationLevel _isolationLevel;
 
         /// <summary>
         /// </summary>
@@ -63,7 +65,15 @@ namespace Qi.Web.Http
         /// <summary>
         ///     Gets or sets the IsolationLevel, default use the config setting.
         /// </summary>
-        public IsolationLevel? IsolationLevel { get; set; }
+        public IsolationLevel IsolationLevel
+        {
+            get { return _isolationLevel; }
+            set
+            {
+                _setIsolative = true;
+                _isolationLevel = value;
+            }
+        }
 
         #region IExceptionFilter Members
 
@@ -111,8 +121,8 @@ namespace Qi.Web.Http
                 _wrapper = SessionManager.GetSessionWrapper(SessionFactoryName);
                 if (Transaction)
                 {
-                    _tras = IsolationLevel != null
-                        ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel.Value)
+                    _tras = _setIsolative
+                        ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel)
                         : _wrapper.CurrentSession.BeginTransaction();
                 }
             }

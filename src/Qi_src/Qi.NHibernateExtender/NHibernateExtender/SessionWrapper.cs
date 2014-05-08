@@ -82,9 +82,9 @@ namespace Qi.NHibernateExtender
             {
                 if (BindToSessionContext)
                 {
-                    return (SessionProxy) SessionFactory.GetCurrentSession();
+                    return (SessionProxy)SessionFactory.GetCurrentSession();
                 }
-                return (SessionProxy) _session;
+                return (SessionProxy)_session;
             }
         }
 
@@ -92,9 +92,12 @@ namespace Qi.NHibernateExtender
         /// </summary>
         public void Dispose()
         {
-            if (CurrentSessionProxy.IsOpen)
+            if (CurrentSessionContext.HasBind(SessionFactory))
             {
-                Close();
+                if (CurrentSessionProxy.IsOpen)
+                {
+                    Close();
+                }
             }
         }
 
@@ -152,7 +155,7 @@ namespace Qi.NHibernateExtender
                 {
                     if (CurrentSessionContext.HasBind(SessionFactory))
                     {
-                        session = (SessionProxy) CurrentSessionContext.Unbind(SessionFactory);
+                        session = (SessionProxy)CurrentSessionContext.Unbind(SessionFactory);
                     }
                     if (session.Parent != null && SessionFactory != null)
                     {
@@ -191,7 +194,7 @@ namespace Qi.NHibernateExtender
                     session.Close();
                     return true;
                 }
-              
+
             }
             return false;
         }

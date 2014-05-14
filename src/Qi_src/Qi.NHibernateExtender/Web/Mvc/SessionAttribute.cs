@@ -12,7 +12,7 @@ namespace Qi.Web.Mvc
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class SessionAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        private bool SetIsoloatve;
+        private bool _setIsoloatve;
         private IsolationLevel _isolationLevel;
         private ITransaction _tras;
         private SessionWrapper _wrapper;
@@ -68,7 +68,7 @@ namespace Qi.Web.Mvc
             get { return _isolationLevel; }
             set
             {
-                SetIsoloatve = true;
+                _setIsoloatve = true;
                 _isolationLevel = value;
             }
         }
@@ -99,7 +99,7 @@ namespace Qi.Web.Mvc
                 _wrapper = SessionManager.GetSessionWrapper();
                 if (Transaction)
                 {
-                    _tras = SetIsoloatve
+                    _tras = _setIsoloatve
                         ? _wrapper.CurrentSession.BeginTransaction(IsolationLevel)
                         : _wrapper.CurrentSession.BeginTransaction();
                 }

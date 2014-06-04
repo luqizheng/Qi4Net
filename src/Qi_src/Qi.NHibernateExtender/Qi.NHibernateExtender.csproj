@@ -44,6 +44,7 @@
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -84,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\NHibernates\DaoBase.cs" />
+    <Compile Include="Domain\ValidationCollectionException.cs" />
     <Compile Include="NHibernateExtender\Criterion\BitwiseFlags.cs" />
     <Compile Include="NHibernateExtender\SessionFactoryProxy.cs" />
     <Compile Include="NHibernateExtender\SessionProxy.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using NHibernate;
 using NHibernate.Criterion;
@@ -15,9 +16,9 @@ namespace Qi.Domain.NHibernates
     public abstract class DaoBase<TId, TObject>
         : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
+        private readonly bool _managerBySelf;
         private readonly string _sessionFactoryName;
         private readonly SessionWrapper _wrapper;
-        private readonly bool _managerBySelf = false;
 
         /// <summary>
         /// </summary>
@@ -42,7 +43,6 @@ namespace Qi.Domain.NHibernates
         protected DaoBase()
             : this(SessionManager.DefaultSessionFactoryKey)
         {
-
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Qi.Domain.NHibernates
                 {
                     return _wrapper;
                 }
-                var session = SessionManager.GetSessionWrapper(_sessionFactoryName);
+                SessionWrapper session = SessionManager.GetSessionWrapper(_sessionFactoryName);
                 if (!session.CurrentSession.IsOpen)
                     throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
                 return session;
@@ -71,6 +71,10 @@ namespace Qi.Domain.NHibernates
         }
 
         #region IDao<TId,TObject> Members
+        /// <summary>
+        /// enabed validation DataAnnotations.
+        /// </summary>
+        protected bool AutoValidation { get; set; }
 
         /// <summary>
         /// </summary>
@@ -103,6 +107,7 @@ namespace Qi.Domain.NHibernates
         /// <param name="t"></param>
         public void Update(TObject t)
         {
+            TryValidate(t);
             CurrentSession.Update(t);
         }
 
@@ -117,16 +122,24 @@ namespace Qi.Domain.NHibernates
         /// <summary>
         /// </summary>
         /// <param name="t"></param>
+        /// <exception cref="ArgumentNullException">t is null</exception>
         public virtual void Refresh(TObject t)
         {
+            if (t == null)
+                throw new ArgumentNullException("t");
             CurrentSession.Refresh(t);
         }
 
         /// <summary>
         /// </summary>
         /// <param name="t"></param>
+        /// <exception cref="ArgumentNullException">t is null</exception>
         public virtual void SaveOrUpdate(TObject t)
         {
+            if (t == null)
+                throw new ArgumentNullException("t");
+
+            TryValidate(t);
             CurrentSession.SaveOrUpdate(t);
         }
 
@@ -136,7 +149,9 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         public virtual TId Save(TObject t)
         {
-            return (TId)CurrentSession.Save(t);
+            if (t == null)
+                throw new ArgumentNullException("t");
+            return (TId) CurrentSession.Save(t);
         }
 
         /// <summary>
@@ -167,6 +182,17 @@ namespace Qi.Domain.NHibernates
             CurrentSession.Flush();
         }
 
+        private void TryValidate(TObject t)
+        {
+            if (AutoValidation)
+            {
+                var context = new ValidationContext(t, null, null);
+                var colleection = new List<ValidationResult>();
+                if (!Validator.TryValidateObject(t, context, colleection))
+                    throw new ValidationCollectionException(colleection);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -187,38 +213,38 @@ namespace Qi.Domain.NHibernates
                     .GetExecutableCriteria(CurrentSession)
                     .UniqueResult<int>();
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public void BeginTransaction()
         {
             SessionWrapper.BeginTransaction();
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="isolationLevel"></param>
         public void BeginTransaction(IsolationLevel isolationLevel)
         {
             SessionWrapper.BeginTransaction(isolationLevel);
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public void Commit()
         {
             SessionWrapper.Commit();
         }
+
         /// <summary>
-        /// 
         /// </summary>
         public void RollBack()
         {
             SessionWrapper.Rollback();
-
         }
+
         /// <summary>
-        /// 关闭链接
+        ///     关闭链接
         /// </summary>
         /// <returns></returns>
         public bool Close()
@@ -231,7 +257,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected DetachedCriteria CreateDetachedCriteria()
         {
-            return DetachedCriteria.For(typeof(TObject));
+            return DetachedCriteria.For(typeof (TObject));
         }
 
         /// <summary>
@@ -239,7 +265,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected virtual ICriteria CreateCriteria()
         {
-            return CurrentSession.CreateCriteria(typeof(TObject));
+            return CurrentSession.CreateCriteria(typeof (TObject));
         }
 
         /// <summary>

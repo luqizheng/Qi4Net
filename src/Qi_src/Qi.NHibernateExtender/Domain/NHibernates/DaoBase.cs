@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using NHibernate;
 using NHibernate.Criterion;
@@ -13,61 +12,24 @@ namespace Qi.Domain.NHibernates
     /// <typeparam name="TId"></typeparam>
     /// <typeparam name="TObject"></typeparam>
     public abstract class DaoBase<TId, TObject>
-        : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
+        : AbstractDao, IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
-        private readonly string _sessionFactoryName;
-        private readonly SessionWrapper _wrapper;
-        private readonly bool _managerBySelf = false;
-
         /// <summary>
         /// </summary>
         /// <param name="sessionWrapper"></param>
-        protected DaoBase(SessionWrapper sessionWrapper)
+        protected DaoBase(SessionWrapper sessionWrapper) : base(sessionWrapper)
         {
-            if (sessionWrapper == null)
-                throw new ArgumentNullException("sessionWrapper");
-            _managerBySelf = true;
-            _wrapper = sessionWrapper;
         }
 
-        protected DaoBase(string sessionFactoryName)
+        protected DaoBase(string sessionFactoryName) : base(sessionFactoryName)
         {
-            if (String.IsNullOrEmpty(sessionFactoryName))
-                throw new ArgumentNullException("sessionFactoryName");
-            _sessionFactoryName = sessionFactoryName;
         }
 
         /// <summary>
         /// </summary>
         protected DaoBase()
-            : this(SessionManager.DefaultSessionFactoryKey)
+            : base()
         {
-
-        }
-
-        /// <summary>
-        ///     Session Wrapper
-        /// </summary>
-        protected SessionWrapper SessionWrapper
-        {
-            get
-            {
-                if (_managerBySelf)
-                {
-                    return _wrapper;
-                }
-                var session = SessionManager.GetSessionWrapper(_sessionFactoryName);
-                if (!session.CurrentSession.IsOpen)
-                    throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
-                return session;
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        protected ISession CurrentSession
-        {
-            get { return SessionWrapper.CurrentSession; }
         }
 
         #region IDao<TId,TObject> Members

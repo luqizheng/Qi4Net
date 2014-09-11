@@ -83,7 +83,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\NHibernates\AbstractDao.cs" />
     <Compile Include="Domain\NHibernates\DaoBase.cs" />
+    <Compile Include="Domain\NHibernates\SqlDaobase.cs" />
     <Compile Include="NHibernateExtender\Criterion\BitwiseFlags.cs" />
     <Compile Include="NHibernateExtender\SessionFactoryProxy.cs" />
     <Compile Include="NHibernateExtender\SessionProxy.cs" />

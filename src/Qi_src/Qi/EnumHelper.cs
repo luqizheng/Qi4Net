@@ -36,6 +36,36 @@ namespace Qi
         {
             return ToDescription(enumValue, Thread.CurrentThread.CurrentUICulture);
         }
+
+        /// <summary>
+        /// Skip FlagsAttribute
+        /// </summary>
+        /// <param name="enumValue"></param>
+        /// <param name="cultureInfo"></param>
+        /// <returns></returns>
+        public static string ToSimpleDescription(this Enum enumValue, CultureInfo cultureInfo)
+        {
+            Type enuType = enumValue.GetType();
+            FieldInfo[] fieldinfos = enuType.GetFields();
+            foreach (FieldInfo fieldInfo in fieldinfos)
+            {
+                if (fieldInfo.IsLiteral && IsMatch(enumValue, fieldInfo, false))
+                {
+                    string description = GetStringFromAttr(fieldInfo, cultureInfo);
+                    return (description ?? fieldInfo.GetValue(null).ToString());
+                }
+            }
+            return enumValue.ToString();
+        }
+        /// <summary>
+        /// Skip flags
+        /// </summary>
+        /// <param name="enumValue"></param>
+        /// <returns></returns>
+        public static string ToSimpleDescription(this Enum enumValue)
+        {
+            return ToSimpleDescription(enumValue, Thread.CurrentThread.CurrentUICulture); 
+        }
         /// <summary>
         /// 
         /// </summary>

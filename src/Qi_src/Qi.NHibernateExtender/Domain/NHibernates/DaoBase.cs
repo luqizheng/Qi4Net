@@ -105,7 +105,7 @@ namespace Qi.Domain.NHibernates
         /// <summary>
         /// </summary>
         /// <param name="t"></param>
-        public void Update(TObject t)
+        public virtual void Update(TObject t)
         {
             TryValidate(t);
             CurrentSession.Update(t);
@@ -177,7 +177,7 @@ namespace Qi.Domain.NHibernates
 
         /// <summary>
         /// </summary>
-        public void Flush()
+        public virtual void Flush()
         {
             CurrentSession.Flush();
         }
@@ -216,7 +216,7 @@ namespace Qi.Domain.NHibernates
 
         /// <summary>
         /// </summary>
-        public void BeginTransaction()
+        public virtual void BeginTransaction()
         {
             SessionWrapper.BeginTransaction();
         }
@@ -224,21 +224,21 @@ namespace Qi.Domain.NHibernates
         /// <summary>
         /// </summary>
         /// <param name="isolationLevel"></param>
-        public void BeginTransaction(IsolationLevel isolationLevel)
+        public virtual void BeginTransaction(IsolationLevel isolationLevel)
         {
             SessionWrapper.BeginTransaction(isolationLevel);
         }
 
         /// <summary>
         /// </summary>
-        public void Commit()
+        public virtual void Commit()
         {
             SessionWrapper.Commit();
         }
 
         /// <summary>
         /// </summary>
-        public void RollBack()
+        public virtual void RollBack()
         {
             SessionWrapper.Rollback();
         }
@@ -247,7 +247,7 @@ namespace Qi.Domain.NHibernates
         ///     关闭链接
         /// </summary>
         /// <returns></returns>
-        public bool Close()
+        public virtual bool Close()
         {
             return SessionWrapper.Close();
         }

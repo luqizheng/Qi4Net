@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using NHibernate;
 using NHibernate.Criterion;
@@ -14,65 +13,29 @@ namespace Qi.Domain.NHibernates
     /// <typeparam name="TId"></typeparam>
     /// <typeparam name="TObject"></typeparam>
     public abstract class DaoBase<TId, TObject>
-        : IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
+        : AbstractDao, IDao<TId, TObject> where TObject : DomainObject<TObject, TId>
     {
-        private readonly bool _managerBySelf;
-        private readonly string _sessionFactoryName;
-        private readonly SessionWrapper _wrapper;
-
         /// <summary>
         /// </summary>
         /// <param name="sessionWrapper"></param>
-        protected DaoBase(SessionWrapper sessionWrapper)
+        protected DaoBase(SessionWrapper sessionWrapper) : base(sessionWrapper)
         {
-            if (sessionWrapper == null)
-                throw new ArgumentNullException("sessionWrapper");
-            _managerBySelf = true;
-            _wrapper = sessionWrapper;
         }
 
-        protected DaoBase(string sessionFactoryName)
+        protected DaoBase(string sessionFactoryName) : base(sessionFactoryName)
         {
-            if (String.IsNullOrEmpty(sessionFactoryName))
-                throw new ArgumentNullException("sessionFactoryName");
-            _sessionFactoryName = sessionFactoryName;
         }
 
         /// <summary>
         /// </summary>
         protected DaoBase()
-            : this(SessionManager.DefaultSessionFactoryKey)
         {
-        }
-
-        /// <summary>
-        ///     Session Wrapper
-        /// </summary>
-        protected SessionWrapper SessionWrapper
-        {
-            get
-            {
-                if (_managerBySelf)
-                {
-                    return _wrapper;
-                }
-                SessionWrapper session = SessionManager.GetSessionWrapper(_sessionFactoryName);
-                if (!session.CurrentSession.IsOpen)
-                    throw new SessionManagerException("Please call SessionManager.GetSessionWrapper first.");
-                return session;
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        protected ISession CurrentSession
-        {
-            get { return SessionWrapper.CurrentSession; }
         }
 
         #region IDao<TId,TObject> Members
+
         /// <summary>
-        /// enabed validation DataAnnotations.
+        ///     enabed validation DataAnnotations.
         /// </summary>
         protected bool AutoValidation { get; set; }
 
@@ -107,7 +70,6 @@ namespace Qi.Domain.NHibernates
         /// <param name="t"></param>
         public virtual void Update(TObject t)
         {
-            TryValidate(t);
             CurrentSession.Update(t);
         }
 
@@ -139,7 +101,6 @@ namespace Qi.Domain.NHibernates
             if (t == null)
                 throw new ArgumentNullException("t");
 
-            TryValidate(t);
             CurrentSession.SaveOrUpdate(t);
         }
 
@@ -180,17 +141,6 @@ namespace Qi.Domain.NHibernates
         public virtual void Flush()
         {
             CurrentSession.Flush();
-        }
-
-        private void TryValidate(TObject t)
-        {
-            if (AutoValidation)
-            {
-                var context = new ValidationContext(t, null, null);
-                var colleection = new List<ValidationResult>();
-                if (!Validator.TryValidateObject(t, context, colleection))
-                    throw new ValidationCollectionException(colleection);
-            }
         }
 
         #endregion

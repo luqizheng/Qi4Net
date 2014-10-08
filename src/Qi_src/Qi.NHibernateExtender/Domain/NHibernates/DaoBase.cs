@@ -18,11 +18,13 @@ namespace Qi.Domain.NHibernates
         /// <summary>
         /// </summary>
         /// <param name="sessionWrapper"></param>
-        protected DaoBase(SessionWrapper sessionWrapper) : base(sessionWrapper)
+        protected DaoBase(SessionWrapper sessionWrapper)
+            : base(sessionWrapper)
         {
         }
 
-        protected DaoBase(string sessionFactoryName) : base(sessionFactoryName)
+        protected DaoBase(string sessionFactoryName)
+            : base(sessionFactoryName)
         {
         }
 
@@ -73,6 +75,12 @@ namespace Qi.Domain.NHibernates
             CurrentSession.Update(t);
         }
 
+        public virtual void Update(TObject obj, TId id)
+        {
+            CurrentSession.Update(obj, id);
+        }
+
+
         /// <summary>
         /// </summary>
         /// <param name="t"></param>
@@ -112,7 +120,7 @@ namespace Qi.Domain.NHibernates
         {
             if (t == null)
                 throw new ArgumentNullException("t");
-            return (TId) CurrentSession.Save(t);
+            return (TId)CurrentSession.Save(t);
         }
 
         /// <summary>
@@ -207,7 +215,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected DetachedCriteria CreateDetachedCriteria()
         {
-            return DetachedCriteria.For(typeof (TObject));
+            return DetachedCriteria.For(typeof(TObject));
         }
 
         /// <summary>
@@ -215,7 +223,7 @@ namespace Qi.Domain.NHibernates
         /// <returns></returns>
         protected virtual ICriteria CreateCriteria()
         {
-            return CurrentSession.CreateCriteria(typeof (TObject));
+            return CurrentSession.CreateCriteria(typeof(TObject));
         }
 
         /// <summary>

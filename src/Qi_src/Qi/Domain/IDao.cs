@@ -89,7 +89,12 @@ namespace Qi.Domain
         /// </summary>
         /// <param name="t"></param>
         void Update(TReturn t);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="id"></param>
+        void Update(TReturn obj, TId id);
 
         /// <summary>
         /// </summary>

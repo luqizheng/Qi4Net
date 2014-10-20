@@ -159,6 +159,11 @@ namespace Qi.NHibernateExtender
             return _session.Save(entityName, obj);
         }
 
+        public void Save(string entityName, object obj, object id)
+        {
+            _session.Save(entityName, obj, id);
+        }
+
         public void SaveOrUpdate(object obj)
         {
             _session.SaveOrUpdate(obj);
@@ -167,6 +172,11 @@ namespace Qi.NHibernateExtender
         public void SaveOrUpdate(string entityName, object obj)
         {
             _session.SaveOrUpdate(entityName, obj);
+        }
+
+        public void SaveOrUpdate(string entityName, object obj, object id)
+        {
+            _session.SaveOrUpdate(entityName, obj, id);
         }
 
         public void Update(object obj)
@@ -182,6 +192,11 @@ namespace Qi.NHibernateExtender
         public void Update(string entityName, object obj)
         {
             _session.Update(entityName, obj);
+        }
+
+        public void Update(string entityName, object obj, object id)
+        {
+            throw new NotImplementedException();
         }
 
         public object Merge(object obj)
@@ -214,17 +229,6 @@ namespace Qi.NHibernateExtender
             _session.Persist(entityName, obj);
         }
 
-        [Obsolete("use Merge instead")]
-        public object SaveOrUpdateCopy(object obj)
-        {
-            return _session.SaveOrUpdateCopy(obj);
-        }
-
-        [Obsolete("use Merge instead")]
-        public object SaveOrUpdateCopy(object obj, object id)
-        {
-            return _session.SaveOrUpdateCopy(obj, id);
-        }
 
         public void Delete(object obj)
         {

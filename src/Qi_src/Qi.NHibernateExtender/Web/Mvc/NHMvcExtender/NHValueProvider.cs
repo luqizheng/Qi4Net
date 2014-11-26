@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Web.Mvc;
@@ -21,15 +22,35 @@ namespace Qi.Web.Mvc.NHMvcExtender
             _controllerContext = controllerContext;
         }
 
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="key"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public override ValueProviderResult GetValue(string key)
-        {
-            ValueProviderResult result = base.GetValue(key);
-            if (result == null)
+       {
+           ValueProviderResult result = null;
+           if (!key.EndsWith("]"))
+           {
+               result = base.GetValue(key);
+           }
+           else
+           {
+               var key1 = RemoveArraySufix(key);
+               var keyset = new String[]
+               {
+                   key1 + "[]",
+                   key,
+                   key1,
+               };
+               foreach (var aKey in keyset)
+               {
+                   result = base.GetValue(aKey);
+                   if (result != null)
+                       break;
+               }
+           }
+           if (result == null)
                 return null;
             return new NHValueProviderResult(result,
                                              NHModelBinder.GetWrapper(_controllerContext));
@@ -43,10 +64,39 @@ namespace Qi.Web.Mvc.NHMvcExtender
         /// <returns></returns>
         public override ValueProviderResult GetValue(string key, bool skipValidation)
         {
-            ValueProviderResult result = base.GetValue(key, skipValidation);
+            ValueProviderResult result = null;
+            if (!key.EndsWith("]"))
+            {
+                result = base.GetValue(key,skipValidation);
+            }
+            else
+            {
+                var key1 = RemoveArraySufix(key);
+                var keyset = new String[]
+               {
+                   key1 + "[]",
+                   key,
+                   key1,
+               };
+                foreach (var aKey in keyset)
+                {
+                    result = base.GetValue(aKey,skipValidation);
+                    if (result != null)
+                        break;
+                }
+            }
             if (result == null)
                 return null;
-            return new NHValueProviderResult(result,NHModelBinder.GetWrapper(_controllerContext));
+            return new NHValueProviderResult(result, NHModelBinder.GetWrapper(_controllerContext));
         }
+
+        private string RemoveArraySufix(string key)
+        {
+            var sta = key.LastIndexOf('[');
+            return key.Substring(0, sta);
+
+        }
+
+
     }
 }

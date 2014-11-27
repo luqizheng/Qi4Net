@@ -28,29 +28,11 @@ namespace Qi.Web.Mvc.NHMvcExtender
         /// <param name="key"></param>
         /// <returns></returns>
         public override ValueProviderResult GetValue(string key)
-       {
-           ValueProviderResult result = null;
-           if (!key.EndsWith("]"))
-           {
-               result = base.GetValue(key);
-           }
-           else
-           {
-               var key1 = RemoveArraySufix(key);
-               var keyset = new String[]
-               {
-                   key1 + "[]",
-                   key,
-                   key1,
-               };
-               foreach (var aKey in keyset)
-               {
-                   result = base.GetValue(aKey);
-                   if (result != null)
-                       break;
-               }
-           }
-           if (result == null)
+        {
+            ValueProviderResult result = null;
+            result = base.GetValue(key);
+
+            if (result == null)
                 return null;
             return new NHValueProviderResult(result,
                                              NHModelBinder.GetWrapper(_controllerContext));
@@ -65,26 +47,7 @@ namespace Qi.Web.Mvc.NHMvcExtender
         public override ValueProviderResult GetValue(string key, bool skipValidation)
         {
             ValueProviderResult result = null;
-            if (!key.EndsWith("]"))
-            {
-                result = base.GetValue(key,skipValidation);
-            }
-            else
-            {
-                var key1 = RemoveArraySufix(key);
-                var keyset = new String[]
-               {
-                   key1 + "[]",
-                   key,
-                   key1,
-               };
-                foreach (var aKey in keyset)
-                {
-                    result = base.GetValue(aKey,skipValidation);
-                    if (result != null)
-                        break;
-                }
-            }
+            result = base.GetValue(key, skipValidation);
             if (result == null)
                 return null;
             return new NHValueProviderResult(result, NHModelBinder.GetWrapper(_controllerContext));

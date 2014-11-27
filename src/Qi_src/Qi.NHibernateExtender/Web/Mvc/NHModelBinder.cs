@@ -2,11 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Web.Mvc;
 using NHibernate;
 using NHibernate.Metadata;
@@ -62,15 +58,7 @@ namespace Qi.Web.Mvc
             bool addSuccess = SetWrapper(controllerContext, _wrapper);
             try
             {
-            //    if (realContext.ModelType.IsArray)
-            //    {
-            //        return BindComplexModel(controllerContext, realContext);
-
-            //    }
-            //    else
-            //    {
-                    return base.BindModel(controllerContext, realContext);
-              //  }
+                return base.BindModel(controllerContext, realContext);
             }
             finally
             {
@@ -81,118 +69,6 @@ namespace Qi.Web.Mvc
             }
         }
 
-        private static IEnumerable<string> GetZeroBasedIndexes()
-        {
-            int i = 0;
-            while (true)
-            {
-                yield return i.ToString(CultureInfo.InvariantCulture);
-                i++;
-            }
-        }
-
-        private static string GetUserResourceString(ControllerContext controllerContext, string resourceName)
-        {
-            string result = null;
-
-            if (!String.IsNullOrEmpty(ResourceClassKey) && (controllerContext != null) &&
-                (controllerContext.HttpContext != null))
-            {
-                result =
-                    controllerContext.HttpContext.GetGlobalResourceObject(ResourceClassKey, resourceName,
-                        CultureInfo.CurrentUICulture) as string;
-            }
-
-            return result;
-        }
-
-        internal object UpdateCollection(ControllerContext controllerContext, ModelBindingContext bindingContext,
-            Type elementType)
-        {
-            bool stopOnIndexNotFound;
-            IEnumerable<string> indexes;
-            GetIndexes(bindingContext, out stopOnIndexNotFound, out indexes);
-            IModelBinder elementBinder = Binders.GetBinder(elementType);
-
-            // build up a list of items from the request
-            var modelList = new List<object>();
-            foreach (string currentIndex in indexes)
-            {
-                string subIndexKey = CreateSubIndexName(bindingContext.ModelName, currentIndex);
-                if (!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))
-                {
-                    if (stopOnIndexNotFound)
-                    {
-                        // we ran out of elements to pull
-                        break;
-                    }
-                    continue;
-                }
-
-                var innerContext = new ModelBindingContext
-                {
-                    ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(null, elementType),
-                    ModelName = subIndexKey,
-                    ModelState = bindingContext.ModelState,
-                    PropertyFilter = bindingContext.PropertyFilter,
-                    ValueProvider = bindingContext.ValueProvider
-                };
-                object thisElement = elementBinder.BindModel(controllerContext, innerContext);
-
-                // we need to merge model errors up
-                AddValueRequiredMessageToModelState(controllerContext, bindingContext.ModelState, subIndexKey,
-                    elementType, thisElement);
-                modelList.Add(thisElement);
-            }
-
-            // if there weren't any elements at all in the request, just return
-            if (modelList.Count == 0)
-            {
-                return null;
-            }
-
-            // replace the original collection
-            object collection = bindingContext.Model;
-            CollectionHelpers.ReplaceCollection(elementType, collection, modelList);
-            return collection;
-        }
-        private static string GetValueRequiredResource(ControllerContext controllerContext)
-        {
-            return GetUserResourceString(controllerContext, "PropertyValueRequired") ?? "A value is required.";
-        }
-        private static void AddValueRequiredMessageToModelState(ControllerContext controllerContext,
-            ModelStateDictionary modelState, string modelStateKey, Type elementType, object value)
-        {
-            if (value == null && !TypeHelpers.TypeAllowsNullValue(elementType) && modelState.IsValidField(modelStateKey))
-            {
-                modelState.AddModelError(modelStateKey, GetValueRequiredResource(controllerContext));
-            }
-        }
-
-        [SuppressMessage("Microsoft.Globalization", "CA1304:SpecifyCultureInfo",
-            MessageId = "System.Web.Mvc.ValueProviderResult.ConvertTo(System.Type)",
-            Justification = "ValueProviderResult already handles culture conversion appropriately.")]
-        private static void GetIndexes(ModelBindingContext bindingContext, out bool stopOnIndexNotFound,
-            out IEnumerable<string> indexes)
-        {
-            string indexKey = CreateSubPropertyName(bindingContext.ModelName, "index");
-            ValueProviderResult valueProviderResult = bindingContext.ValueProvider.GetValue(indexKey);
-
-            if (valueProviderResult != null)
-            {
-                var indexesArray = valueProviderResult.ConvertTo(typeof(string[])) as string[];
-                if (indexesArray != null)
-                {
-                    stopOnIndexNotFound = false;
-                    indexes = indexesArray;
-                    return;
-                }
-            }
-
-            // just use a simple zero-based system
-            stopOnIndexNotFound = true;
-            indexes = GetZeroBasedIndexes();
-        }
 
         /// <summary>
         /// </summary>
@@ -320,7 +196,7 @@ namespace Qi.Web.Mvc
             if (!modelType.IsArray && modelType.IsValueType)
                 return false;
 
-            var types = new List<Type> { modelType.IsArray ? modelType.GetElementType() : modelType };
+            var types = new List<Type> {modelType.IsArray ? modelType.GetElementType() : modelType};
 
             if (modelType.IsGenericType)
             {
@@ -434,7 +310,7 @@ namespace Qi.Web.Mvc
             wrapper = null;
             if (customAttributes.Length != 0)
             {
-                var custommAttr = (SessionAttribute)customAttributes[0];
+                var custommAttr = (SessionAttribute) customAttributes[0];
                 if (custommAttr.Enable)
                 {
                     wrapper = SessionManager.GetSessionWrapper(custommAttr.SessionFactoryName);
@@ -442,18 +318,6 @@ namespace Qi.Web.Mvc
                 }
             }
             return false;
-        }
-
-        private static FounderAttribute GetEntityFounderIn(Type modelType, PropertyDescriptor propertyDescriptor)
-        {
-            object[] customAttributes =
-                modelType.GetProperty(propertyDescriptor.Name).GetCustomAttributes(typeof(FounderAttribute), true);
-
-            if (customAttributes.Length == 0)
-            {
-                return new IdFounderAttribute();
-            }
-            return (FounderAttribute)customAttributes[0];
         }
 
         /// <summary>
@@ -473,141 +337,6 @@ namespace Qi.Web.Mvc
                 return prefix;
             }
             return prefix + "." + propertyName;
-        }
-
-        private static class CollectionHelpers
-        {
-            private static readonly MethodInfo _replaceCollectionMethod = typeof(CollectionHelpers).GetMethod("ReplaceCollectionImpl", BindingFlags.Static | BindingFlags.NonPublic);
-            private static readonly MethodInfo _replaceDictionaryMethod = typeof(CollectionHelpers).GetMethod("ReplaceDictionaryImpl", BindingFlags.Static | BindingFlags.NonPublic);
-
-            [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-            public static void ReplaceCollection(Type collectionType, object collection, object newContents)
-            {
-                MethodInfo targetMethod = _replaceCollectionMethod.MakeGenericMethod(collectionType);
-                targetMethod.Invoke(null, new object[] { collection, newContents });
-            }
-
-            private static void ReplaceCollectionImpl<T>(ICollection<T> collection, IEnumerable newContents)
-            {
-                collection.Clear();
-                if (newContents != null)
-                {
-                    foreach (object item in newContents)
-                    {
-                        // if the item was not a T, some conversion failed. the error message will be propagated,
-                        // but in the meanwhile we need to make a placeholder element in the array.
-                        T castItem = (item is T) ? (T)item : default(T);
-                        collection.Add(castItem);
-                    }
-                }
-            }
-
-            [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-            public static void ReplaceDictionary(Type keyType, Type valueType, object dictionary, object newContents)
-            {
-                MethodInfo targetMethod = _replaceDictionaryMethod.MakeGenericMethod(keyType, valueType);
-                targetMethod.Invoke(null, new object[] { dictionary, newContents });
-            }
-
-            private static void ReplaceDictionaryImpl<TKey, TValue>(IDictionary<TKey, TValue> dictionary, IEnumerable<KeyValuePair<object, object>> newContents)
-            {
-                dictionary.Clear();
-                foreach (KeyValuePair<object, object> item in newContents)
-                {
-                    if (item.Key is TKey)
-                    {
-                        // if the item was not a T, some conversion failed. the error message will be propagated,
-                        // but in the meanwhile we need to make a placeholder element in the dictionary.
-                        TKey castKey = (TKey)item.Key; // this cast shouldn't fail
-                        TValue castValue = (item.Value is TValue) ? (TValue)item.Value : default(TValue);
-                        dictionary[castKey] = castValue;
-                    }
-                }
-            }
-        }
-
-        internal object BindComplexModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-        {
-            object model = bindingContext.Model;
-            Type modelType = bindingContext.ModelType;
-
-            // if we're being asked to create an array, create a list instead, then coerce to an array after the list is created
-            if (model == null && modelType.IsArray)
-            {
-                Type elementType = modelType.GetElementType();
-                Type listType = typeof(List<>).MakeGenericType(elementType);
-                object collection = CreateModel(controllerContext, bindingContext, listType);
-
-                ModelBindingContext arrayBindingContext = new ModelBindingContext()
-                {
-                    ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => collection, listType),
-                    ModelName = bindingContext.ModelName,
-                    ModelState = bindingContext.ModelState,
-                    PropertyFilter = bindingContext.PropertyFilter,
-                    ValueProvider = bindingContext.ValueProvider
-                };
-                IList list = (IList)UpdateCollection(controllerContext, arrayBindingContext, elementType);
-
-                if (list == null)
-                {
-                    return null;
-                }
-
-                Array array = Array.CreateInstance(elementType, list.Count);
-                list.CopyTo(array, 0);
-                return array;
-            }
-
-            if (model == null)
-            {
-                model = CreateModel(controllerContext, bindingContext, modelType);
-            }
-
-            // special-case IDictionary<,> and ICollection<>
-            Type dictionaryType = TypeHelpers.ExtractGenericInterface(modelType, typeof(IDictionary<,>));
-            if (dictionaryType != null)
-            {
-                /*Type[] genericArguments = dictionaryType.GetGenericArguments();
-                Type keyType = genericArguments[0];
-                Type valueType = genericArguments[1];
-
-                ModelBindingContext dictionaryBindingContext = new ModelBindingContext()
-                {
-                    ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, modelType),
-                    ModelName = bindingContext.ModelName,
-                    ModelState = bindingContext.ModelState,
-                    PropertyFilter = bindingContext.PropertyFilter,
-                    ValueProvider = bindingContext.ValueProvider
-                };
-                object dictionary = UpdateDictionary(controllerContext, dictionaryBindingContext, keyType, valueType);
-                return dictionary;*/
-            }
-
-            Type enumerableType = TypeHelpers.ExtractGenericInterface(modelType, typeof(IEnumerable<>));
-            if (enumerableType != null)
-            {
-                Type elementType = enumerableType.GetGenericArguments()[0];
-
-                Type collectionType = typeof(ICollection<>).MakeGenericType(elementType);
-                if (collectionType.IsInstanceOfType(model))
-                {
-                    ModelBindingContext collectionBindingContext = new ModelBindingContext()
-                    {
-                        ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, modelType),
-                        ModelName = bindingContext.ModelName,
-                        ModelState = bindingContext.ModelState,
-                        PropertyFilter = bindingContext.PropertyFilter,
-                        ValueProvider = bindingContext.ValueProvider
-                    };
-                    object collection = UpdateCollection(controllerContext, collectionBindingContext, elementType);
-                    return collection;
-                }
-            }
-
-            // otherwise, just update the properties on the complex type
-            var i =0;
-            //BindComplexElementalModel(controllerContext, bindingContext, model);
-            return model;
         }
     }
 }

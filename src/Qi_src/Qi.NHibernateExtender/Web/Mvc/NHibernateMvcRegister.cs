@@ -12,10 +12,14 @@ namespace Qi.Web.Mvc
         /// </summary>
         public static void Regist()
         {
+            //new ValueProviderFactoryCollection { new ChildActionValueProviderFactory(), new FormValueProviderFactory(), new JsonValueProviderFactory(), 
+            //new RouteDataValueProviderFactory(), new QueryStringValueProviderFactory(), new HttpFileCollectionValueProviderFactory(), new JQueryFormValueProviderFactory() };
             //NHibernate Extender
             ValueProviderFactories.Factories[1] = new NHFormValueProviderFactory();
             ValueProviderFactories.Factories[3] = new NHRouterDataProviderFactory();
             ValueProviderFactories.Factories[4] = new NHQueryValuePrivoderFactory();
+            ValueProviderFactories.Factories[6] = new NHJQueryFormProviderFactory();
+
             ExtenderModelType();
         }
 

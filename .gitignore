@@ -45,4 +45,6 @@ src/Qi/Qi/Qi.csproj.user
 /src/Qi_src/Qi/obj
 /src/Qi_src/Qi/bin
 /src/Qi_src/TestResults
-src/Qi_src/packages/Iesi.Collections.3.2.0.4000/Iesi.Collections.3.2.0.4000.nupkg
+/src/Qi_src/packages
+*.suo
+*.userprefs

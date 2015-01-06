@@ -14,25 +14,45 @@ namespace Qi.Domain.Attributes
         private string _dateFormat;
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="minDate">请输入 2014-10-01</param>
+        /// <param name="maxDate">请输入2014-09-02</param>
+        public DateRangeAttribute(string minDate, string maxDate)
+            : this(minDate, maxDate, "yyyy-MM-dd", "yy/mm/dd")
+        {
+        }
+
+        /// <summary>
+        /// 初始化DateRange。请与DisplayFormat设置客户端插件接受的日期格式。
         /// </summary>
         /// <param name="minDate"></param>
         /// <param name="maxDate"></param>
-        /// <param name="format"></param>
-        public DateRangeAttribute(string minDate, string maxDate, string format)
+        /// <param name="dateFromatForTranslate">转换格式</param>
+        /// <param name="clientDateFormat">客户端的输出格式，改字符会用于客户端日期插件</param>
+        public DateRangeAttribute(string minDate, string maxDate, string dateFromatForTranslate, string clientDateFormat)
             : base(DefaultErrorMessage)
         {
-            DateFormat = format;
+            DateDateFromatForTranslate = dateFromatForTranslate;
+            ClientDateFormat = clientDateFormat;
+
             MinDate = ParseDate(minDate);
             MaxDate = ParseDate(maxDate);
         }
 
         /// <summary>
         /// </summary>
-        public string DateFormat
+        private string DateDateFromatForTranslate
         {
-            get { return _dateFormat ?? ("yyyy/MM/dd"); }
+            get { return _dateFormat ?? ("yyyy-MM-dd"); }
             set { _dateFormat = value; }
         }
+
+        /// <summary>
+        ///     客户端的日期格式与客户端使用的插件相关，如果使用时jqueryui，请使用jqueryui 的日期格式
+        /// </summary>
+        public string ClientDateFormat { get; set; }
+
 
         /// <summary>
         /// </summary>
@@ -73,7 +93,7 @@ namespace Qi.Domain.Attributes
         /// <returns></returns>
         private DateTime ParseDate(string dateValue)
         {
-            return DateTime.ParseExact(dateValue, DateFormat,
+            return DateTime.ParseExact(dateValue, DateDateFromatForTranslate,
                 CultureInfo.InvariantCulture);
         }
     }

@@ -45,3 +45,6 @@ src/Qi/Qi/Qi.csproj.user
 /src/Qi_src/Qi/obj
 /src/Qi_src/Qi/bin
 /src/Qi_src/TestResults
+/src/Qi_src/packages
+*.suo
+*.userprefs

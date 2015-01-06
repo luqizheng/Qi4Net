@@ -58,10 +58,8 @@ namespace Qi.Web.Mvc.NHMvcExtender
         private object GetArray(Type elemetType, IClassMetadata classMetadata, CultureInfo culture)
         {
             Array aryType = Array.CreateInstance(classMetadata.IdentifierType.ReturnedClass, 0);
-            var idArray = (object[])_result.ConvertTo(aryType.GetType(), culture);
             var result = new ArrayList();
-
-            foreach (object id in idArray)
+            foreach (object id in (Array)_result.ConvertTo(aryType.GetType(), culture))
             {
                 if (!String.IsNullOrEmpty(id.ToString()))
                 {

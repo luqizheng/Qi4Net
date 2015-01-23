@@ -14,17 +14,16 @@ namespace Qi.Domain.Attributes
         private string _dateFormat;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="minDate">请输入 2014-10-01</param>
         /// <param name="maxDate">请输入2014-09-02</param>
         public DateRangeAttribute(string minDate, string maxDate)
-            : this(minDate, maxDate, "yyyy-MM-dd", "yy/mm/dd")
+            : this(minDate, maxDate, "yyyy-MM-dd", "yy-mm-dd")
         {
         }
 
         /// <summary>
-        /// 初始化DateRange。请与DisplayFormat设置客户端插件接受的日期格式。
+        ///     初始化DateRange。请与DisplayFormat设置客户端插件接受的日期格式。
         /// </summary>
         /// <param name="minDate"></param>
         /// <param name="maxDate"></param>
@@ -33,11 +32,12 @@ namespace Qi.Domain.Attributes
         public DateRangeAttribute(string minDate, string maxDate, string dateFromatForTranslate, string clientDateFormat)
             : base(DefaultErrorMessage)
         {
+            if (minDate == null) throw new ArgumentNullException("minDate");
+            if (maxDate == null) throw new ArgumentNullException("maxDate");
             DateDateFromatForTranslate = dateFromatForTranslate;
             ClientDateFormat = clientDateFormat;
-
-            MinDate = ParseDate(minDate);
-            MaxDate = ParseDate(maxDate);
+            MaxDate = maxDate;
+            MinDate = minDate;
         }
 
         /// <summary>
@@ -56,11 +56,22 @@ namespace Qi.Domain.Attributes
 
         /// <summary>
         /// </summary>
-        public DateTime MinDate { get; set; }
+        public string MinDate { get; set; }
+
+        public DateTime MinDateShow
+        {
+            get { return ParseDate(MinDate); }
+        }
+
 
         /// <summary>
         /// </summary>
-        public DateTime MaxDate { get; set; }
+        public string MaxDate { get; set; }
+
+        public DateTime MaxDateShow
+        {
+            get { return ParseDate(MaxDate); }
+        }
 
         /// <summary>
         /// </summary>
@@ -73,7 +84,9 @@ namespace Qi.Domain.Attributes
                 return true;
             }
             var dateValue = (DateTime) value;
-            return MinDate <= dateValue && dateValue <= MaxDate;
+            DateTime minDate = ParseDate(MinDate);
+            DateTime maxDate = ParseDate(MaxDate);
+            return minDate <= dateValue && maxDate <= dateValue;
         }
 
         /// <summary>
@@ -84,17 +97,48 @@ namespace Qi.Domain.Attributes
         {
             return String.Format(CultureInfo.CurrentCulture,
                 ErrorMessageString,
-                name, MinDate, MaxDate);
+                name, ParseDate(MinDate), ParseDate(MaxDate));
         }
 
         /// <summary>
         /// </summary>
         /// <param name="dateValue"></param>
         /// <returns></returns>
-        private DateTime ParseDate(string dateValue)
+        public DateTime ParseDate(string dateValue)
         {
-            return DateTime.ParseExact(dateValue, DateDateFromatForTranslate,
-                CultureInfo.InvariantCulture);
+            if (dateValue == null)
+                return DateTime.MinValue;
+            if (dateValue.StartsWith("+") || dateValue.StartsWith("-"))
+            {
+                DateTime result = DateTime.Today;
+                string[] ary = dateValue.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string express in ary)
+                {
+                    char unit = express[express.Length - 1];
+
+                    int exs = Convert.ToInt32(express.TrimStart('+').TrimEnd('y', 'd', 'w', 'm'));
+                    switch (unit)
+                    {
+                        case 'y':
+                            result = result.AddYears(exs);
+                            break;
+
+                        case 'd':
+                            result = result.AddDays(exs);
+                            break;
+
+                        case 'w':
+                            result = result.AddYears(exs);
+                            break;
+
+                        case 'm':
+                            result = result.AddYears(exs);
+                            break;
+                    }
+                }
+                return result;
+            }
+            return DateTime.ParseExact(dateValue, DateDateFromatForTranslate, CultureInfo.InvariantCulture);
         }
     }
 }

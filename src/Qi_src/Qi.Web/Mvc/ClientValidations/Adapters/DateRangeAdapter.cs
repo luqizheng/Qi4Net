@@ -16,11 +16,10 @@ namespace Qi.Web.Mvc.ClientValidations.Adapters
         public override IEnumerable<ModelClientValidationRule> GetClientValidationRules()
         {
             string errorMessage = ErrorMessage;
-            var displayFormat = Metadata.DisplayFormatString;
             return new[]
             {
                 new ModelClientDateRangeValidationRule(errorMessage, 
-                    Attribute.MinDate.ToString(displayFormat), Attribute.MaxDate.ToString(displayFormat),Attribute.ClientDateFormat)
+                    Attribute.MinDate, Attribute.MaxDate,Attribute.ClientDateFormat)
             };
         }
     }

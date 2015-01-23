@@ -34,7 +34,7 @@ namespace Qi.Domain.Attributes
         {
             if (minDate == null) throw new ArgumentNullException("minDate");
             if (maxDate == null) throw new ArgumentNullException("maxDate");
-            DateDateFromatForTranslate = dateFromatForTranslate;
+            DateFromatForTranslate = dateFromatForTranslate;
             ClientDateFormat = clientDateFormat;
             MaxDate = maxDate;
             MinDate = minDate;
@@ -42,7 +42,7 @@ namespace Qi.Domain.Attributes
 
         /// <summary>
         /// </summary>
-        private string DateDateFromatForTranslate
+        public string DateFromatForTranslate
         {
             get { return _dateFormat ?? ("yyyy-MM-dd"); }
             set { _dateFormat = value; }
@@ -138,7 +138,7 @@ namespace Qi.Domain.Attributes
                 }
                 return result;
             }
-            return DateTime.ParseExact(dateValue, DateDateFromatForTranslate, CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(dateValue, DateFromatForTranslate, CultureInfo.InvariantCulture);
         }
     }
 }

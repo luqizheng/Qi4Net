@@ -19,7 +19,9 @@ namespace Qi.Web.Mvc.ClientValidations.Adapters
             return new[]
             {
                 new ModelClientDateRangeValidationRule(errorMessage, 
-                    Attribute.MinDate, Attribute.MaxDate,Attribute.ClientDateFormat)
+                    Attribute.MinDate, Attribute.MaxDate,Attribute.ClientDateFormat,
+                    Attribute.MaxDateShow.ToString(Attribute.DateFromatForTranslate),
+                    Attribute.MinDateShow.ToString(Attribute.DateFromatForTranslate))
             };
         }
     }

@@ -23,13 +23,14 @@ namespace Qi.Domain.Attributes
         }
 
         /// <summary>
-        ///     初始化DateRange。请与DisplayFormat设置客户端插件接受的日期格式。
+        ///     初始化DateRange。请与DisplayFormat设置客户端显示用的日期格式。此格式必须和clientDateFromat相匹配的.
+        /// 
         /// </summary>
-        /// <param name="minDate"></param>
+        /// <param name="minDate">也支持+m/y/d/w 这种模式 如 -2w</param>
         /// <param name="maxDate"></param>
-        /// <param name="dateFromatForTranslate">转换格式</param>
+        /// <param name="dateFromatForTranslate">minDate maxDate 转 日期格式的 转换格式</param>
         /// <param name="clientDateFormat">客户端的输出格式，改字符会用于客户端日期插件</param>
-        public DateRangeAttribute(string minDate, string maxDate, string dateFromatForTranslate, string clientDateFormat)
+        public DateRangeAttribute(string minDate, string maxDate, string dateFromatForTranslate, string clientDateFormat )
             : base(DefaultErrorMessage)
         {
             if (minDate == null) throw new ArgumentNullException("minDate");
@@ -86,7 +87,7 @@ namespace Qi.Domain.Attributes
             var dateValue = (DateTime) value;
             DateTime minDate = ParseDate(MinDate);
             DateTime maxDate = ParseDate(MaxDate);
-            return minDate <= dateValue && maxDate <= dateValue;
+            return minDate <= dateValue && maxDate >= dateValue;
         }
 
         /// <summary>
@@ -128,11 +129,11 @@ namespace Qi.Domain.Attributes
                             break;
 
                         case 'w':
-                            result = result.AddYears(exs);
+                            result = result.AddDays(exs*7);
                             break;
 
                         case 'm':
-                            result = result.AddYears(exs);
+                            result = result.AddMonths(exs);
                             break;
                     }
                 }
